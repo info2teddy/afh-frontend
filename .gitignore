@@ -1,0 +1,11 @@
+# Secrets
+.env
+.env.local
+.env.production
+
+# Dependencies and build output
+node_modules/
+dist/
+
+# Logs
+*.log

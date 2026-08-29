@@ -1,0 +1,38 @@
+// src/App.jsx
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { PageShell } from "./components/PageShell";
+import { RequireAuth } from "./components/RequireAuth";
+import { Login } from "./pages/Login";
+import { ResidentList } from "./pages/ResidentList";
+import { ResidentInvoice } from "./pages/ResidentInvoice";
+import { Credentials } from "./pages/Credentials";
+import { Onboarding } from "./pages/Onboarding";
+import { Timekeeping } from "./pages/Timekeeping";
+import { Payroll } from "./pages/Payroll";
+
+export function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/*"
+          element={
+            <RequireAuth>
+              <PageShell>
+                <Routes>
+                  <Route path="/" element={<ResidentList />} />
+                  <Route path="/residents/:id" element={<ResidentInvoice />} />
+                  <Route path="/credentials" element={<Credentials />} />
+                  <Route path="/onboarding" element={<Onboarding />} />
+                  <Route path="/timekeeping" element={<Timekeeping />} />
+                  <Route path="/payroll" element={<Payroll />} />
+                </Routes>
+              </PageShell>
+            </RequireAuth>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
+  );
+}
