@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { to: "/onboarding", label: "Onboarding" },
   { to: "/timekeeping", label: "Timekeeping" },
   { to: "/payroll", label: "Payroll" },
+  { to: "/settings", label: "Settings" },
 ];
 
 export function PageShell({ children }) {

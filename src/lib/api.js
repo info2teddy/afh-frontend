@@ -125,4 +125,8 @@ export const api = {
     generate: (residentId, planDate) =>
       request("/care-plans/generate", { method: "POST", body: JSON.stringify({ residentId, planDate }) }),
   },
+  quickbooks: {
+    status: () => request("/quickbooks/status"),
+    getConnectUrl: () => request("/quickbooks/connect"),
+  },
 };
