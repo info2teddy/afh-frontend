@@ -11,12 +11,16 @@ import { Timekeeping } from "./pages/Timekeeping";
 import { Payroll } from "./pages/Payroll";
 import { CarePlan } from "./pages/CarePlan";
 import { Settings } from "./pages/Settings";
+import { PrivacyPolicy } from "./pages/legal/PrivacyPolicy";
+import { Eula } from "./pages/legal/Eula";
 
 export function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/legal/privacy" element={<PrivacyPolicy />} />
+        <Route path="/legal/eula" element={<Eula />} />
         <Route
           path="/*"
           element={
