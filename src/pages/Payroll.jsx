@@ -1,6 +1,7 @@
 // src/pages/Payroll.jsx
 import { useState } from "react";
 import { api } from "../lib/api";
+import { Button } from "../components/Button";
 
 export function Payroll() {
   const [periodStart, setPeriodStart] = useState("");
@@ -40,39 +41,68 @@ export function Payroll() {
     }
   }
 
+  const inputClass =
+    "rounded-lg border border-stone-300 px-3 py-2.5 text-sm text-stone-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20";
+
   return (
     <div>
-      <h1 style={{ fontSize: 18, fontWeight: 500, marginBottom: 16 }}>Payroll</h1>
-
-      <div style={{ display: "flex", gap: 10, marginBottom: 20, alignItems: "center" }}>
-        <input type="date" value={periodStart} onChange={(e) => setPeriodStart(e.target.value)} style={{ padding: 8, fontSize: 14 }} />
-        <span style={{ color: "#73726c" }}>to</span>
-        <input type="date" value={periodEnd} onChange={(e) => setPeriodEnd(e.target.value)} style={{ padding: 8, fontSize: 14 }} />
-        <button onClick={handleCreateRun} disabled={busy} style={{ padding: "8px 14px", fontSize: 14, borderRadius: 6, border: "1px solid #ccc", background: "#fff", cursor: "pointer" }}>
-          Calculate payroll
-        </button>
+      <div className="mb-6">
+        <h1 className="text-xl font-semibold text-stone-900">Payroll</h1>
+        <p className="mt-1 text-sm text-stone-500">Calculate and submit a payroll run</p>
       </div>
 
-      {error && <p style={{ color: "#791f1f", fontSize: 14 }}>{error}</p>}
+      <div className="mb-6 flex flex-wrap items-center gap-3">
+        <input
+          type="date"
+          value={periodStart}
+          onChange={(e) => setPeriodStart(e.target.value)}
+          className={inputClass}
+        />
+        <span className="text-sm text-stone-400">to</span>
+        <input
+          type="date"
+          value={periodEnd}
+          onChange={(e) => setPeriodEnd(e.target.value)}
+          className={inputClass}
+        />
+        <Button variant="primary" onClick={handleCreateRun} disabled={busy}>
+          {busy && !run ? "Calculating…" : "Calculate payroll"}
+        </Button>
+      </div>
+
+      {error && (
+        <p className="mb-4 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>
+      )}
 
       {run && (
-        <div style={{ border: "1px solid #e4e2d8", borderRadius: 12, padding: 20 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
-            <div style={{ fontWeight: 500 }}>Gross pay: ${Number(run.totalGrossPay).toFixed(2)}</div>
-            <div style={{ fontSize: 13, color: "#73726c" }}>{run.status}</div>
-          </div>
-          {run.lineItems.map((li) => (
-            <div key={li.employeeId} style={{ display: "flex", justifyContent: "space-between", fontSize: 14, padding: "6px 0", borderTop: "1px solid #e4e2d8" }}>
-              <span>{li.employee.name}</span>
-              <span>{li.regularHours} reg</span>
-              <span>{li.overtimeHours} OT</span>
-              <span>${Number(li.grossPay).toFixed(2)}</span>
+        <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+          <div className="mb-4 flex items-center justify-between">
+            <div className="text-lg font-semibold text-stone-900">
+              ${Number(run.totalGrossPay).toFixed(2)}
+              <span className="ml-1.5 text-sm font-normal text-stone-500">gross pay</span>
             </div>
-          ))}
+            <span className="rounded-full bg-stone-100 px-2.5 py-1 text-xs font-medium capitalize text-stone-600">
+              {run.status}
+            </span>
+          </div>
+
+          <div className="divide-y divide-stone-100 border-t border-stone-100 text-sm">
+            {run.lineItems.map((li) => (
+              <div key={li.employeeId} className="grid grid-cols-4 items-center gap-2 py-2.5">
+                <span className="font-medium text-stone-900">{li.employee.name}</span>
+                <span className="text-stone-500">{li.regularHours} reg</span>
+                <span className="text-stone-500">{li.overtimeHours} OT</span>
+                <span className="text-right font-medium text-stone-900">
+                  ${Number(li.grossPay).toFixed(2)}
+                </span>
+              </div>
+            ))}
+          </div>
+
           {run.status !== "submitted" && (
-            <button onClick={handleSubmit} disabled={busy} style={{ marginTop: 16, padding: "8px 14px", fontSize: 14, borderRadius: 6, border: "1px solid #ccc", background: "#fff", cursor: "pointer" }}>
+            <Button variant="primary" className="mt-5" onClick={handleSubmit} disabled={busy}>
               {busy ? "Submitting…" : "Submit to QuickBooks"}
-            </button>
+            </Button>
           )}
         </div>
       )}

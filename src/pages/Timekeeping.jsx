@@ -1,6 +1,8 @@
 // src/pages/Timekeeping.jsx
 import { useEffect, useState } from "react";
 import { api } from "../lib/api";
+import { Button } from "../components/Button";
+import { Select } from "../components/Select";
 
 // Simple hardcoded picker for now — a real version would list employees and
 // let the manager pick one, but this proves the approval flow end to end.
@@ -25,6 +27,7 @@ export function Timekeeping() {
 
   useEffect(() => {
     if (!employeeId) return;
+    setWeek(null);
     api.shifts
       .week(employeeId, weekStart)
       .then(setWeek)
@@ -46,62 +49,67 @@ export function Timekeeping() {
 
   return (
     <div>
-      <h1 style={{ fontSize: 18, fontWeight: 500, marginBottom: 16 }}>This week's hours</h1>
+      <div className="mb-6">
+        <h1 className="text-xl font-semibold text-stone-900">This week's hours</h1>
+        <p className="mt-1 text-sm text-stone-500">Week of {weekStart}</p>
+      </div>
 
-      <select
-        value={employeeId}
-        onChange={(e) => setEmployeeId(e.target.value)}
-        style={{ padding: 8, fontSize: 14, marginBottom: 20, borderRadius: 6, border: "1px solid #ccc" }}
-      >
+      <Select value={employeeId} onChange={(e) => setEmployeeId(e.target.value)} className="mb-6 w-64">
         <option value="">Select an employee…</option>
         {employees.map((e) => (
           <option key={e.id} value={e.id}>{e.name}</option>
         ))}
-      </select>
+      </Select>
 
-      {error && <p style={{ color: "#791f1f" }}>{error}</p>}
+      {error && (
+        <p className="mb-4 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>
+      )}
+
+      {employeeId && !week && (
+        <div className="animate-pulse rounded-2xl border border-stone-200 bg-white p-6">
+          <div className="h-4 w-1/3 rounded bg-stone-100" />
+        </div>
+      )}
 
       {week && (
-        <div style={{ border: "1px solid #e4e2d8", borderRadius: 12, padding: 20 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
-            <div style={{ fontWeight: 500 }}>{week.employee.name}</div>
-            <div style={{ fontSize: 20, fontWeight: 500 }}>
-              {week.totalPaidHours} <span style={{ fontSize: 13, fontWeight: 400, color: "#73726c" }}>hrs paid</span>
+        <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+          <div className="mb-4 flex items-center justify-between">
+            <div className="font-medium text-stone-900">{week.employee.name}</div>
+            <div className="text-2xl font-semibold text-stone-900">
+              {week.totalPaidHours} <span className="text-sm font-normal text-stone-500">hrs paid</span>
             </div>
           </div>
 
-          {week.shiftBreakdown.map((s, i) => (
-            <div key={i} style={{ display: "flex", justifyContent: "space-between", fontSize: 14, padding: "6px 0", borderTop: "1px solid #e4e2d8" }}>
-              <span>{s.date}</span>
-              <span style={{ color: "#73726c" }}>{s.shiftType.replace("_", " ")}</span>
-              <span>{s.workedHours} worked</span>
-              <span>{s.paidHours} paid</span>
-            </div>
-          ))}
+          <div className="divide-y divide-stone-100 border-t border-stone-100">
+            {week.shiftBreakdown.map((s, i) => (
+              <div key={i} className="flex items-center justify-between py-2.5 text-sm">
+                <span className="text-stone-900">{s.date}</span>
+                <span className="text-stone-500">{s.shiftType.replace("_", " ")}</span>
+                <span className="text-stone-600">{s.workedHours} worked</span>
+                <span className="font-medium text-stone-900">{s.paidHours} paid</span>
+              </div>
+            ))}
+          </div>
 
           {week.flags.map((f, i) => (
             <div
               key={i}
-              style={{
-                marginTop: 10,
-                padding: "8px 12px",
-                fontSize: 13,
-                borderRadius: 6,
-                background: f.level === "overtime" ? "#fcebeb" : "#faeeda",
-                color: f.level === "overtime" ? "#791f1f" : "#633806",
-              }}
+              className={`mt-3 rounded-lg px-3 py-2 text-xs ${
+                f.level === "overtime" ? "bg-rose-50 text-rose-700" : "bg-amber-50 text-amber-700"
+              }`}
             >
               {f.message}
             </div>
           ))}
 
-          <button
+          <Button
+            variant="primary"
+            className="mt-5"
             onClick={handleApprove}
             disabled={approving || week.approved}
-            style={{ marginTop: 16, padding: "8px 14px", fontSize: 14, borderRadius: 6, border: "1px solid #ccc", background: "#fff", cursor: "pointer" }}
           >
             {week.approved ? "Approved" : approving ? "Approving…" : "Approve hours"}
-          </button>
+          </Button>
         </div>
       )}
     </div>

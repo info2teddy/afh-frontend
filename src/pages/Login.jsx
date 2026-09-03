@@ -29,32 +29,54 @@ export function Login() {
   }
 
   return (
-    <div style={{ maxWidth: 320, margin: "80px auto", fontFamily: "sans-serif" }}>
-      <h1 style={{ fontSize: 18, fontWeight: 500, marginBottom: 20 }}>Log in</h1>
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <input
-          type="email"
-          placeholder="name@company.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{ padding: 10, fontSize: 14, borderRadius: 6, border: "1px solid #ccc" }}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{ padding: 10, fontSize: 14, borderRadius: 6, border: "1px solid #ccc" }}
-        />
-        {error && <p style={{ color: "#791f1f", fontSize: 13, margin: 0 }}>{error}</p>}
-        <button
-          type="submit"
-          disabled={busy}
-          style={{ padding: 10, fontSize: 14, borderRadius: 6, border: "1px solid #ccc", background: "#fff", cursor: "pointer" }}
+    <div className="flex min-h-screen items-center justify-center bg-stone-50 px-4">
+      <div className="w-full max-w-sm">
+        <div className="mb-8 text-center">
+          <div className="mb-3 text-lg font-semibold tracking-tight text-stone-900">
+            CareFit <span className="text-emerald-600">Connect</span>
+          </div>
+          <p className="text-sm text-stone-500">Sign in to manage your home</p>
+        </div>
+
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
         >
-          {busy ? "Logging in…" : "Log in"}
-        </button>
-      </form>
+          <div>
+            <label className="mb-1.5 block text-xs font-medium text-stone-600">Email</label>
+            <input
+              type="email"
+              placeholder="name@company.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoFocus
+              className="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+            />
+          </div>
+          <div>
+            <label className="mb-1.5 block text-xs font-medium text-stone-600">Password</label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+            />
+          </div>
+
+          {error && (
+            <p className="rounded-lg bg-rose-50 px-3 py-2 text-xs text-rose-700">{error}</p>
+          )}
+
+          <button
+            type="submit"
+            disabled={busy}
+            className="w-full rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {busy ? "Logging in…" : "Log in"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

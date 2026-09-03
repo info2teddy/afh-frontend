@@ -9,6 +9,14 @@ function getToken() {
   return localStorage.getItem("afh_token");
 }
 
+function getStoredJSON(key) {
+  try {
+    return JSON.parse(localStorage.getItem(key) || "null");
+  } catch {
+    return null;
+  }
+}
+
 async function request(path, options = {}) {
   const token = getToken();
   const res = await fetch(`${API_BASE}${path}`, {
@@ -43,13 +51,35 @@ export const auth = {
     const body = await res.json();
     if (!res.ok) throw new Error(body.error || "Login failed.");
     localStorage.setItem("afh_token", body.token);
+    localStorage.setItem("afh_user", JSON.stringify(body.user));
+    localStorage.setItem("afh_tenant", JSON.stringify(body.tenant));
     return body.user;
   },
   logout() {
     localStorage.removeItem("afh_token");
+    localStorage.removeItem("afh_user");
+    localStorage.removeItem("afh_tenant");
   },
   isLoggedIn() {
     return !!getToken();
+  },
+  getUser() {
+    return getStoredJSON("afh_user");
+  },
+  getTenant() {
+    return getStoredJSON("afh_tenant");
+  },
+  // Admin-only: re-issues the JWT scoped to a different AFH business, so
+  // every subsequent request (already going through `request()` above)
+  // transparently operates on that tenant's data.
+  async switchTenant(tenantId) {
+    const body = await request("/auth/switch-tenant", {
+      method: "POST",
+      body: JSON.stringify({ tenantId }),
+    });
+    localStorage.setItem("afh_token", body.token);
+    localStorage.setItem("afh_tenant", JSON.stringify(body.tenant));
+    return body.tenant;
   },
 };
 
@@ -85,5 +115,14 @@ export const api = {
         body: JSON.stringify({ templateName }),
       }),
     complete: (itemId) => request(`/onboarding/${itemId}/complete`, { method: "PATCH" }),
+  },
+  tenants: {
+    list: () => request("/tenants"),
+    create: (name) => request("/tenants", { method: "POST", body: JSON.stringify({ name }) }),
+  },
+  carePlans: {
+    list: (residentId) => request(`/care-plans?residentId=${residentId}`),
+    generate: (residentId, planDate) =>
+      request("/care-plans/generate", { method: "POST", body: JSON.stringify({ residentId, planDate }) }),
   },
 };

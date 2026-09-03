@@ -1,24 +1,23 @@
-// src/components/StatusPill.jsx
 const TONES = {
-  success: { bg: "#eaf3de", text: "#27500a" },
-  warning: { bg: "#faeeda", text: "#633806" },
-  danger: { bg: "#fcebeb", text: "#791f1f" },
-  neutral: { bg: "#f1efe8", text: "#444441" },
+  success: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
+  warning: "bg-amber-50 text-amber-700 ring-amber-600/20",
+  danger: "bg-rose-50 text-rose-700 ring-rose-600/20",
+  neutral: "bg-stone-100 text-stone-600 ring-stone-500/10",
+};
+
+const DOTS = {
+  success: "bg-emerald-500",
+  warning: "bg-amber-500",
+  danger: "bg-rose-500",
+  neutral: "bg-stone-400",
 };
 
 export function StatusPill({ tone = "neutral", children }) {
-  const { bg, text } = TONES[tone] || TONES.neutral;
   return (
     <span
-      style={{
-        fontSize: 12,
-        padding: "3px 10px",
-        borderRadius: 6,
-        background: bg,
-        color: text,
-        whiteSpace: "nowrap",
-      }}
+      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset whitespace-nowrap ${TONES[tone] || TONES.neutral}`}
     >
+      <span className={`h-1.5 w-1.5 rounded-full ${DOTS[tone] || DOTS.neutral}`} />
       {children}
     </span>
   );

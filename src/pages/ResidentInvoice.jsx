@@ -1,8 +1,9 @@
 // src/pages/ResidentInvoice.jsx
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { api } from "../lib/api";
 import { StatusPill } from "../components/StatusPill";
+import { Button } from "../components/Button";
 
 const STATUS_TONE = { draft: "warning", sent: "success", paid: "success", overdue: "danger" };
 
@@ -60,62 +61,72 @@ export function ResidentInvoice() {
 
   return (
     <div>
-      <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 24 }}>
+      <Link to="/" className="mb-4 inline-flex items-center gap-1 text-sm text-stone-500 hover:text-stone-800">
+        ← Residents
+      </Link>
+
+      <div className="mb-6 mt-2 flex flex-wrap items-center gap-3">
         <input
           type="month"
           value={month}
           onChange={(e) => setMonth(e.target.value)}
-          style={{ padding: 8, fontSize: 14, borderRadius: 6, border: "1px solid #ccc" }}
+          className="rounded-lg border border-stone-300 px-3 py-2.5 text-sm text-stone-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
         />
-        <button
-          onClick={handleGenerate}
-          disabled={generating}
-          style={{ padding: "8px 14px", fontSize: 14, borderRadius: 6, border: "1px solid #ccc", background: "#fff", cursor: "pointer" }}
-        >
+        <Button variant="primary" onClick={handleGenerate} disabled={generating}>
           {generating ? "Generating…" : "Generate invoice for this month"}
-        </button>
+        </Button>
       </div>
 
-      {error && <p style={{ color: "#791f1f", fontSize: 14, marginBottom: 16 }}>{error}</p>}
-
-      {!invoices && <p style={{ color: "#73726c" }}>Loading invoices…</p>}
-      {invoices && invoices.length === 0 && (
-        <p style={{ color: "#73726c" }}>No invoices generated yet for this resident.</p>
+      {error && (
+        <p className="mb-4 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>
       )}
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {!invoices && (
+        <div className="animate-pulse rounded-2xl border border-stone-200 bg-white p-6">
+          <div className="h-4 w-1/3 rounded bg-stone-100" />
+        </div>
+      )}
+
+      {invoices && invoices.length === 0 && (
+        <div className="rounded-2xl border border-dashed border-stone-300 bg-white p-10 text-center text-sm text-stone-500">
+          No invoices generated yet for this resident.
+        </div>
+      )}
+
+      <div className="flex flex-col gap-4">
         {invoices?.map((inv) => (
-          <div key={inv.id} style={{ border: "1px solid #e4e2d8", borderRadius: 12, padding: 20 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
-              <div style={{ fontSize: 15, fontWeight: 500 }}>
+          <div key={inv.id} className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+            <div className="mb-4 flex items-center justify-between">
+              <div className="text-base font-semibold text-stone-900">
                 {new Date(inv.billingPeriodStart).toLocaleDateString(undefined, { month: "long", year: "numeric" })}
               </div>
               <StatusPill tone={STATUS_TONE[inv.status]}>{inv.status}</StatusPill>
             </div>
-            <table style={{ width: "100%", fontSize: 14, borderCollapse: "collapse" }}>
+            <table className="w-full border-collapse text-sm">
               <tbody>
                 {inv.lineItems.map((li) => (
-                  <tr key={li.id} style={{ borderBottom: "1px solid #e4e2d8" }}>
-                    <td style={{ padding: "8px 0", color: "#73726c" }}>{li.description}</td>
-                    <td style={{ padding: "8px 0", textAlign: "right" }}>${Number(li.amount).toFixed(2)}</td>
+                  <tr key={li.id} className="border-b border-stone-100">
+                    <td className="py-2 text-stone-600">{li.description}</td>
+                    <td className="py-2 text-right text-stone-900">${Number(li.amount).toFixed(2)}</td>
                   </tr>
                 ))}
                 <tr>
-                  <td style={{ padding: "12px 0 0", fontWeight: 500 }}>Total</td>
-                  <td style={{ padding: "12px 0 0", textAlign: "right", fontWeight: 500 }}>
+                  <td className="pt-3 font-medium text-stone-900">Total</td>
+                  <td className="pt-3 text-right font-semibold text-stone-900">
                     ${Number(inv.totalAmount).toFixed(2)}
                   </td>
                 </tr>
               </tbody>
             </table>
             {inv.status === "draft" && (
-              <button
+              <Button
+                variant="primary"
+                className="mt-5"
                 onClick={() => handlePush(inv.id)}
                 disabled={pushing === inv.id}
-                style={{ marginTop: 16, padding: "8px 14px", fontSize: 14, borderRadius: 6, border: "1px solid #ccc", background: "#fff", cursor: "pointer" }}
               >
                 {pushing === inv.id ? "Pushing…" : "Push to QuickBooks"}
-              </button>
+              </Button>
             )}
           </div>
         ))}

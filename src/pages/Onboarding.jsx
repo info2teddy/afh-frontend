@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import { api } from "../lib/api";
 import { StatusPill } from "../components/StatusPill";
+import { Button } from "../components/Button";
+import { Select } from "../components/Select";
 
 const STATUS_CONFIG = {
   done: { tone: "success", label: "Done" },
@@ -82,38 +84,40 @@ export function Onboarding() {
 
   return (
     <div>
-      <h1 style={{ fontSize: 18, fontWeight: 500, marginBottom: 16 }}>Onboarding</h1>
+      <div className="mb-6">
+        <h1 className="text-xl font-semibold text-stone-900">Onboarding</h1>
+        <p className="mt-1 text-sm text-stone-500">Track new-hire requirements to completion</p>
+      </div>
 
-      <select
-        value={employeeId}
-        onChange={(e) => setEmployeeId(e.target.value)}
-        style={{ padding: 8, fontSize: 14, marginBottom: 20, borderRadius: 6, border: "1px solid #ccc" }}
-      >
+      <Select value={employeeId} onChange={(e) => setEmployeeId(e.target.value)} className="mb-6 w-64">
         <option value="">Select an employee…</option>
         {employees.map((e) => (
           <option key={e.id} value={e.id}>{e.name}</option>
         ))}
-      </select>
+      </Select>
 
-      {error && <p style={{ color: "#791f1f", fontSize: 14, marginBottom: 16 }}>{error}</p>}
+      {error && (
+        <p className="mb-4 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>
+      )}
+
+      {employeeId && checklist === null && (
+        <div className="animate-pulse rounded-2xl border border-stone-200 bg-white p-6">
+          <div className="h-4 w-1/3 rounded bg-stone-100" />
+        </div>
+      )}
 
       {employeeId && checklist && checklist.length === 0 && (
-        <div style={{ border: "1px solid #e4e2d8", borderRadius: 12, padding: 20 }}>
-          <p style={{ color: "#73726c", fontSize: 14, marginBottom: 12 }}>
-            No onboarding checklist yet for this employee.
-          </p>
-          <button
-            onClick={handleInstantiate}
-            style={{ padding: "8px 14px", fontSize: 14, borderRadius: 6, border: "1px solid #ccc", background: "#fff", cursor: "pointer" }}
-          >
+        <div className="rounded-2xl border border-stone-200 bg-white p-8 text-center">
+          <p className="mb-4 text-sm text-stone-500">No onboarding checklist yet for this employee.</p>
+          <Button variant="primary" onClick={handleInstantiate}>
             Start checklist
-          </button>
+          </Button>
         </div>
       )}
 
       {employeeId && checklist && checklist.length > 0 && (
         <div>
-          <div style={{ border: "1px solid #e4e2d8", borderRadius: 12, overflow: "hidden", marginBottom: 16 }}>
+          <div className="mb-4 divide-y divide-stone-100 overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm">
             {checklist.map((item) => {
               const config = STATUS_CONFIG[item.status];
               const isBlocked = item.status === "blocked";
@@ -121,39 +125,29 @@ export function Onboarding() {
               return (
                 <div
                   key={item.id}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    padding: "12px 16px",
-                    borderBottom: "1px solid #e4e2d8",
-                    fontSize: 14,
-                    opacity: isBlocked ? 0.6 : 1,
-                  }}
+                  className={`flex items-center justify-between px-5 py-4 ${isBlocked ? "opacity-50" : ""}`}
                 >
                   <div>
-                    <div>{item.name}</div>
+                    <div className="text-sm font-medium text-stone-900">{item.name}</div>
                     {item.dueDate && (
-                      <div style={{ fontSize: 12, color: "#73726c", marginTop: 2 }}>
-                        Due {formatDate(item.dueDate)}
-                      </div>
+                      <div className="mt-0.5 text-xs text-stone-500">Due {formatDate(item.dueDate)}</div>
                     )}
                     {item.gateName && !item.dueDate && (
-                      <div style={{ fontSize: 12, color: "#73726c", marginTop: 2 }}>
+                      <div className="mt-0.5 text-xs text-stone-500">
                         Required {item.gateName.replaceAll("_", " ")}
                       </div>
                     )}
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div className="flex items-center gap-3">
                     <StatusPill tone={config.tone}>{config.label}</StatusPill>
                     {!isDone && !isBlocked && (
-                      <button
+                      <Button
+                        size="sm"
                         onClick={() => handleComplete(item.id)}
                         disabled={busyItemId === item.id}
-                        style={{ padding: "4px 10px", fontSize: 12, borderRadius: 6, border: "1px solid #ccc", background: "#fff", cursor: "pointer" }}
                       >
                         {busyItemId === item.id ? "…" : "Mark done"}
-                      </button>
+                      </Button>
                     )}
                   </div>
                 </div>
@@ -161,25 +155,18 @@ export function Onboarding() {
             })}
           </div>
 
-          <div style={{ position: "relative" }}>
-            <button
-              onClick={() => setAddingConditional((v) => !v)}
-              style={{ padding: "8px 14px", fontSize: 14, borderRadius: 6, border: "1px solid #ccc", background: "#fff", cursor: "pointer" }}
-            >
-              + Add conditional requirement
-            </button>
+          <div className="relative inline-block">
+            <Button onClick={() => setAddingConditional((v) => !v)}>+ Add conditional requirement</Button>
             {addingConditional && (
-              <div style={{ marginTop: 8, border: "1px solid #e4e2d8", borderRadius: 8, background: "#fff", padding: 8 }}>
+              <div className="absolute left-0 top-full z-10 mt-2 w-64 overflow-hidden rounded-xl border border-stone-200 bg-white py-1.5 shadow-lg">
                 {CONDITIONAL_OPTIONS.map((name) => (
-                  <div
+                  <button
                     key={name}
                     onClick={() => handleAddConditional(name)}
-                    style={{ padding: "8px 10px", fontSize: 13, cursor: "pointer", borderRadius: 4 }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = "#f1efe8")}
-                    onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                    className="block w-full px-4 py-2 text-left text-sm text-stone-700 hover:bg-stone-50"
                   >
                     {name}
-                  </div>
+                  </button>
                 ))}
               </div>
             )}

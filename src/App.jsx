@@ -9,6 +9,7 @@ import { Credentials } from "./pages/Credentials";
 import { Onboarding } from "./pages/Onboarding";
 import { Timekeeping } from "./pages/Timekeeping";
 import { Payroll } from "./pages/Payroll";
+import { CarePlan } from "./pages/CarePlan";
 
 export function App() {
   return (
@@ -27,6 +28,7 @@ export function App() {
                   <Route path="/onboarding" element={<Onboarding />} />
                   <Route path="/timekeeping" element={<Timekeeping />} />
                   <Route path="/payroll" element={<Payroll />} />
+                  <Route path="/care-plan" element={<CarePlan />} />
                 </Routes>
               </PageShell>
             </RequireAuth>
