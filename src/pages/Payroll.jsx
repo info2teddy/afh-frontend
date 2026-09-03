@@ -47,7 +47,7 @@ export function Payroll() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-xl font-semibold text-stone-900">Payroll</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-stone-900">Payroll</h1>
         <p className="mt-1 text-sm text-stone-500">Calculate and submit a payroll run</p>
       </div>
 

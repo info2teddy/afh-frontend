@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { api } from "../lib/api";
 import { Button } from "../components/Button";
 import { Select } from "../components/Select";
+import { CardSkeleton } from "../components/CardSkeleton";
 
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -53,7 +54,7 @@ export function CarePlan() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-xl font-semibold text-stone-900">Care plan</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-stone-900">Care plan</h1>
         <p className="mt-1 text-sm text-stone-500">
           AI-drafted, date-specific care plan — review and adjust before use
         </p>
@@ -87,11 +88,7 @@ export function CarePlan() {
         </div>
       )}
 
-      {residentId && generating && (
-        <div className="animate-pulse rounded-2xl border border-stone-200 bg-white p-6">
-          <div className="h-4 w-1/3 rounded bg-stone-100" />
-        </div>
-      )}
+      {residentId && generating && <CardSkeleton lines={4} />}
 
       {residentId && plans && plans.length === 0 && !generating && (
         <div className="rounded-2xl border border-dashed border-stone-300 bg-white p-10 text-center text-sm text-stone-500">

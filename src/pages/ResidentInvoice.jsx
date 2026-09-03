@@ -4,6 +4,7 @@ import { useParams, Link } from "react-router-dom";
 import { api } from "../lib/api";
 import { StatusPill } from "../components/StatusPill";
 import { Button } from "../components/Button";
+import { CardSkeleton } from "../components/CardSkeleton";
 
 const STATUS_TONE = { draft: "warning", sent: "success", paid: "success", overdue: "danger" };
 
@@ -81,11 +82,7 @@ export function ResidentInvoice() {
         <p className="mb-4 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>
       )}
 
-      {!invoices && (
-        <div className="animate-pulse rounded-2xl border border-stone-200 bg-white p-6">
-          <div className="h-4 w-1/3 rounded bg-stone-100" />
-        </div>
-      )}
+      {!invoices && <CardSkeleton lines={3} />}
 
       {invoices && invoices.length === 0 && (
         <div className="rounded-2xl border border-dashed border-stone-300 bg-white p-10 text-center text-sm text-stone-500">

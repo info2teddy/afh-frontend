@@ -33,35 +33,39 @@ export function PageShell({ children }) {
 
           <span className="h-4 w-px shrink-0 bg-stone-200" />
 
-          {isAdmin ? (
-            <TenantSwitcher />
-          ) : (
-            <span className="truncate text-sm font-medium text-stone-700">{tenant?.name}</span>
-          )}
+          <div className="min-w-0 flex-1">
+            {isAdmin ? (
+              <TenantSwitcher />
+            ) : (
+              <span className="block truncate text-sm font-medium text-stone-700">{tenant?.name}</span>
+            )}
+          </div>
 
-          <div className="ml-auto flex items-center gap-4">
+          <div className="flex shrink-0 items-center gap-4">
             {isAdmin && (
-              <span className="rounded-full bg-stone-100 px-2 py-0.5 text-xs font-medium text-stone-500">
+              <span className="hidden rounded-full bg-stone-100 px-2 py-0.5 text-xs font-medium text-stone-500 sm:inline-flex">
                 Admin
               </span>
             )}
             <button
               onClick={handleLogout}
-              className="text-sm text-stone-500 transition-colors hover:text-stone-800"
+              className="rounded text-sm text-stone-500 transition-colors hover:text-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40 focus-visible:ring-offset-2"
             >
               Log out
             </button>
           </div>
         </div>
-        <nav className="mx-auto flex max-w-5xl items-center gap-6 border-t border-stone-100 px-6 py-3">
+        <nav className="no-scrollbar mx-auto flex max-w-5xl items-center gap-1 overflow-x-auto border-t border-stone-100 px-4">
           {NAV_ITEMS.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
               end={item.to === "/"}
               className={({ isActive }) =>
-                `text-sm transition-colors ${
-                  isActive ? "font-medium text-stone-900" : "text-stone-500 hover:text-stone-800"
+                `shrink-0 rounded-t border-b-2 px-3 py-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40 focus-visible:ring-inset ${
+                  isActive
+                    ? "border-emerald-600 font-medium text-stone-900"
+                    : "border-transparent text-stone-500 hover:text-stone-800"
                 }`
               }
             >

@@ -7,3 +7,13 @@
 body {
   background-color: #fafaf9;
 }
+
+/* Horizontal scroll fallbacks (nav on narrow screens, wide tables) shouldn't
+   show a visible scrollbar — the overflow is a safety net, not a feature. */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

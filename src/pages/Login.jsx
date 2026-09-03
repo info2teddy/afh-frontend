@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../lib/api";
+import { Button } from "../components/Button";
 
 export function Login() {
   const [email, setEmail] = useState("");
@@ -29,10 +30,21 @@ export function Login() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-stone-50 px-4">
+    <div
+      className="flex min-h-screen items-center justify-center px-4"
+      style={{
+        background:
+          "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(5,150,105,0.08), transparent), #fafaf9",
+      }}
+    >
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <div className="mb-3 text-lg font-semibold tracking-tight text-stone-900">
+          <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-600 shadow-sm shadow-emerald-600/20">
+            <svg viewBox="0 0 24 24" className="h-6 w-6 text-white" fill="currentColor">
+              <path d="M12 3 3 10v11h6.5v-6h5v6H21V10z" />
+            </svg>
+          </div>
+          <div className="mb-1.5 text-lg font-semibold tracking-tight text-stone-900">
             CareFit <span className="text-emerald-600">Connect</span>
           </div>
           <p className="text-sm text-stone-500">Sign in to manage your home</p>
@@ -68,13 +80,9 @@ export function Login() {
             <p className="rounded-lg bg-rose-50 px-3 py-2 text-xs text-rose-700">{error}</p>
           )}
 
-          <button
-            type="submit"
-            disabled={busy}
-            className="w-full rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
-          >
+          <Button type="submit" variant="primary" disabled={busy} className="w-full">
             {busy ? "Logging in…" : "Log in"}
-          </button>
+          </Button>
         </form>
       </div>
     </div>

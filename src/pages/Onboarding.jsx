@@ -4,6 +4,7 @@ import { api } from "../lib/api";
 import { StatusPill } from "../components/StatusPill";
 import { Button } from "../components/Button";
 import { Select } from "../components/Select";
+import { CardSkeleton } from "../components/CardSkeleton";
 
 const STATUS_CONFIG = {
   done: { tone: "success", label: "Done" },
@@ -85,7 +86,7 @@ export function Onboarding() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-xl font-semibold text-stone-900">Onboarding</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-stone-900">Onboarding</h1>
         <p className="mt-1 text-sm text-stone-500">Track new-hire requirements to completion</p>
       </div>
 
@@ -100,11 +101,7 @@ export function Onboarding() {
         <p className="mb-4 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>
       )}
 
-      {employeeId && checklist === null && (
-        <div className="animate-pulse rounded-2xl border border-stone-200 bg-white p-6">
-          <div className="h-4 w-1/3 rounded bg-stone-100" />
-        </div>
-      )}
+      {employeeId && checklist === null && <CardSkeleton lines={4} />}
 
       {employeeId && checklist && checklist.length === 0 && (
         <div className="rounded-2xl border border-stone-200 bg-white p-8 text-center">

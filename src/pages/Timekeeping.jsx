@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { api } from "../lib/api";
 import { Button } from "../components/Button";
 import { Select } from "../components/Select";
+import { CardSkeleton } from "../components/CardSkeleton";
 
 // Simple hardcoded picker for now — a real version would list employees and
 // let the manager pick one, but this proves the approval flow end to end.
@@ -50,7 +51,7 @@ export function Timekeeping() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-xl font-semibold text-stone-900">This week's hours</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-stone-900">This week's hours</h1>
         <p className="mt-1 text-sm text-stone-500">Week of {weekStart}</p>
       </div>
 
@@ -65,11 +66,7 @@ export function Timekeeping() {
         <p className="mb-4 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>
       )}
 
-      {employeeId && !week && (
-        <div className="animate-pulse rounded-2xl border border-stone-200 bg-white p-6">
-          <div className="h-4 w-1/3 rounded bg-stone-100" />
-        </div>
-      )}
+      {employeeId && !week && <CardSkeleton lines={3} />}
 
       {week && (
         <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
