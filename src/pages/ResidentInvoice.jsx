@@ -9,11 +9,14 @@ import { CardSkeleton } from "../components/CardSkeleton";
 const STATUS_TONE = { draft: "warning", sent: "success", paid: "success", overdue: "danger" };
 
 function firstAndLastOfMonth(monthStr) {
-  // monthStr is "2026-08" from an <input type="month">
+  // monthStr is "2026-08" from an <input type="month">. Billing periods are
+  // calendar dates, not real moments in time — build the strings directly
+  // rather than going through a local-timezone Date, which shifted the
+  // result into the wrong day (and sometimes month) in timezones behind UTC.
   const [year, month] = monthStr.split("-").map(Number);
-  const start = new Date(year, month - 1, 1);
-  const end = new Date(year, month, 0); // day 0 of next month = last day of this month
-  return { start: start.toISOString().slice(0, 10), end: end.toISOString().slice(0, 10) };
+  const lastDay = new Date(Date.UTC(year, month, 0)).getUTCDate();
+  const pad = (n) => String(n).padStart(2, "0");
+  return { start: `${year}-${pad(month)}-01`, end: `${year}-${pad(month)}-${pad(lastDay)}` };
 }
 
 export function ResidentInvoice() {
@@ -95,7 +98,11 @@ export function ResidentInvoice() {
           <div key={inv.id} className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
             <div className="mb-4 flex items-center justify-between">
               <div className="text-base font-semibold text-stone-900">
-                {new Date(inv.billingPeriodStart).toLocaleDateString(undefined, { month: "long", year: "numeric" })}
+                {new Date(inv.billingPeriodStart).toLocaleDateString(undefined, {
+                  month: "long",
+                  year: "numeric",
+                  timeZone: "UTC",
+                })}
               </div>
               <StatusPill tone={STATUS_TONE[inv.status]}>{inv.status}</StatusPill>
             </div>
