@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { to: "/care-plan", label: "Care Plan" },
   { to: "/onboarding", label: "Onboarding" },
   { to: "/timekeeping", label: "Timekeeping" },
+  { to: "/clock", label: "Clock" },
   { to: "/payroll", label: "Payroll" },
   { to: "/settings", label: "Settings" },
 ];

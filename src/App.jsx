@@ -8,6 +8,7 @@ import { ResidentInvoice } from "./pages/ResidentInvoice";
 import { Credentials } from "./pages/Credentials";
 import { Onboarding } from "./pages/Onboarding";
 import { Timekeeping } from "./pages/Timekeeping";
+import { Clock } from "./pages/Clock";
 import { Payroll } from "./pages/Payroll";
 import { CarePlan } from "./pages/CarePlan";
 import { Settings } from "./pages/Settings";
@@ -32,6 +33,7 @@ export function App() {
                   <Route path="/credentials" element={<Credentials />} />
                   <Route path="/onboarding" element={<Onboarding />} />
                   <Route path="/timekeeping" element={<Timekeeping />} />
+                  <Route path="/clock" element={<Clock />} />
                   <Route path="/payroll" element={<Payroll />} />
                   <Route path="/care-plan" element={<CarePlan />} />
                   <Route path="/settings" element={<Settings />} />

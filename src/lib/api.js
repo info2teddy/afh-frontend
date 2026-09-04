@@ -96,11 +96,17 @@ export const api = {
   employees: {
     list: () => request("/employees"),
     expiringCredentials: (days = 60) => request(`/employees/credentials/expiring?days=${days}`),
+    setPin: (id, pin) => request(`/employees/${id}/pin`, { method: "PATCH", body: JSON.stringify({ pin }) }),
   },
   shifts: {
     week: (employeeId, weekStart) => request(`/shifts/employees/${employeeId}/week?weekStart=${weekStart}`),
     approve: (shiftIds, approvedBy) =>
       request("/shifts/approve", { method: "POST", body: JSON.stringify({ shiftIds, approvedBy }) }),
+    open: () => request("/shifts/open"),
+    clockIn: (employeeId, shiftType, pin) =>
+      request("/shifts/clock-in", { method: "POST", body: JSON.stringify({ employeeId, shiftType, pin }) }),
+    clockOut: (shiftId, pin, opts = {}) =>
+      request(`/shifts/${shiftId}/clock-out`, { method: "POST", body: JSON.stringify({ pin, ...opts }) }),
   },
   payroll: {
     createRun: (body) => request("/payroll/runs", { method: "POST", body: JSON.stringify(body) }),
