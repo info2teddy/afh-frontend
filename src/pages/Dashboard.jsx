@@ -1,15 +1,13 @@
 // src/pages/Dashboard.jsx
 // Landing page — a "what needs my attention today" view built entirely from
-// real, existing endpoints (residents, open shifts, expiring credentials,
-// today's care plans). No fabricated task system: every number here is
-// something the app can already answer, just not previously surfaced together.
+// real, existing conditions (residents, open shifts, and the /alerts
+// endpoint, which itself is just credentials/care-plans/onboarding/
+// assessments/shift-approvals queries gathered server-side). No fabricated
+// task system: every alert here is something the app can already answer.
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api, auth } from "../lib/api";
-import { daysUntil } from "../lib/format";
 import { CardSkeleton } from "../components/CardSkeleton";
-
-const todayUTC = () => new Date().toISOString().slice(0, 10);
 
 export function Dashboard() {
   const tenant = auth.getTenant();
@@ -17,32 +15,25 @@ export function Dashboard() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    Promise.all([
-      api.residents.list(),
-      api.shifts.open(),
-      api.employees.expiringCredentials(90),
-    ])
-      .then(async ([residents, openShifts, expiring]) => {
-        const carePlanChecks = await Promise.all(
-          residents.map((r) =>
-            api.carePlans
-              .list(r.id)
-              .then((plans) => plans.some((p) => p.planDate.slice(0, 10) === todayUTC()))
-              .catch(() => true) // don't flag a resident just because the lookup failed
-          )
-        );
-        const residentsNeedingPlan = residents.filter((_, i) => !carePlanChecks[i]);
-        const criticalCredentials = expiring.filter((c) => daysUntil(c.expirationDate) <= 30);
+    Promise.all([api.residents.list(), api.shifts.open(), api.alerts.list()])
+      .then(([residents, openShifts, alertsData]) => {
         const staffOnDuty = new Set(openShifts.map((s) => s.employeeId)).size;
-        const compliance =
-          expiring.length === 0 ? 100 : Math.round(((expiring.length - criticalCredentials.length) / expiring.length) * 100);
+
+        const credentialAlerts = alertsData.alerts.filter((a) => a.type === "credential_expiring");
+        const totalExpiring = credentialAlerts.reduce((sum, a) => sum + a.count, 0);
+        const criticalExpiring = credentialAlerts
+          .filter((a) => a.tone === "danger")
+          .reduce((sum, a) => sum + a.count, 0);
+        const compliance = totalExpiring === 0 ? 100 : Math.round(((totalExpiring - criticalExpiring) / totalExpiring) * 100);
+        const needsAttention = alertsData.alerts.reduce((sum, a) => sum + a.count, 0);
 
         setData({
           residentCount: residents.length,
           staffOnDuty,
-          criticalCredentials,
-          residentsNeedingPlan,
+          needsAttention,
           compliance,
+          alerts: alertsData.alerts,
+          summary: alertsData.summary,
         });
       })
       .catch((err) => setError(err.message));
@@ -74,30 +65,29 @@ export function Dashboard() {
           <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
             <StatCard label="Residents" value={data.residentCount} />
             <StatCard label="Staff On Duty" value={data.staffOnDuty} />
-            <StatCard
-              label="Needs Attention"
-              value={data.criticalCredentials.length + data.residentsNeedingPlan.length}
-              tone={data.criticalCredentials.length + data.residentsNeedingPlan.length > 0 ? "warning" : undefined}
-            />
+            <StatCard label="Needs Attention" value={data.needsAttention} tone={data.needsAttention > 0 ? "warning" : undefined} />
             <StatCard label="Compliance" value={`${data.compliance}%`} />
           </div>
 
           <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
             <h2 className="mb-4 text-base font-semibold text-stone-900">Today's priorities</h2>
+
+            {data.summary && (
+              <div className="mb-4 flex items-start gap-2 rounded-lg bg-emerald-50 px-3 py-2.5 text-sm text-emerald-900">
+                <span className="mt-0.5 shrink-0 rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-700">
+                  AI summary
+                </span>
+                <span>{data.summary}</span>
+              </div>
+            )}
+
             <div className="flex flex-col gap-3">
-              {data.criticalCredentials.length > 0 && (
-                <PriorityRow tone="danger" to="/credentials">
-                  {data.criticalCredentials.length} credential{data.criticalCredentials.length === 1 ? "" : "s"} expiring within 30 days
+              {data.alerts.map((a, i) => (
+                <PriorityRow key={i} tone={a.tone} to={a.link}>
+                  {a.message}
                 </PriorityRow>
-              )}
-              {data.residentsNeedingPlan.length > 0 && (
-                <PriorityRow tone="warning" to="/care-plan">
-                  {data.residentsNeedingPlan.length} resident{data.residentsNeedingPlan.length === 1 ? "" : "s"} missing today's care plan
-                </PriorityRow>
-              )}
-              {data.criticalCredentials.length === 0 && data.residentsNeedingPlan.length === 0 && (
-                <PriorityRow tone="success">All caught up — nothing needs attention today</PriorityRow>
-              )}
+              ))}
+              {data.alerts.length === 0 && <PriorityRow tone="success">All caught up — nothing needs attention today</PriorityRow>}
             </div>
           </div>
         </>

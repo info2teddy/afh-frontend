@@ -209,4 +209,7 @@ export const api = {
   analytics: {
     overview: (months) => request(`/analytics/overview${months ? `?months=${months}` : ""}`),
   },
+  alerts: {
+    list: () => request("/alerts"),
+  },
 };
