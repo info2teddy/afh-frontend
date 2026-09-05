@@ -1,6 +1,7 @@
 // src/pages/Credentials.jsx
 import { useEffect, useState } from "react";
 import { api } from "../lib/api";
+import { formatFriendlyDate, titleCase } from "../lib/format";
 import { StatusPill } from "../components/StatusPill";
 import { TableSkeleton } from "../components/TableSkeleton";
 
@@ -64,9 +65,9 @@ export function Credentials() {
                   return (
                     <tr key={c.id} className="transition-colors hover:bg-stone-50">
                       <td className="whitespace-nowrap px-5 py-3.5 font-medium text-stone-900">{c.employee.name}</td>
-                      <td className="whitespace-nowrap px-5 py-3.5 text-stone-600">{c.credentialType.replaceAll("_", " ")}</td>
+                      <td className="whitespace-nowrap px-5 py-3.5 text-stone-600">{titleCase(c.credentialType)}</td>
                       <td className="whitespace-nowrap px-5 py-3.5 text-stone-600">
-                        {new Date(c.expirationDate).toLocaleDateString()}
+                        {formatFriendlyDate(c.expirationDate)}
                       </td>
                       <td className="whitespace-nowrap px-5 py-3.5">
                         <StatusPill tone={toneForDays(days)}>

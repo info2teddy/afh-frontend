@@ -21,6 +21,7 @@ function firstAndLastOfMonth(monthStr) {
 
 export function ResidentInvoice() {
   const { id } = useParams();
+  const [resident, setResident] = useState(null);
   const [invoices, setInvoices] = useState(null);
   const [error, setError] = useState(null);
   const [pushing, setPushing] = useState(null);
@@ -35,6 +36,9 @@ export function ResidentInvoice() {
   }
 
   useEffect(load, [id]);
+  useEffect(() => {
+    api.residents.get(id).then(setResident).catch((err) => setError(err.message));
+  }, [id]);
 
   async function handleGenerate() {
     setGenerating(true);
@@ -69,7 +73,14 @@ export function ResidentInvoice() {
         ← Residents
       </Link>
 
-      <div className="mb-6 mt-2 flex flex-wrap items-center gap-3">
+      <div className="mb-6 mt-2">
+        <h1 className="text-2xl font-semibold tracking-tight text-stone-900">
+          {resident ? resident.name : "Invoices"}
+        </h1>
+        <p className="mt-1 text-sm text-stone-500">Generate and track monthly invoices</p>
+      </div>
+
+      <div className="mb-6 flex flex-wrap items-center gap-3">
         <input
           type="month"
           value={month}

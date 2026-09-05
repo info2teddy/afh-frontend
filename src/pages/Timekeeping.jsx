@@ -1,6 +1,7 @@
 // src/pages/Timekeeping.jsx
 import { useEffect, useState } from "react";
 import { api } from "../lib/api";
+import { formatFriendlyDate } from "../lib/format";
 import { Button } from "../components/Button";
 import { Select } from "../components/Select";
 import { CardSkeleton } from "../components/CardSkeleton";
@@ -52,7 +53,7 @@ export function Timekeeping() {
     <div>
       <div className="mb-6">
         <h1 className="text-2xl font-semibold tracking-tight text-stone-900">This week's hours</h1>
-        <p className="mt-1 text-sm text-stone-500">Week of {weekStart}</p>
+        <p className="mt-1 text-sm text-stone-500">Week of {formatFriendlyDate(weekStart)}</p>
       </div>
 
       <Select value={employeeId} onChange={(e) => setEmployeeId(e.target.value)} className="mb-6 w-64">
