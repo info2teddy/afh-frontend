@@ -45,6 +45,7 @@ const NAV_ITEMS = [
     icon: "💰",
     items: [
       { to: "/finance", label: "Overview", icon: "📊" },
+      { to: "/analytics", label: "Analytics", icon: "📈" },
       { to: "/expenses", label: "Expenses", icon: "🧾" },
       { to: "/payroll", label: "Payroll", icon: "💰" },
     ],

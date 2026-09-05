@@ -14,6 +14,7 @@ import { Timekeeping } from "./pages/Timekeeping";
 import { Clock } from "./pages/Clock";
 import { Payroll } from "./pages/Payroll";
 import { FinanceOverview } from "./pages/FinanceOverview";
+import { Analytics } from "./pages/Analytics";
 import { Expenses } from "./pages/Expenses";
 import { CarePlan } from "./pages/CarePlan";
 import { Settings } from "./pages/Settings";
@@ -44,6 +45,7 @@ export function App() {
                   <Route path="/clock" element={<Clock />} />
                   <Route path="/payroll" element={<Payroll />} />
                   <Route path="/finance" element={<FinanceOverview />} />
+                  <Route path="/analytics" element={<Analytics />} />
                   <Route path="/expenses" element={<Expenses />} />
                   <Route path="/care-plan" element={<CarePlan />} />
                   <Route path="/settings" element={<Settings />} />

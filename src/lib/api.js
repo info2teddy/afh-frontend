@@ -206,4 +206,7 @@ export const api = {
   finance: {
     overview: (month) => request(`/finance/overview${month ? `?month=${month}` : ""}`),
   },
+  analytics: {
+    overview: (months) => request(`/analytics/overview${months ? `?months=${months}` : ""}`),
+  },
 };
