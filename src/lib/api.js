@@ -19,10 +19,13 @@ function getStoredJSON(key) {
 
 async function request(path, options = {}) {
   const token = getToken();
+  // FormData (used for care plan uploads) must NOT get a manual Content-Type —
+  // the browser sets one with the correct multipart boundary itself.
+  const isFormData = options.body instanceof FormData;
   const res = await fetch(`${API_BASE}${path}`, {
     ...options,
     headers: {
-      "Content-Type": "application/json",
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(options.headers || {}),
     },
@@ -128,8 +131,16 @@ export const api = {
   },
   carePlans: {
     list: (residentId) => request(`/care-plans?residentId=${residentId}`),
-    generate: (residentId, planDate) =>
-      request("/care-plans/generate", { method: "POST", body: JSON.stringify({ residentId, planDate }) }),
+    // `document` is an optional File (PDF/PNG/JPEG/WEBP) — e.g. a physician's
+    // order or assessment form the AI should ground the plan in.
+    generate: (residentId, planDate, { notes, document } = {}) => {
+      const form = new FormData();
+      form.append("residentId", residentId);
+      form.append("planDate", planDate);
+      if (notes) form.append("notes", notes);
+      if (document) form.append("document", document);
+      return request("/care-plans/generate", { method: "POST", body: form });
+    },
   },
   quickbooks: {
     status: () => request("/quickbooks/status"),

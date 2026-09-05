@@ -7,10 +7,15 @@ import { CardSkeleton } from "../components/CardSkeleton";
 
 const today = () => new Date().toISOString().slice(0, 10);
 
+const ACCEPTED_DOCUMENT_TYPES = "application/pdf,image/png,image/jpeg,image/webp";
+
 export function CarePlan() {
   const [residents, setResidents] = useState([]);
   const [residentId, setResidentId] = useState("");
   const [planDate, setPlanDate] = useState(today());
+  const [notes, setNotes] = useState("");
+  const [documentFile, setDocumentFile] = useState(null);
+  const [documentError, setDocumentError] = useState(null);
   const [plans, setPlans] = useState(null);
   const [error, setError] = useState(null);
   const [generating, setGenerating] = useState(false);
@@ -31,6 +36,18 @@ export function CarePlan() {
     else setPlans(null);
   }, [residentId]);
 
+  function handleFileChange(e) {
+    const file = e.target.files?.[0] || null;
+    if (file && file.size > 10 * 1024 * 1024) {
+      setDocumentError("File is too large — 10MB max.");
+      setDocumentFile(null);
+      e.target.value = "";
+      return;
+    }
+    setDocumentError(null);
+    setDocumentFile(file);
+  }
+
   async function handleGenerate() {
     if (!residentId || !planDate) {
       setError("Pick a resident and a date first.");
@@ -39,7 +56,9 @@ export function CarePlan() {
     setGenerating(true);
     setError(null);
     try {
-      await api.carePlans.generate(residentId, planDate);
+      await api.carePlans.generate(residentId, planDate, { notes, document: documentFile });
+      setNotes("");
+      setDocumentFile(null);
       loadPlans(residentId);
     } catch (err) {
       setError(err.message);
@@ -73,6 +92,49 @@ export function CarePlan() {
           onChange={(e) => setPlanDate(e.target.value)}
           className={inputClass}
         />
+      </div>
+
+      <div className="mb-6 rounded-2xl border border-stone-200 bg-white p-5">
+        <p className="mb-3 text-sm font-medium text-stone-700">
+          Optional: give the AI more to work with
+        </p>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Notes for this resident — e.g. recent fall risk, dietary restriction, mood changes…"
+            rows={3}
+            className={`${inputClass} flex-1 resize-none`}
+          />
+          <div className="flex flex-col gap-1 sm:w-64">
+            <label className="flex cursor-pointer items-center justify-center rounded-lg border border-dashed border-stone-300 px-3 py-2.5 text-sm text-stone-500 hover:border-emerald-500 hover:text-emerald-700">
+              {documentFile ? documentFile.name : "Upload a document (PDF or image)"}
+              <input
+                type="file"
+                accept={ACCEPTED_DOCUMENT_TYPES}
+                onChange={handleFileChange}
+                className="hidden"
+              />
+            </label>
+            {documentFile && (
+              <button
+                type="button"
+                onClick={() => setDocumentFile(null)}
+                className="self-start text-xs text-stone-400 hover:text-rose-600"
+              >
+                Remove file
+              </button>
+            )}
+            {documentError && <p className="text-xs text-rose-600">{documentError}</p>}
+          </div>
+        </div>
+        <p className="mt-2 text-xs text-stone-400">
+          e.g. a physician's order, discharge summary, or assessment form — the AI will ground the plan in
+          whatever you provide here instead of using generic placeholders.
+        </p>
+      </div>
+
+      <div className="mb-6">
         <Button variant="primary" onClick={handleGenerate} disabled={generating || !residentId}>
           {generating ? "Generating…" : "Generate care plan"}
         </Button>
@@ -112,6 +174,20 @@ export function CarePlan() {
                 {p.model}
               </span>
             </div>
+            {(p.sourceNotes || p.sourceDocumentName) && (
+              <div className="mb-3 flex flex-wrap gap-2">
+                {p.sourceNotes && (
+                  <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">
+                    Based on staff notes
+                  </span>
+                )}
+                {p.sourceDocumentName && (
+                  <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">
+                    Based on {p.sourceDocumentName}
+                  </span>
+                )}
+              </div>
+            )}
             <div className="whitespace-pre-wrap text-sm leading-relaxed text-stone-700">{p.content}</div>
           </div>
         ))}
