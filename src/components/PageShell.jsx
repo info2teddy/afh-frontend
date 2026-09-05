@@ -3,16 +3,29 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { auth } from "../lib/api";
 import { TenantSwitcher } from "./TenantSwitcher";
 
-const NAV_ITEMS = [
-  { to: "/", label: "Residents" },
-  { to: "/credentials", label: "Credentials" },
-  { to: "/care-plan", label: "Care Plan" },
-  { to: "/onboarding", label: "Onboarding" },
-  { to: "/timekeeping", label: "Timekeeping" },
-  { to: "/clock", label: "Clock" },
-  { to: "/payroll", label: "Payroll" },
-  { to: "/settings", label: "Settings" },
+// Grouped so the nav reads as "resident-facing work" vs. "staff ops" instead
+// of eight flat, same-weight tabs. Settings sits apart, pinned to the end.
+const NAV_GROUPS = [
+  [
+    { to: "/", label: "Residents" },
+    { to: "/care-plan", label: "Care Plan" },
+    { to: "/credentials", label: "Credentials" },
+  ],
+  [
+    { to: "/onboarding", label: "Onboarding" },
+    { to: "/timekeeping", label: "Timekeeping" },
+    { to: "/clock", label: "Clock" },
+    { to: "/payroll", label: "Payroll" },
+  ],
 ];
+const SETTINGS_ITEM = { to: "/settings", label: "Settings" };
+
+const navLinkClass = ({ isActive }) =>
+  `shrink-0 rounded-t border-b-2 px-3 py-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40 focus-visible:ring-inset ${
+    isActive
+      ? "border-emerald-600 font-medium text-stone-900"
+      : "border-transparent text-stone-500 hover:text-stone-800"
+  }`;
 
 export function PageShell({ children }) {
   const navigate = useNavigate();
@@ -58,22 +71,20 @@ export function PageShell({ children }) {
           </div>
         </div>
         <nav className="no-scrollbar mx-auto flex max-w-5xl items-center gap-1 overflow-x-auto border-t border-stone-100 px-4">
-          {NAV_ITEMS.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.to === "/"}
-              className={({ isActive }) =>
-                `shrink-0 rounded-t border-b-2 px-3 py-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40 focus-visible:ring-inset ${
-                  isActive
-                    ? "border-emerald-600 font-medium text-stone-900"
-                    : "border-transparent text-stone-500 hover:text-stone-800"
-                }`
-              }
-            >
-              {item.label}
-            </NavLink>
+          {NAV_GROUPS.map((group, i) => (
+            <div key={i} className="flex shrink-0 items-center gap-1">
+              {i > 0 && <span className="mx-2 h-5 w-px shrink-0 bg-stone-200" />}
+              {group.map((item) => (
+                <NavLink key={item.to} to={item.to} end={item.to === "/"} className={navLinkClass}>
+                  {item.label}
+                </NavLink>
+              ))}
+            </div>
           ))}
+          <span className="mx-2 h-5 w-px shrink-0 bg-stone-200" />
+          <NavLink to={SETTINGS_ITEM.to} className={(state) => `${navLinkClass(state)} ml-auto`}>
+            {SETTINGS_ITEM.label}
+          </NavLink>
         </nav>
       </header>
       <main className="mx-auto max-w-5xl px-6 py-10">{children}</main>
