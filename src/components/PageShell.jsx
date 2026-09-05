@@ -4,41 +4,60 @@ import { auth } from "../lib/api";
 import { useScrollFade } from "../lib/useScrollFade";
 import { TenantSwitcher } from "./TenantSwitcher";
 import { GlobalSearch } from "./GlobalSearch";
+import { NavDropdown } from "./NavDropdown";
 
-// Grouped into Main (resident-facing) / Operations (staff ops) / Compliance,
-// instead of eight flat, same-weight tabs. Settings sits apart, pinned to the
-// end.
-const NAV_GROUPS = [
+// Dashboard and Residents are daily-use enough to stay as standalone links;
+// everything else groups into a dropdown by function, so the bar reads as
+// seven top-level choices instead of eleven flat, same-weight tabs.
+const NAV_ITEMS = [
+  { type: "link", to: "/", label: "Dashboard", icon: "🏠" },
+  { type: "link", to: "/residents", label: "Residents", icon: "👤" },
   {
-    label: "Main",
+    type: "dropdown",
+    label: "Care Team",
+    icon: "👥",
     items: [
-      { to: "/", label: "Dashboard", icon: "🏠" },
-      { to: "/residents", label: "Residents", icon: "👤" },
-      { to: "/care-team", label: "Care Team", icon: "👥" },
-      { to: "/care-plan", label: "Care Plans", icon: "📋" },
+      { to: "/care-team", label: "Roster", icon: "👥" },
       { to: "/onboarding", label: "Onboarding", icon: "📝" },
     ],
   },
   {
+    type: "dropdown",
     label: "Operations",
+    icon: "⏱",
     items: [
       { to: "/timekeeping", label: "Timekeeping", icon: "⏱" },
       { to: "/clock", label: "Clock", icon: "🕐" },
-      { to: "/payroll", label: "Payroll", icon: "💰" },
     ],
   },
   {
+    type: "dropdown",
     label: "Compliance",
+    icon: "🎓",
     items: [
       { to: "/credentials", label: "Credentials", icon: "🎓" },
       { to: "/documents", label: "Documents", icon: "📄" },
     ],
   },
+  {
+    type: "dropdown",
+    label: "Finance",
+    icon: "💰",
+    items: [{ to: "/payroll", label: "Payroll", icon: "💰" }],
+  },
+  {
+    type: "dropdown",
+    label: "Settings",
+    icon: "⚙️",
+    items: [
+      { to: "/care-plan", label: "Care Plans", icon: "📋" },
+      { to: "/settings", label: "General", icon: "⚙️" },
+    ],
+  },
 ];
-const SETTINGS_ITEM = { to: "/settings", label: "Settings" };
 
 const navLinkClass = ({ isActive }) =>
-  `shrink-0 rounded-t border-b-2 px-3 py-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40 focus-visible:ring-inset ${
+  `shrink-0 border-b-2 px-3 py-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40 focus-visible:ring-inset ${
     isActive
       ? "border-emerald-600 font-medium text-stone-900"
       : "border-transparent text-stone-500 hover:text-stone-800"
@@ -104,24 +123,16 @@ export function PageShell({ children }) {
             onScroll={updateScrollState}
             className="no-scrollbar flex items-center gap-1 overflow-x-auto px-4"
           >
-            {NAV_GROUPS.map((group, i) => (
-              <div key={group.label} className="flex shrink-0 items-center gap-1">
-                {i > 0 && <span className="mx-2 h-5 w-px shrink-0 bg-stone-200" />}
-                <span className="mr-1 shrink-0 self-center text-[10px] font-semibold uppercase tracking-wider text-stone-400">
-                  {group.label}
-                </span>
-                {group.items.map((item) => (
-                  <NavLink key={item.to} to={item.to} end={item.to === "/"} className={navLinkClass}>
-                    <span className="mr-1.5" aria-hidden="true">{item.icon}</span>
-                    {item.label}
-                  </NavLink>
-                ))}
-              </div>
-            ))}
-            <span className="mx-2 h-5 w-px shrink-0 bg-stone-200" />
-            <NavLink to={SETTINGS_ITEM.to} className={(state) => `${navLinkClass(state)} ml-auto`}>
-              {SETTINGS_ITEM.label}
-            </NavLink>
+            {NAV_ITEMS.map((entry) =>
+              entry.type === "link" ? (
+                <NavLink key={entry.to} to={entry.to} end={entry.to === "/"} className={navLinkClass}>
+                  <span className="mr-1.5" aria-hidden="true">{entry.icon}</span>
+                  {entry.label}
+                </NavLink>
+              ) : (
+                <NavDropdown key={entry.label} label={entry.label} icon={entry.icon} items={entry.items} />
+              )
+            )}
           </nav>
           {canScrollRight && (
             <div className="pointer-events-none absolute inset-y-0 right-0 z-10 flex w-8 items-center justify-end bg-gradient-to-l from-white to-transparent">
