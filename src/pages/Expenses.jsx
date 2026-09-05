@@ -15,11 +15,26 @@ export function Expenses() {
   const [expenses, setExpenses] = useState(null);
   const [error, setError] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [syncingId, setSyncingId] = useState(null);
+  const [syncError, setSyncError] = useState(null);
 
   function load() {
     api.expenses.list({ month }).then(setExpenses).catch((err) => setError(err.message));
   }
   useEffect(load, [month]);
+
+  async function handleSync(id) {
+    setSyncingId(id);
+    setSyncError(null);
+    try {
+      await api.expenses.sync(id);
+      load();
+    } catch (err) {
+      setSyncError({ id, message: err.message });
+    } finally {
+      setSyncingId(null);
+    }
+  }
 
   const total = expenses?.reduce((sum, e) => sum + Number(e.amount), 0) ?? 0;
 
@@ -28,7 +43,7 @@ export function Expenses() {
       <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-stone-900">Expenses</h1>
-          <p className="mt-1 text-sm text-stone-500">Capture operating expenses — synced to QuickBooks later, not a replacement for it</p>
+          <p className="mt-1 text-sm text-stone-500">Capture operating expenses and sync them to QuickBooks — not a replacement for it</p>
         </div>
         <Button variant="primary" onClick={() => setShowAddModal(true)}>
           + Add Expense
@@ -92,9 +107,18 @@ export function Expenses() {
                       ${Number(e.amount).toFixed(2)}
                     </td>
                     <td className="whitespace-nowrap px-5 py-3.5">
-                      <StatusPill tone={e.qboSynced ? "success" : "neutral"}>
-                        {e.qboSynced ? "Synced" : "Not synced"}
-                      </StatusPill>
+                      {e.qboSynced ? (
+                        <StatusPill tone="success">Synced</StatusPill>
+                      ) : (
+                        <div>
+                          <Button variant="secondary" size="sm" onClick={() => handleSync(e.id)} disabled={syncingId === e.id}>
+                            {syncingId === e.id ? "Syncing…" : "Sync"}
+                          </Button>
+                          {syncError?.id === e.id && (
+                            <p className="mt-1 max-w-xs text-xs text-rose-600">{syncError.message}</p>
+                          )}
+                        </div>
+                      )}
                     </td>
                     <td className="whitespace-nowrap px-5 py-3.5 text-right">
                       {e.receiptName && (

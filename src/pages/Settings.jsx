@@ -4,6 +4,7 @@ import { api } from "../lib/api";
 import { Button } from "../components/Button";
 import { CardSkeleton } from "../components/CardSkeleton";
 import { HomeFormModal } from "../components/HomeFormModal";
+import { QuickBooksMappings } from "../components/QuickBooksMappings";
 
 export function Settings() {
   const [status, setStatus] = useState(null);
@@ -149,6 +150,8 @@ export function Settings() {
           )}
         </div>
       )}
+
+      {status?.connected && <QuickBooksMappings />}
 
       <div className="mt-8">
         <h2 className="mb-1 text-sm font-medium text-stone-900">Clock-in PINs</h2>

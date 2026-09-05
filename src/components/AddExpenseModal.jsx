@@ -180,9 +180,7 @@ export function AddExpenseModal({ onClose, onCreated }) {
         {error && <p className="rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>}
 
         <div className="mt-1 flex flex-wrap items-center justify-end gap-3">
-          <span className="mr-auto text-xs text-stone-400" title="QuickBooks account mapping isn't set up yet">
-            Sync to QuickBooks — coming soon
-          </span>
+          <span className="mr-auto text-xs text-stone-400">You can sync this expense to QuickBooks after saving.</span>
           <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
           <Button type="submit" variant="primary" disabled={saving || scanning}>
             {saving ? "Saving…" : "Save Expense"}

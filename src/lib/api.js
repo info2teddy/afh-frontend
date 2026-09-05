@@ -167,6 +167,9 @@ export const api = {
   quickbooks: {
     status: () => request("/quickbooks/status"),
     getConnectUrl: () => request("/quickbooks/connect"),
+    getAccounts: () => request("/quickbooks/accounts"),
+    getMappings: () => request("/quickbooks/mappings"),
+    saveMappings: (body) => request("/quickbooks/mappings", { method: "PUT", body: JSON.stringify(body) }),
   },
   expenses: {
     list: ({ month, homeId } = {}) => {
@@ -189,6 +192,7 @@ export const api = {
       form.append("receipt", file);
       return request("/expenses/extract-receipt", { method: "POST", body: form });
     },
+    sync: (id) => request(`/expenses/${id}/sync`, { method: "POST" }),
     async viewReceipt(id) {
       const token = getToken();
       const res = await fetch(`${API_BASE}/expenses/${id}/receipt`, {
