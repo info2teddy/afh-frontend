@@ -1,10 +1,9 @@
 // src/pages/ResidentProfile.jsx
 // The resident "360" — replaces the old invoice-only page. Tabs cover what
 // the app actually has real data for (Overview, Care Plan, Documents, Notes,
-// Billing); Medication and Appointments are included as honest placeholders
-// since this is a real, licensed AFH and there's no medication-administration
-// or scheduling system behind them yet — fabricating checkmarks here would be
-// actively misleading for real care staff.
+// Billing). Medication and Appointments were deliberately left out — this is
+// a real, licensed AFH's data, and there's no medication-administration or
+// scheduling system behind either yet.
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams, Link } from "react-router-dom";
 import { api } from "../lib/api";
@@ -21,8 +20,6 @@ const TABS = [
   { key: "overview", label: "Overview" },
   { key: "care-plan", label: "Care Plan" },
   { key: "documents", label: "Documents" },
-  { key: "medication", label: "Medication" },
-  { key: "appointments", label: "Appointments" },
   { key: "notes", label: "Notes" },
   { key: "billing", label: "Billing" },
 ];
@@ -78,10 +75,6 @@ export function ResidentProfile() {
       {resident && tab === "overview" && <OverviewTab resident={resident} onGoToTab={setTab} />}
       {resident && tab === "care-plan" && <CarePlanTab residentId={id} />}
       {resident && tab === "documents" && <DocumentsTab residentId={id} />}
-      {resident && tab === "medication" && (
-        <PlaceholderTab text="Medication administration isn't tracked in CareFit Connect yet." />
-      )}
-      {resident && tab === "appointments" && <AppointmentsTab resident={resident} />}
       {resident && tab === "notes" && <NotesTab residentId={id} />}
       {resident && tab === "billing" && <BillingTab residentId={id} />}
     </div>
@@ -151,25 +144,6 @@ function OverviewTab({ resident, onGoToTab }) {
           Go to Care Plan →
         </Button>
       </div>
-    </div>
-  );
-}
-
-function AppointmentsTab({ resident }) {
-  if (!resident.nextAssessmentDate) {
-    return <PlaceholderTab text="No appointments or assessments scheduled. Full appointment scheduling isn't built yet — set a next assessment date from Add Resident or the database to see it here." />;
-  }
-  return (
-    <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-      <h2 className="mb-4 text-base font-semibold text-stone-900">Upcoming</h2>
-      <div className="flex items-center justify-between rounded-lg border border-stone-100 px-4 py-3 text-sm">
-        <span className="text-stone-700">Care plan / eligibility review</span>
-        <span className="font-medium text-stone-900">{formatFriendlyDate(resident.nextAssessmentDate)}</span>
-      </div>
-      <p className="mt-4 text-xs text-stone-400">
-        Full appointment scheduling (physician visits, etc.) isn't built yet — this reflects only the resident's
-        next assessment date.
-      </p>
     </div>
   );
 }
