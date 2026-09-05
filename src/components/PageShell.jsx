@@ -1,7 +1,7 @@
 // src/components/PageShell.jsx
-import { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { auth } from "../lib/api";
+import { useScrollFade } from "../lib/useScrollFade";
 import { TenantSwitcher } from "./TenantSwitcher";
 import { GlobalSearch } from "./GlobalSearch";
 
@@ -39,27 +39,7 @@ export function PageShell({ children }) {
   const tenant = auth.getTenant();
   const isAdmin = user?.role === "admin";
 
-  const navRef = useRef(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
-
-  function updateScrollState() {
-    const el = navRef.current;
-    if (!el) return;
-    setCanScrollLeft(el.scrollLeft > 2);
-    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 2);
-  }
-
-  // The tab list can overflow on narrow screens — these fades (plus the
-  // arrow) are the only signal that there's more to scroll to, so they need
-  // to react to resizes and content changes, not just user-driven scrolling.
-  useEffect(() => {
-    updateScrollState();
-    const el = navRef.current;
-    if (!el) return;
-    window.addEventListener("resize", updateScrollState);
-    return () => window.removeEventListener("resize", updateScrollState);
-  }, []);
+  const { ref: navRef, canScrollLeft, canScrollRight, onScroll: updateScrollState } = useScrollFade();
 
   function handleLogout() {
     auth.logout();

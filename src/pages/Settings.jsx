@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { api } from "../lib/api";
 import { Button } from "../components/Button";
 import { CardSkeleton } from "../components/CardSkeleton";
+import { HomeFormModal } from "../components/HomeFormModal";
 
 export function Settings() {
   const [status, setStatus] = useState(null);
@@ -12,6 +13,13 @@ export function Settings() {
   const [pinDrafts, setPinDrafts] = useState({});
   const [savingPinFor, setSavingPinFor] = useState(null);
   const [pinMessage, setPinMessage] = useState(null);
+  const [homes, setHomes] = useState(null);
+  const [homeModal, setHomeModal] = useState(null); // null | "new" | a home object to edit
+
+  function loadHomes() {
+    api.homes.list().then(setHomes).catch((err) => setError(err.message));
+  }
+  useEffect(loadHomes, []);
 
   function loadStatus() {
     setError(null);
@@ -71,6 +79,40 @@ export function Settings() {
       {error && (
         <p className="mb-4 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>
       )}
+
+      <div className="mb-8">
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <h2 className="text-sm font-medium text-stone-900">Facilities</h2>
+            <p className="text-sm text-stone-500">The physical homes this business operates.</p>
+          </div>
+          <Button size="sm" variant="primary" onClick={() => setHomeModal("new")}>
+            + Add Facility
+          </Button>
+        </div>
+
+        {homes === null && <CardSkeleton lines={2} />}
+
+        {homes && homes.length > 0 && (
+          <div className="divide-y divide-stone-100 rounded-2xl border border-stone-200 bg-white shadow-sm">
+            {homes.map((h) => (
+              <div key={h.id} className="flex items-center gap-3 px-5 py-4">
+                <div className="flex-1">
+                  <div className="text-sm font-medium text-stone-900">{h.name}</div>
+                  <div className="text-xs text-stone-500">
+                    License {h.licenseNumber} · Capacity {h.capacity} · {h._count.residents} resident
+                    {h._count.residents === 1 ? "" : "s"}
+                    {h.address ? ` · ${h.address}` : ""}
+                  </div>
+                </div>
+                <Button size="sm" variant="secondary" onClick={() => setHomeModal(h)}>
+                  Edit
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       {status === null && !error && <CardSkeleton lines={2} />}
 
@@ -150,6 +192,17 @@ export function Settings() {
           </div>
         )}
       </div>
+
+      {homeModal && (
+        <HomeFormModal
+          home={homeModal === "new" ? null : homeModal}
+          onClose={() => setHomeModal(null)}
+          onSaved={() => {
+            setHomeModal(null);
+            loadHomes();
+          }}
+        />
+      )}
     </div>
   );
 }

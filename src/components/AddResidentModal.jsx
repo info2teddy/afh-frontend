@@ -90,7 +90,7 @@ export function AddResidentModal({ onClose, onCreated }) {
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label className={labelClass}>Date of birth</label>
             <input
@@ -111,7 +111,7 @@ export function AddResidentModal({ onClose, onCreated }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label className={labelClass}>Care level *</label>
             <Select className="w-full" value={form.careLevel} onChange={(e) => set("careLevel", e.target.value)}>
@@ -131,7 +131,7 @@ export function AddResidentModal({ onClose, onCreated }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label className={labelClass}>Payer *</label>
             <Select className="w-full" value={form.payerType} onChange={(e) => set("payerType", e.target.value)}>
@@ -156,7 +156,7 @@ export function AddResidentModal({ onClose, onCreated }) {
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label className={labelClass}>Next assessment</label>
             <input

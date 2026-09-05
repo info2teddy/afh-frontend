@@ -98,6 +98,8 @@ export const api = {
   },
   homes: {
     list: () => request("/homes"),
+    create: (body) => request("/homes", { method: "POST", body: JSON.stringify(body) }),
+    update: (id, body) => request(`/homes/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
   },
   invoices: {
     list: (residentId) => request(`/invoices${residentId ? `?residentId=${residentId}` : ""}`),

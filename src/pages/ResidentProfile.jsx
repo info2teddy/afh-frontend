@@ -11,6 +11,7 @@ import { careLevelShortLabel, payerLabel, formatFriendlyDate } from "../lib/form
 import { StatusPill } from "../components/StatusPill";
 import { Button } from "../components/Button";
 import { CardSkeleton } from "../components/CardSkeleton";
+import { ScrollFade } from "../components/ScrollFade";
 
 const STATUS_TONE = { active: "success", discharging: "warning", discharged: "neutral" };
 const AUTH_TONE = { approved: "success", pending: "warning", denied: "danger" };
@@ -54,20 +55,22 @@ export function ResidentProfile() {
 
       {error && <p className="mb-4 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>}
 
-      <div className="no-scrollbar mb-6 flex items-center gap-1 overflow-x-auto border-b border-stone-200">
-        {TABS.map((t) => (
-          <button
-            key={t.key}
-            onClick={() => setTab(t.key)}
-            className={`shrink-0 border-b-2 px-3 py-2.5 text-sm transition-colors ${
-              tab === t.key
-                ? "border-emerald-600 font-medium text-stone-900"
-                : "border-transparent text-stone-500 hover:text-stone-800"
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
+      <div className="mb-6 border-b border-stone-200">
+        <ScrollFade innerClassName="no-scrollbar flex items-center gap-1 overflow-x-auto">
+          {TABS.map((t) => (
+            <button
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              className={`shrink-0 border-b-2 px-3 py-2.5 text-sm transition-colors ${
+                tab === t.key
+                  ? "border-emerald-600 font-medium text-stone-900"
+                  : "border-transparent text-stone-500 hover:text-stone-800"
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </ScrollFade>
       </div>
 
       {!resident && !error && <CardSkeleton lines={4} />}

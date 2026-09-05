@@ -8,6 +8,7 @@ import { TableSkeleton } from "../components/TableSkeleton";
 import { Select } from "../components/Select";
 import { Button } from "../components/Button";
 import { AddResidentModal } from "../components/AddResidentModal";
+import { ScrollFade } from "../components/ScrollFade";
 
 const STATUS_TONE = { active: "success", discharging: "warning", discharged: "neutral" };
 const todayUTC = () => new Date().toISOString().slice(0, 10);
@@ -142,7 +143,7 @@ export function ResidentList() {
 
       {filtered && filtered.length > 0 && (
         <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm">
-          <div className="no-scrollbar overflow-x-auto">
+          <ScrollFade innerClassName="no-scrollbar overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-stone-200 bg-stone-50/60 text-xs font-medium uppercase tracking-wide text-stone-500">
@@ -193,7 +194,7 @@ export function ResidentList() {
                 })}
               </tbody>
             </table>
-          </div>
+          </ScrollFade>
         </div>
       )}
 

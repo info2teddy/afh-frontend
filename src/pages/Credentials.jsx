@@ -4,6 +4,7 @@ import { api } from "../lib/api";
 import { daysUntil, formatFriendlyDate, titleCase } from "../lib/format";
 import { StatusPill } from "../components/StatusPill";
 import { TableSkeleton } from "../components/TableSkeleton";
+import { ScrollFade } from "../components/ScrollFade";
 
 function toneForDays(days) {
   if (days < 0) return "danger";
@@ -44,7 +45,7 @@ export function Credentials() {
 
       {items && items.length > 0 && (
         <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm">
-          <div className="no-scrollbar overflow-x-auto">
+          <ScrollFade innerClassName="no-scrollbar overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-stone-200 bg-stone-50/60 text-xs font-medium uppercase tracking-wide text-stone-500">
@@ -74,7 +75,7 @@ export function Credentials() {
                 })}
               </tbody>
             </table>
-          </div>
+          </ScrollFade>
         </div>
       )}
     </div>
