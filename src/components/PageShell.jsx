@@ -1,4 +1,5 @@
 // src/components/PageShell.jsx
+import { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { auth } from "../lib/api";
 import { TenantSwitcher } from "./TenantSwitcher";
@@ -32,6 +33,28 @@ export function PageShell({ children }) {
   const user = auth.getUser();
   const tenant = auth.getTenant();
   const isAdmin = user?.role === "admin";
+
+  const navRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  function updateScrollState() {
+    const el = navRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 2);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 2);
+  }
+
+  // The tab list can overflow on narrow screens — these fades (plus the
+  // arrow) are the only signal that there's more to scroll to, so they need
+  // to react to resizes and content changes, not just user-driven scrolling.
+  useEffect(() => {
+    updateScrollState();
+    const el = navRef.current;
+    if (!el) return;
+    window.addEventListener("resize", updateScrollState);
+    return () => window.removeEventListener("resize", updateScrollState);
+  }, []);
 
   function handleLogout() {
     auth.logout();
@@ -70,22 +93,38 @@ export function PageShell({ children }) {
             </button>
           </div>
         </div>
-        <nav className="no-scrollbar mx-auto flex max-w-5xl items-center gap-1 overflow-x-auto border-t border-stone-100 px-4">
-          {NAV_GROUPS.map((group, i) => (
-            <div key={i} className="flex shrink-0 items-center gap-1">
-              {i > 0 && <span className="mx-2 h-5 w-px shrink-0 bg-stone-200" />}
-              {group.map((item) => (
-                <NavLink key={item.to} to={item.to} end={item.to === "/"} className={navLinkClass}>
-                  {item.label}
-                </NavLink>
-              ))}
+        <div className="relative mx-auto max-w-5xl border-t border-stone-100">
+          {canScrollLeft && (
+            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 flex w-8 items-center bg-gradient-to-r from-white to-transparent">
+              <span className="text-stone-400">‹</span>
             </div>
-          ))}
-          <span className="mx-2 h-5 w-px shrink-0 bg-stone-200" />
-          <NavLink to={SETTINGS_ITEM.to} className={(state) => `${navLinkClass(state)} ml-auto`}>
-            {SETTINGS_ITEM.label}
-          </NavLink>
-        </nav>
+          )}
+          <nav
+            ref={navRef}
+            onScroll={updateScrollState}
+            className="no-scrollbar flex items-center gap-1 overflow-x-auto px-4"
+          >
+            {NAV_GROUPS.map((group, i) => (
+              <div key={i} className="flex shrink-0 items-center gap-1">
+                {i > 0 && <span className="mx-2 h-5 w-px shrink-0 bg-stone-200" />}
+                {group.map((item) => (
+                  <NavLink key={item.to} to={item.to} end={item.to === "/"} className={navLinkClass}>
+                    {item.label}
+                  </NavLink>
+                ))}
+              </div>
+            ))}
+            <span className="mx-2 h-5 w-px shrink-0 bg-stone-200" />
+            <NavLink to={SETTINGS_ITEM.to} className={(state) => `${navLinkClass(state)} ml-auto`}>
+              {SETTINGS_ITEM.label}
+            </NavLink>
+          </nav>
+          {canScrollRight && (
+            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 flex w-8 items-center justify-end bg-gradient-to-l from-white to-transparent">
+              <span className="text-stone-400">›</span>
+            </div>
+          )}
+        </div>
       </header>
       <main className="mx-auto max-w-5xl px-6 py-10">{children}</main>
     </div>
