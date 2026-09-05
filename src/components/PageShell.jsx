@@ -9,22 +9,31 @@ import { GlobalSearch } from "./GlobalSearch";
 // instead of eight flat, same-weight tabs. Settings sits apart, pinned to the
 // end.
 const NAV_GROUPS = [
-  [
-    { to: "/", label: "Dashboard", icon: "🏠" },
-    { to: "/residents", label: "Residents", icon: "👤" },
-    { to: "/care-team", label: "Care Team", icon: "👥" },
-    { to: "/care-plan", label: "Care Plans", icon: "📋" },
-    { to: "/onboarding", label: "Onboarding", icon: "📝" },
-  ],
-  [
-    { to: "/timekeeping", label: "Timekeeping", icon: "⏱" },
-    { to: "/clock", label: "Clock", icon: "🕐" },
-    { to: "/payroll", label: "Payroll", icon: "💰" },
-  ],
-  [
-    { to: "/credentials", label: "Credentials", icon: "🎓" },
-    { to: "/documents", label: "Documents", icon: "📄" },
-  ],
+  {
+    label: "Main",
+    items: [
+      { to: "/", label: "Dashboard", icon: "🏠" },
+      { to: "/residents", label: "Residents", icon: "👤" },
+      { to: "/care-team", label: "Care Team", icon: "👥" },
+      { to: "/care-plan", label: "Care Plans", icon: "📋" },
+      { to: "/onboarding", label: "Onboarding", icon: "📝" },
+    ],
+  },
+  {
+    label: "Operations",
+    items: [
+      { to: "/timekeeping", label: "Timekeeping", icon: "⏱" },
+      { to: "/clock", label: "Clock", icon: "🕐" },
+      { to: "/payroll", label: "Payroll", icon: "💰" },
+    ],
+  },
+  {
+    label: "Compliance",
+    items: [
+      { to: "/credentials", label: "Credentials", icon: "🎓" },
+      { to: "/documents", label: "Documents", icon: "📄" },
+    ],
+  },
 ];
 const SETTINGS_ITEM = { to: "/settings", label: "Settings" };
 
@@ -96,9 +105,12 @@ export function PageShell({ children }) {
             className="no-scrollbar flex items-center gap-1 overflow-x-auto px-4"
           >
             {NAV_GROUPS.map((group, i) => (
-              <div key={i} className="flex shrink-0 items-center gap-1">
+              <div key={group.label} className="flex shrink-0 items-center gap-1">
                 {i > 0 && <span className="mx-2 h-5 w-px shrink-0 bg-stone-200" />}
-                {group.map((item) => (
+                <span className="mr-1 shrink-0 self-center text-[10px] font-semibold uppercase tracking-wider text-stone-400">
+                  {group.label}
+                </span>
+                {group.items.map((item) => (
                   <NavLink key={item.to} to={item.to} end={item.to === "/"} className={navLinkClass}>
                     <span className="mr-1.5" aria-hidden="true">{item.icon}</span>
                     {item.label}
