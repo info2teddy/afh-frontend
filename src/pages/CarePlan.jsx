@@ -48,6 +48,25 @@ export function CarePlan() {
     setDocumentFile(file);
   }
 
+  function handleDownload(plan) {
+    const residentName = residents.find((r) => r.id === plan.residentId)?.name || "resident";
+    const dateLabel = new Date(plan.planDate).toLocaleDateString(undefined, {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+    const text = `Care Plan — ${residentName}\n${dateLabel}\n\n${plan.content}`;
+    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    const fileDate = new Date(plan.planDate).toISOString().slice(0, 10);
+    link.download = `${residentName.replace(/\s+/g, "-").toLowerCase()}-care-plan-${fileDate}.txt`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
   async function handleGenerate() {
     if (!residentId || !planDate) {
       setError("Pick a resident and a date first.");
@@ -170,9 +189,18 @@ export function CarePlan() {
                   year: "numeric",
                 })}
               </div>
-              <span className="rounded-full bg-stone-100 px-2.5 py-1 text-xs font-medium text-stone-500">
-                {p.model}
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="rounded-full bg-stone-100 px-2.5 py-1 text-xs font-medium text-stone-500">
+                  {p.model}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => handleDownload(p)}
+                  className="rounded-full border border-stone-200 px-2.5 py-1 text-xs font-medium text-stone-500 hover:border-emerald-500 hover:text-emerald-700"
+                >
+                  Download
+                </button>
+              </div>
             </div>
             {(p.sourceNotes || p.sourceDocumentName) && (
               <div className="mb-3 flex flex-wrap gap-2">
