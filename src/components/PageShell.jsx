@@ -43,7 +43,11 @@ const NAV_ITEMS = [
     type: "dropdown",
     label: "Finance",
     icon: "💰",
-    items: [{ to: "/payroll", label: "Payroll", icon: "💰" }],
+    items: [
+      { to: "/finance", label: "Overview", icon: "📊" },
+      { to: "/expenses", label: "Expenses", icon: "🧾" },
+      { to: "/payroll", label: "Payroll", icon: "💰" },
+    ],
   },
   {
     type: "dropdown",

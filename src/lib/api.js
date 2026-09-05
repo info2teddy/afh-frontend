@@ -168,4 +168,38 @@ export const api = {
     status: () => request("/quickbooks/status"),
     getConnectUrl: () => request("/quickbooks/connect"),
   },
+  expenses: {
+    list: ({ month, homeId } = {}) => {
+      const params = new URLSearchParams();
+      if (month) params.set("month", month);
+      if (homeId) params.set("homeId", homeId);
+      const qs = params.toString();
+      return request(`/expenses${qs ? `?${qs}` : ""}`);
+    },
+    create: (form) => {
+      const body = new FormData();
+      Object.entries(form).forEach(([k, v]) => {
+        if (v !== null && v !== undefined && v !== "") body.append(k, v);
+      });
+      return request("/expenses", { method: "POST", body });
+    },
+    // Returns the raw {vendor, date, amount, category} extraction — doesn't save anything.
+    extractReceipt: (file) => {
+      const form = new FormData();
+      form.append("receipt", file);
+      return request("/expenses/extract-receipt", { method: "POST", body: form });
+    },
+    async viewReceipt(id) {
+      const token = getToken();
+      const res = await fetch(`${API_BASE}/expenses/${id}/receipt`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      if (!res.ok) throw new Error("Couldn't load receipt.");
+      const blob = await res.blob();
+      window.open(URL.createObjectURL(blob), "_blank");
+    },
+  },
+  finance: {
+    overview: (month) => request(`/finance/overview${month ? `?month=${month}` : ""}`),
+  },
 };

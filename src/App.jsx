@@ -13,6 +13,8 @@ import { Onboarding } from "./pages/Onboarding";
 import { Timekeeping } from "./pages/Timekeeping";
 import { Clock } from "./pages/Clock";
 import { Payroll } from "./pages/Payroll";
+import { FinanceOverview } from "./pages/FinanceOverview";
+import { Expenses } from "./pages/Expenses";
 import { CarePlan } from "./pages/CarePlan";
 import { Settings } from "./pages/Settings";
 import { PrivacyPolicy } from "./pages/legal/PrivacyPolicy";
@@ -41,6 +43,8 @@ export function App() {
                   <Route path="/timekeeping" element={<Timekeeping />} />
                   <Route path="/clock" element={<Clock />} />
                   <Route path="/payroll" element={<Payroll />} />
+                  <Route path="/finance" element={<FinanceOverview />} />
+                  <Route path="/expenses" element={<Expenses />} />
                   <Route path="/care-plan" element={<CarePlan />} />
                   <Route path="/settings" element={<Settings />} />
                 </Routes>
