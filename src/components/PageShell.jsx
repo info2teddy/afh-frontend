@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { auth } from "../lib/api";
 import { TenantSwitcher } from "./TenantSwitcher";
+import { GlobalSearch } from "./GlobalSearch";
 
 // Grouped into Main (resident-facing) / Operations (staff ops) / Compliance,
 // instead of eight flat, same-weight tabs. Settings sits apart, pinned to the
@@ -75,12 +76,16 @@ export function PageShell({ children }) {
 
           <span className="h-4 w-px shrink-0 bg-stone-200" />
 
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0 shrink-0">
             {isAdmin ? (
               <TenantSwitcher />
             ) : (
               <span className="block truncate text-sm font-medium text-stone-700">{tenant?.name}</span>
             )}
+          </div>
+
+          <div className="flex flex-1 justify-end">
+            <GlobalSearch />
           </div>
 
           <div className="flex shrink-0 items-center gap-4">

@@ -1,5 +1,6 @@
 // src/pages/Onboarding.jsx
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { api } from "../lib/api";
 import { StatusPill } from "../components/StatusPill";
 import { Button } from "../components/Button";
@@ -26,8 +27,9 @@ function formatDate(dateStr) {
 }
 
 export function Onboarding() {
+  const [searchParams] = useSearchParams();
   const [employees, setEmployees] = useState([]);
-  const [employeeId, setEmployeeId] = useState("");
+  const [employeeId, setEmployeeId] = useState(searchParams.get("employee") || "");
   const [checklist, setChecklist] = useState(null);
   const [error, setError] = useState(null);
   const [busyItemId, setBusyItemId] = useState(null);

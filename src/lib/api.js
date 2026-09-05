@@ -91,6 +91,10 @@ export const api = {
     list: () => request("/residents"),
     get: (id) => request(`/residents/${id}`),
     create: (body) => request("/residents", { method: "POST", body: JSON.stringify(body) }),
+    notes: {
+      list: (id) => request(`/residents/${id}/notes`),
+      create: (id, content) => request(`/residents/${id}/notes`, { method: "POST", body: JSON.stringify({ content }) }),
+    },
   },
   homes: {
     list: () => request("/homes"),
@@ -144,6 +148,17 @@ export const api = {
       if (notes) form.append("notes", notes);
       if (document) form.append("document", document);
       return request("/care-plans/generate", { method: "POST", body: form });
+    },
+    // Binary response — bypasses request()'s JSON parsing. Returns a blob URL
+    // the caller must revoke (URL.revokeObjectURL) once done with it.
+    async openDocument(id) {
+      const token = getToken();
+      const res = await fetch(`${API_BASE}/care-plans/${id}/document`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      if (!res.ok) throw new Error("Couldn't load document.");
+      const blob = await res.blob();
+      window.open(URL.createObjectURL(blob), "_blank");
     },
   },
   quickbooks: {

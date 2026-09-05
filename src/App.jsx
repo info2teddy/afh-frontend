@@ -5,7 +5,7 @@ import { RequireAuth } from "./components/RequireAuth";
 import { Login } from "./pages/Login";
 import { Dashboard } from "./pages/Dashboard";
 import { ResidentList } from "./pages/ResidentList";
-import { ResidentInvoice } from "./pages/ResidentInvoice";
+import { ResidentProfile } from "./pages/ResidentProfile";
 import { Credentials } from "./pages/Credentials";
 import { Onboarding } from "./pages/Onboarding";
 import { Timekeeping } from "./pages/Timekeeping";
@@ -31,7 +31,7 @@ export function App() {
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/residents" element={<ResidentList />} />
-                  <Route path="/residents/:id" element={<ResidentInvoice />} />
+                  <Route path="/residents/:id" element={<ResidentProfile />} />
                   <Route path="/credentials" element={<Credentials />} />
                   <Route path="/onboarding" element={<Onboarding />} />
                   <Route path="/timekeeping" element={<Timekeeping />} />
