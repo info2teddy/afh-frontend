@@ -6,6 +6,8 @@ import { Login } from "./pages/Login";
 import { Dashboard } from "./pages/Dashboard";
 import { ResidentList } from "./pages/ResidentList";
 import { ResidentProfile } from "./pages/ResidentProfile";
+import { CareTeam } from "./pages/CareTeam";
+import { Documents } from "./pages/Documents";
 import { Credentials } from "./pages/Credentials";
 import { Onboarding } from "./pages/Onboarding";
 import { Timekeeping } from "./pages/Timekeeping";
@@ -32,6 +34,8 @@ export function App() {
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/residents" element={<ResidentList />} />
                   <Route path="/residents/:id" element={<ResidentProfile />} />
+                  <Route path="/care-team" element={<CareTeam />} />
+                  <Route path="/documents" element={<Documents />} />
                   <Route path="/credentials" element={<Credentials />} />
                   <Route path="/onboarding" element={<Onboarding />} />
                   <Route path="/timekeeping" element={<Timekeeping />} />

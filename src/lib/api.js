@@ -108,6 +108,7 @@ export const api = {
   },
   employees: {
     list: () => request("/employees"),
+    create: (body) => request("/employees", { method: "POST", body: JSON.stringify(body) }),
     expiringCredentials: (days = 60) => request(`/employees/credentials/expiring?days=${days}`),
     setPin: (id, pin) => request(`/employees/${id}/pin`, { method: "PATCH", body: JSON.stringify({ pin }) }),
   },

@@ -7,13 +7,12 @@ import { GlobalSearch } from "./GlobalSearch";
 
 // Grouped into Main (resident-facing) / Operations (staff ops) / Compliance,
 // instead of eight flat, same-weight tabs. Settings sits apart, pinned to the
-// end. "Care Team" and "Documents" from the original brief aren't included —
-// there's no page behind either yet, and a nav item with nowhere to go is
-// worse than one fewer item.
+// end.
 const NAV_GROUPS = [
   [
     { to: "/", label: "Dashboard", icon: "🏠" },
     { to: "/residents", label: "Residents", icon: "👤" },
+    { to: "/care-team", label: "Care Team", icon: "👥" },
     { to: "/care-plan", label: "Care Plans", icon: "📋" },
     { to: "/onboarding", label: "Onboarding", icon: "📝" },
   ],
@@ -22,7 +21,10 @@ const NAV_GROUPS = [
     { to: "/clock", label: "Clock", icon: "🕐" },
     { to: "/payroll", label: "Payroll", icon: "💰" },
   ],
-  [{ to: "/credentials", label: "Credentials", icon: "🎓" }],
+  [
+    { to: "/credentials", label: "Credentials", icon: "🎓" },
+    { to: "/documents", label: "Documents", icon: "📄" },
+  ],
 ];
 const SETTINGS_ITEM = { to: "/settings", label: "Settings" };
 
