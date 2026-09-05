@@ -168,6 +168,7 @@ export const api = {
     status: () => request("/quickbooks/status"),
     getConnectUrl: () => request("/quickbooks/connect"),
     getAccounts: () => request("/quickbooks/accounts"),
+    getItems: () => request("/quickbooks/items"),
     getMappings: () => request("/quickbooks/mappings"),
     saveMappings: (body) => request("/quickbooks/mappings", { method: "PUT", body: JSON.stringify(body) }),
   },

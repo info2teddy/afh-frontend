@@ -10,6 +10,7 @@ import { CardSkeleton } from "./CardSkeleton";
 import { titleCase } from "../lib/format";
 
 const PAYMENT_TYPE_LABELS = { Cash: "Cash", Check: "Check", CreditCard: "Credit Card" };
+const REVENUE_LINE_TYPE_LABELS = { private_pay_portion: "Private Pay", medicaid_portion: "Medicaid" };
 
 // Best-guess default PaymentType for a newly-picked account — a Credit Card
 // account can only post as CreditCard in QuickBooks; a Bank account defaults
@@ -25,20 +26,26 @@ export function QuickBooksMappings() {
   const [saving, setSaving] = useState(false);
   const [categories, setCategories] = useState([]);
   const [paymentMethods, setPaymentMethods] = useState([]);
+  const [revenueLineTypes, setRevenueLineTypes] = useState([]);
   const [expenseAccounts, setExpenseAccounts] = useState([]);
   const [paymentAccounts, setPaymentAccounts] = useState([]);
+  const [items, setItems] = useState([]);
   const [categoryMap, setCategoryMap] = useState({});
   const [paymentAccountMap, setPaymentAccountMap] = useState({});
+  const [revenueItemMap, setRevenueItemMap] = useState({});
 
   useEffect(() => {
-    Promise.all([api.quickbooks.getMappings(), api.quickbooks.getAccounts()])
-      .then(([mappings, accounts]) => {
+    Promise.all([api.quickbooks.getMappings(), api.quickbooks.getAccounts(), api.quickbooks.getItems()])
+      .then(([mappings, accounts, itemsResult]) => {
         setCategories(mappings.categories);
         setPaymentMethods(mappings.paymentMethods);
+        setRevenueLineTypes(mappings.revenueLineTypes);
         setCategoryMap(mappings.categoryMap);
         setPaymentAccountMap(mappings.paymentAccountMap);
+        setRevenueItemMap(mappings.revenueItemMap);
         setExpenseAccounts(accounts.expenseAccounts);
         setPaymentAccounts(accounts.paymentAccounts);
+        setItems(itemsResult.items);
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
@@ -66,11 +73,19 @@ export function QuickBooksMappings() {
     setPaymentAccountMap((m) => ({ ...m, [method]: { ...m[method], paymentType } }));
   }
 
+  function setRevenueItem(lineType, itemId) {
+    const item = items.find((i) => i.id === itemId);
+    setRevenueItemMap((m) => ({
+      ...m,
+      [lineType]: item ? { itemId: item.id, itemName: item.name } : undefined,
+    }));
+  }
+
   async function handleSave() {
     setSaving(true);
     setSaveMessage(null);
     try {
-      await api.quickbooks.saveMappings({ categoryMap, paymentAccountMap });
+      await api.quickbooks.saveMappings({ categoryMap, paymentAccountMap, revenueItemMap });
       setSaveMessage({ ok: true, text: "Saved." });
     } catch (err) {
       setSaveMessage({ ok: false, text: err.message });
@@ -104,6 +119,29 @@ export function QuickBooksMappings() {
                 <option value="">Not mapped</option>
                 {expenseAccounts.map((a) => (
                   <option key={a.id} value={a.id}>{a.name}</option>
+                ))}
+              </Select>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-5">
+        <div className="mb-2 text-xs font-medium uppercase tracking-wide text-stone-500">Revenue line → QuickBooks item</div>
+        <p className="mb-2 text-xs text-stone-500">
+          So Private Pay and Medicaid revenue post to separate items in QuickBooks, instead of one lumped-together item.
+        </p>
+        <div className="divide-y divide-stone-100 rounded-xl border border-stone-200">
+          {revenueLineTypes.map((lineType) => (
+            <div key={lineType} className="flex items-center justify-between gap-3 px-4 py-3">
+              <span className="text-sm text-stone-700">{REVENUE_LINE_TYPE_LABELS[lineType] || lineType}</span>
+              <Select
+                value={revenueItemMap[lineType]?.itemId || ""}
+                onChange={(e) => setRevenueItem(lineType, e.target.value)}
+              >
+                <option value="">Not mapped</option>
+                {items.map((i) => (
+                  <option key={i.id} value={i.id}>{i.name}</option>
                 ))}
               </Select>
             </div>
