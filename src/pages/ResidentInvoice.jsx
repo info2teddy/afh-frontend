@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { api } from "../lib/api";
+import { careLevelShortLabel, payerLabel } from "../lib/format";
 import { StatusPill } from "../components/StatusPill";
 import { Button } from "../components/Button";
 import { CardSkeleton } from "../components/CardSkeleton";
@@ -69,7 +70,7 @@ export function ResidentInvoice() {
 
   return (
     <div>
-      <Link to="/" className="mb-4 inline-flex items-center gap-1 text-sm text-stone-500 hover:text-stone-800">
+      <Link to="/residents" className="mb-4 inline-flex items-center gap-1 text-sm text-stone-500 hover:text-stone-800">
         ← Residents
       </Link>
 
@@ -77,7 +78,11 @@ export function ResidentInvoice() {
         <h1 className="text-2xl font-semibold tracking-tight text-stone-900">
           {resident ? resident.name : "Invoices"}
         </h1>
-        <p className="mt-1 text-sm text-stone-500">Generate and track monthly invoices</p>
+        <p className="mt-1 text-sm text-stone-500">
+          {resident
+            ? `${careLevelShortLabel(resident.careLevel)} · ${payerLabel(resident)} · ${resident.status}`
+            : "Generate and track monthly invoices"}
+        </p>
       </div>
 
       <div className="mb-6 flex flex-wrap items-center gap-3">

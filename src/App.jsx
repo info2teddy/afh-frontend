@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { PageShell } from "./components/PageShell";
 import { RequireAuth } from "./components/RequireAuth";
 import { Login } from "./pages/Login";
+import { Dashboard } from "./pages/Dashboard";
 import { ResidentList } from "./pages/ResidentList";
 import { ResidentInvoice } from "./pages/ResidentInvoice";
 import { Credentials } from "./pages/Credentials";
@@ -28,7 +29,8 @@ export function App() {
             <RequireAuth>
               <PageShell>
                 <Routes>
-                  <Route path="/" element={<ResidentList />} />
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/residents" element={<ResidentList />} />
                   <Route path="/residents/:id" element={<ResidentInvoice />} />
                   <Route path="/credentials" element={<Credentials />} />
                   <Route path="/onboarding" element={<Onboarding />} />

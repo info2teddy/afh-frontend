@@ -4,20 +4,24 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { auth } from "../lib/api";
 import { TenantSwitcher } from "./TenantSwitcher";
 
-// Grouped so the nav reads as "resident-facing work" vs. "staff ops" instead
-// of eight flat, same-weight tabs. Settings sits apart, pinned to the end.
+// Grouped into Main (resident-facing) / Operations (staff ops) / Compliance,
+// instead of eight flat, same-weight tabs. Settings sits apart, pinned to the
+// end. "Care Team" and "Documents" from the original brief aren't included —
+// there's no page behind either yet, and a nav item with nowhere to go is
+// worse than one fewer item.
 const NAV_GROUPS = [
   [
-    { to: "/", label: "Residents" },
-    { to: "/care-plan", label: "Care Plan" },
-    { to: "/credentials", label: "Credentials" },
+    { to: "/", label: "Dashboard", icon: "🏠" },
+    { to: "/residents", label: "Residents", icon: "👤" },
+    { to: "/care-plan", label: "Care Plans", icon: "📋" },
+    { to: "/onboarding", label: "Onboarding", icon: "📝" },
   ],
   [
-    { to: "/onboarding", label: "Onboarding" },
-    { to: "/timekeeping", label: "Timekeeping" },
-    { to: "/clock", label: "Clock" },
-    { to: "/payroll", label: "Payroll" },
+    { to: "/timekeeping", label: "Timekeeping", icon: "⏱" },
+    { to: "/clock", label: "Clock", icon: "🕐" },
+    { to: "/payroll", label: "Payroll", icon: "💰" },
   ],
+  [{ to: "/credentials", label: "Credentials", icon: "🎓" }],
 ];
 const SETTINGS_ITEM = { to: "/settings", label: "Settings" };
 
@@ -109,6 +113,7 @@ export function PageShell({ children }) {
                 {i > 0 && <span className="mx-2 h-5 w-px shrink-0 bg-stone-200" />}
                 {group.map((item) => (
                   <NavLink key={item.to} to={item.to} end={item.to === "/"} className={navLinkClass}>
+                    <span className="mr-1.5" aria-hidden="true">{item.icon}</span>
                     {item.label}
                   </NavLink>
                 ))}

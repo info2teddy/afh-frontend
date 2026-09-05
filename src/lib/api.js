@@ -90,6 +90,10 @@ export const api = {
   residents: {
     list: () => request("/residents"),
     get: (id) => request(`/residents/${id}`),
+    create: (body) => request("/residents", { method: "POST", body: JSON.stringify(body) }),
+  },
+  homes: {
+    list: () => request("/homes"),
   },
   invoices: {
     list: (residentId) => request(`/invoices${residentId ? `?residentId=${residentId}` : ""}`),

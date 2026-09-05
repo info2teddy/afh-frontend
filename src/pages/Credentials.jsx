@@ -1,14 +1,9 @@
 // src/pages/Credentials.jsx
 import { useEffect, useState } from "react";
 import { api } from "../lib/api";
-import { formatFriendlyDate, titleCase } from "../lib/format";
+import { daysUntil, formatFriendlyDate, titleCase } from "../lib/format";
 import { StatusPill } from "../components/StatusPill";
 import { TableSkeleton } from "../components/TableSkeleton";
-
-function daysUntil(dateStr) {
-  const diff = new Date(dateStr) - new Date();
-  return Math.ceil(diff / 86400000);
-}
 
 function toneForDays(days) {
   if (days < 0) return "danger";
