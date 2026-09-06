@@ -8,6 +8,7 @@ import { api } from "../lib/api";
 import { Button } from "../components/Button";
 import { Select } from "../components/Select";
 import { CardSkeleton } from "../components/CardSkeleton";
+import { ClockKioskHeader } from "../components/ClockKioskHeader";
 
 const SHIFT_TYPES = [
   { value: "day", label: "Day" },
@@ -84,6 +85,8 @@ export function Clock() {
 
   return (
     <div>
+      <ClockKioskHeader />
+
       <div className="mb-6">
         <h1 className="text-2xl font-semibold tracking-tight text-stone-900">Clock in / out</h1>
         <p className="mt-1 text-sm text-stone-500">Pick your name, then enter your PIN.</p>
