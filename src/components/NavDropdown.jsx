@@ -78,7 +78,13 @@ export function NavDropdown({ label, icon, items }) {
         createPortal(
           <div
             ref={menuRef}
-            style={{ position: "fixed", top: menuPos.top, left: menuPos.left }}
+            style={{
+              position: "fixed",
+              top: menuPos.top,
+              left: menuPos.left,
+              transformOrigin: "top left",
+              animation: "dropdown-in 140ms cubic-bezier(0.16, 1, 0.3, 1)",
+            }}
             className="z-50 w-48 overflow-hidden rounded-xl border border-stone-200 bg-white py-1 shadow-lg"
           >
             {items.map((item) => (

@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api, auth } from "../lib/api";
 import { CardSkeleton } from "../components/CardSkeleton";
+import { StatCard } from "../components/StatCard";
 
 export function Dashboard() {
   const tenant = auth.getTenant();
@@ -66,7 +67,7 @@ export function Dashboard() {
             <StatCard label="Residents" value={data.residentCount} />
             <StatCard label="Staff On Duty" value={data.staffOnDuty} />
             <StatCard label="Needs Attention" value={data.needsAttention} tone={data.needsAttention > 0 ? "warning" : undefined} />
-            <StatCard label="Compliance" value={`${data.compliance}%`} />
+            <StatCard label="Compliance" value={data.compliance} suffix="%" />
           </div>
 
           <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
@@ -92,17 +93,6 @@ export function Dashboard() {
           </div>
         </>
       )}
-    </div>
-  );
-}
-
-function StatCard({ label, value, tone }) {
-  return (
-    <div className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
-      <div className={`text-2xl font-semibold ${tone === "warning" ? "text-amber-600" : "text-stone-900"}`}>
-        {value}
-      </div>
-      <div className="mt-0.5 text-xs text-stone-500">{label}</div>
     </div>
   );
 }

@@ -5,6 +5,7 @@
 import { useEffect, useState } from "react";
 import { api, auth } from "../lib/api";
 import { CardSkeleton } from "../components/CardSkeleton";
+import { StatCard } from "../components/StatCard";
 
 const CATEGORY_ICON = {
   Rent: "🏠",
@@ -63,10 +64,10 @@ export function FinanceOverview() {
       {data && (
         <>
           <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <StatCard label="Revenue" value={data.revenue} />
-            <StatCard label="Expenses" value={data.expenses} />
-            <StatCard label="Payroll" value={data.payroll} />
-            <StatCard label="Net Income" value={data.netIncome} emphasize />
+            <StatCard label="Revenue" value={data.revenue} format="currency" />
+            <StatCard label="Expenses" value={data.expenses} format="currency" />
+            <StatCard label="Payroll" value={data.payroll} format="currency" />
+            <StatCard label="Net Income" value={data.netIncome} format="currency" emphasize />
           </div>
 
           <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
@@ -98,22 +99,6 @@ export function FinanceOverview() {
           </div>
         </>
       )}
-    </div>
-  );
-}
-
-function StatCard({ label, value, emphasize }) {
-  const isNegative = value < 0;
-  return (
-    <div className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
-      <div
-        className={`text-2xl font-semibold ${
-          emphasize ? (isNegative ? "text-rose-600" : "text-emerald-700") : "text-stone-900"
-        }`}
-      >
-        {isNegative ? "-" : ""}${Math.abs(value).toFixed(2)}
-      </div>
-      <div className="mt-0.5 text-xs text-stone-500">{label}</div>
     </div>
   );
 }

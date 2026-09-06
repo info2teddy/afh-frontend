@@ -9,6 +9,7 @@ import { Select } from "../components/Select";
 import { Button } from "../components/Button";
 import { AddResidentModal } from "../components/AddResidentModal";
 import { ScrollFade } from "../components/ScrollFade";
+import { StatCard } from "../components/StatCard";
 
 const STATUS_TONE = { active: "success", discharging: "warning", discharged: "neutral" };
 const todayUTC = () => new Date().toISOString().slice(0, 10);
@@ -94,7 +95,7 @@ export function ResidentList() {
           <StatCard label="Residents" value={stats.total} />
           <StatCard label="Active Care" value={stats.activeCare} />
           <StatCard label="Needs Care Plan" value={stats.needsPlanCount} tone={stats.needsPlanCount > 0 ? "warning" : undefined} />
-          <StatCard label="Care Plan Compliance" value={stats.compliance === null ? "—" : `${stats.compliance}%`} />
+          <StatCard label="Care Plan Compliance" value={stats.compliance === null ? "—" : stats.compliance} suffix="%" />
         </div>
       )}
 
@@ -211,13 +212,3 @@ export function ResidentList() {
   );
 }
 
-function StatCard({ label, value, tone }) {
-  return (
-    <div className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
-      <div className={`text-2xl font-semibold ${tone === "warning" ? "text-amber-600" : "text-stone-900"}`}>
-        {value}
-      </div>
-      <div className="mt-0.5 text-xs text-stone-500">{label}</div>
-    </div>
-  );
-}

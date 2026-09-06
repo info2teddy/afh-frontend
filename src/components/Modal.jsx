@@ -13,9 +13,15 @@ export function Modal({ title, onClose, children }) {
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-stone-900/40 px-4 py-10">
+    <div
+      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-stone-900/40 px-4 py-10"
+      style={{ animation: "fade-in 150ms ease-out" }}
+    >
       <div className="absolute inset-0" onClick={onClose} />
-      <div className="relative w-full max-w-lg rounded-2xl border border-stone-200 bg-white p-6 shadow-xl">
+      <div
+        className="relative w-full max-w-lg rounded-2xl border border-stone-200 bg-white p-6 shadow-xl"
+        style={{ animation: "panel-in 180ms cubic-bezier(0.16, 1, 0.3, 1)" }}
+      >
         <div className="mb-5 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-stone-900">{title}</h2>
           <button

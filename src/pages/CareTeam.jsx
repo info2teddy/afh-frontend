@@ -9,6 +9,7 @@ import { Select } from "../components/Select";
 import { Button } from "../components/Button";
 import { ScrollFade } from "../components/ScrollFade";
 import { AddEmployeeModal } from "../components/AddEmployeeModal";
+import { StatCard } from "../components/StatCard";
 
 const STATUS_TONE = { active: "success", inactive: "neutral", terminated: "neutral" };
 
@@ -166,13 +167,3 @@ export function CareTeam() {
   );
 }
 
-function StatCard({ label, value, tone }) {
-  return (
-    <div className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
-      <div className={`text-2xl font-semibold ${tone === "warning" ? "text-amber-600" : "text-stone-900"}`}>
-        {value}
-      </div>
-      <div className="mt-0.5 text-xs text-stone-500">{label}</div>
-    </div>
-  );
-}

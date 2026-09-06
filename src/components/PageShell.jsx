@@ -1,5 +1,5 @@
 // src/components/PageShell.jsx
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { auth } from "../lib/api";
 import { useScrollFade } from "../lib/useScrollFade";
 import { TenantSwitcher } from "./TenantSwitcher";
@@ -70,6 +70,7 @@ const navLinkClass = ({ isActive }) =>
 
 export function PageShell({ children }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const user = auth.getUser();
   const tenant = auth.getTenant();
   const isAdmin = user?.role === "admin";
@@ -146,7 +147,11 @@ export function PageShell({ children }) {
           )}
         </div>
       </header>
-      <main className="mx-auto max-w-5xl px-6 py-10">{children}</main>
+      <main className="mx-auto max-w-5xl px-6 py-10">
+        <div key={location.pathname} style={{ animation: "fade-in 200ms ease-out" }}>
+          {children}
+        </div>
+      </main>
     </div>
   );
 }
