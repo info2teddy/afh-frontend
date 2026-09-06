@@ -20,8 +20,8 @@ export function Login() {
     setBusy(true);
     setError(null);
     try {
-      await auth.login(email, password);
-      navigate("/");
+      const user = await auth.login(email, password);
+      navigate(user.role === "kiosk" ? "/clock" : "/");
     } catch (err) {
       setError(err.message);
     } finally {

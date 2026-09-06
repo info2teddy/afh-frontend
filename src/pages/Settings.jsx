@@ -1,12 +1,14 @@
 // src/pages/Settings.jsx
 import { useEffect, useState } from "react";
-import { api } from "../lib/api";
+import { api, auth } from "../lib/api";
 import { Button } from "../components/Button";
 import { CardSkeleton } from "../components/CardSkeleton";
 import { HomeFormModal } from "../components/HomeFormModal";
 import { QuickBooksMappings } from "../components/QuickBooksMappings";
+import { ClockLoginCard } from "../components/ClockLoginCard";
 
 export function Settings() {
+  const isAdmin = auth.getUser()?.role === "admin";
   const [status, setStatus] = useState(null);
   const [error, setError] = useState(null);
   const [connecting, setConnecting] = useState(false);
@@ -195,6 +197,8 @@ export function Settings() {
           </div>
         )}
       </div>
+
+      {isAdmin && <ClockLoginCard />}
 
       {homeModal && (
         <HomeFormModal

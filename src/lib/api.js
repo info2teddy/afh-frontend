@@ -84,6 +84,12 @@ export const auth = {
     localStorage.setItem("afh_tenant", JSON.stringify(body.tenant));
     return body.tenant;
   },
+  // Admin-only: manage logins for the current tenant (e.g. the Clock-in
+  // tablet card in Settings). See routes/auth.js — role can be "manager" or
+  // "kiosk" (a kiosk login is restricted server-side to clock in/out only).
+  listUsers: () => request("/auth/users"),
+  createUser: (body) => request("/auth/users", { method: "POST", body: JSON.stringify(body) }),
+  deleteUser: (id) => request(`/auth/users/${id}`, { method: "DELETE" }),
 };
 
 export const api = {
@@ -212,5 +218,10 @@ export const api = {
   },
   alerts: {
     list: () => request("/alerts"),
+  },
+  kiosk: {
+    // Deliberately separate from api.employees.list() — returns only id+name,
+    // and is the one non-shift route a kiosk-role login is allowed to call.
+    employees: () => request("/kiosk/employees"),
   },
 };

@@ -28,7 +28,7 @@ export function Clock() {
   const [submitting, setSubmitting] = useState(false);
 
   function reload() {
-    Promise.all([api.employees.list(), api.shifts.open()])
+    Promise.all([api.kiosk.employees(), api.shifts.open()])
       .then(([e, s]) => {
         setEmployees(e);
         setOpenShifts(s);
