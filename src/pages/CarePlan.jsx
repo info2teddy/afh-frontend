@@ -179,7 +179,11 @@ export function CarePlan() {
 
       <div className="flex flex-col gap-4">
         {plans?.map((p) => (
-          <div key={p.id} className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+          <div
+            key={p.id}
+            className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
+            style={{ animation: "panel-in 220ms cubic-bezier(0.16, 1, 0.3, 1)" }}
+          >
             <div className="mb-3 flex items-center justify-between">
               <div className="text-base font-semibold text-stone-900">
                 {new Date(p.planDate).toLocaleDateString(undefined, {

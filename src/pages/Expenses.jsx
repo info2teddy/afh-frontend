@@ -95,7 +95,11 @@ export function Expenses() {
               </thead>
               <tbody className="divide-y divide-stone-100">
                 {expenses.map((e) => (
-                  <tr key={e.id} className="transition-colors hover:bg-stone-50">
+                  <tr
+                    key={e.id}
+                    className="transition-colors hover:bg-stone-50"
+                    style={{ animation: "fade-in 200ms ease-out" }}
+                  >
                     <td className="whitespace-nowrap px-5 py-3.5 text-stone-600">{formatFriendlyDate(e.date)}</td>
                     <td className="whitespace-nowrap px-5 py-3.5 font-medium text-stone-900">{e.vendor || "—"}</td>
                     <td className="whitespace-nowrap px-5 py-3.5 text-stone-600">{e.category}</td>

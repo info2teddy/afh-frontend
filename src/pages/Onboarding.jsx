@@ -124,7 +124,7 @@ export function Onboarding() {
               return (
                 <div
                   key={item.id}
-                  className={`flex items-center justify-between px-5 py-4 ${isBlocked ? "opacity-50" : ""}`}
+                  className={`flex items-center justify-between px-5 py-4 transition-colors ${isBlocked ? "opacity-50" : "hover:bg-stone-50"}`}
                 >
                   <div>
                     <div className="text-sm font-medium text-stone-900">{item.name}</div>
@@ -157,7 +157,10 @@ export function Onboarding() {
           <div className="relative inline-block">
             <Button onClick={() => setAddingConditional((v) => !v)}>+ Add conditional requirement</Button>
             {addingConditional && (
-              <div className="absolute left-0 top-full z-10 mt-2 w-64 overflow-hidden rounded-xl border border-stone-200 bg-white py-1.5 shadow-lg">
+              <div
+                className="absolute left-0 top-full z-10 mt-2 w-64 overflow-hidden rounded-xl border border-stone-200 bg-white py-1.5 shadow-lg"
+                style={{ transformOrigin: "top left", animation: "dropdown-in 140ms cubic-bezier(0.16, 1, 0.3, 1)" }}
+              >
                 {CONDITIONAL_OPTIONS.map((name) => (
                   <button
                     key={name}
