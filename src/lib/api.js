@@ -41,6 +41,9 @@ async function request(path, options = {}) {
     const body = await res.json().catch(() => ({}));
     throw new Error(body.error || `Request failed: ${res.status}`);
   }
+  // A 204 (e.g. DELETE /auth/users/:id) has no body — res.json() throws
+  // "Unexpected end of JSON input" on it, since there's nothing to parse.
+  if (res.status === 204) return null;
   return res.json();
 }
 
