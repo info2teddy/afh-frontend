@@ -5,7 +5,8 @@
 // file), since the same tablet could move between homes, and asking the
 // device directly needs no data entry. Both widgets degrade quietly: if
 // geolocation is denied/unsupported or the weather fetch fails, the weather
-// side just doesn't render — it never blocks or breaks the clock-in flow.
+// panel shows a calm placeholder instead of real data — it never blocks or
+// breaks the clock-in flow.
 
 import { useEffect, useState } from "react";
 
@@ -52,11 +53,18 @@ function useClock() {
   return now;
 }
 
+// status: "loading" (waiting on the first reading) | "unavailable" (no
+// geolocation, permission denied, or the fetch failed before ever
+// succeeding) | "ready" (data is a real reading, kept even if a later
+// refresh fails, so the panel doesn't flicker back to a placeholder).
 function useWeather() {
-  const [weather, setWeather] = useState(null); // null until we have a real reading; stays null on any failure
+  const [state, setState] = useState({ status: "loading", data: null });
 
   useEffect(() => {
-    if (!("geolocation" in navigator)) return;
+    if (!("geolocation" in navigator)) {
+      setState({ status: "unavailable", data: null });
+      return;
+    }
     let cancelled = false;
     let intervalId;
 
@@ -69,16 +77,20 @@ function useWeather() {
             if (!res.ok) throw new Error("Weather request failed");
             const data = await res.json();
             if (cancelled) return;
-            setWeather({
-              tempF: Math.round(data.current.temperature_2m),
-              ...(WEATHER_CODES[data.current.weather_code] || { label: "", icon: "🌡️" }),
+            setState({
+              status: "ready",
+              data: {
+                tempF: Math.round(data.current.temperature_2m),
+                ...(WEATHER_CODES[data.current.weather_code] || { label: "", icon: "🌡️" }),
+              },
             });
           } catch {
-            // Leave weather as-is (null on first failure, or the last good reading) —
-            // a stale or missing weather widget is harmless, unlike breaking the clock.
+            if (!cancelled) setState((s) => (s.status === "ready" ? s : { status: "unavailable", data: null }));
           }
         },
-        () => {}, // permission denied or unavailable — just don't show weather
+        () => {
+          if (!cancelled) setState((s) => (s.status === "ready" ? s : { status: "unavailable", data: null }));
+        },
         { maximumAge: WEATHER_REFRESH_MS, timeout: 10000 }
       );
     }
@@ -91,7 +103,7 @@ function useWeather() {
     };
   }, []);
 
-  return weather;
+  return state;
 }
 
 export function ClockKioskHeader() {
@@ -102,23 +114,31 @@ export function ClockKioskHeader() {
   const date = now.toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
 
   return (
-    <div className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-stone-200 bg-white px-6 py-5 shadow-sm">
-      <div>
-        <div className="text-4xl font-semibold tabular-nums tracking-tight text-stone-900">
-          {time}
-        </div>
-        <div className="mt-1 text-sm text-stone-500">{date}</div>
+    <div className="mb-6 grid grid-cols-1 divide-y divide-stone-200 overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+      <div className="flex flex-col items-center justify-center gap-1 px-6 py-7 text-center">
+        <div className="text-5xl font-semibold tabular-nums tracking-tight text-stone-900">{time}</div>
+        <div className="text-sm text-stone-500">{date}</div>
       </div>
 
-      {weather && (
-        <div className="flex items-center gap-3">
-          <span className="text-4xl" aria-hidden="true">{weather.icon}</span>
-          <div>
-            <div className="text-2xl font-semibold text-stone-900">{weather.tempF}°F</div>
-            <div className="text-sm text-stone-500">{weather.label}</div>
-          </div>
-        </div>
-      )}
+      <div className="flex flex-col items-center justify-center gap-1 px-6 py-7 text-center">
+        {weather.status === "ready" ? (
+          <>
+            <span className="text-5xl leading-none" aria-hidden="true">{weather.data.icon}</span>
+            <div className="mt-1 text-2xl font-semibold text-stone-900">{weather.data.tempF}°F</div>
+            <div className="text-sm text-stone-500">{weather.data.label}</div>
+          </>
+        ) : (
+          <>
+            <span className="text-4xl leading-none opacity-40" aria-hidden="true">🌤️</span>
+            <div className="mt-1 text-sm text-stone-400">
+              {weather.status === "loading" ? "Loading weather…" : "Weather unavailable"}
+            </div>
+            {weather.status === "unavailable" && (
+              <div className="text-xs text-stone-400">Allow location access in the browser to enable it</div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 }
