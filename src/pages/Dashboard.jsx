@@ -70,17 +70,15 @@ export function Dashboard() {
       {data && (
         <>
           <StatStrip>
-            <StatCard bare label="Residents" value={data.residentCount} icon="👤" iconClass="bg-[#2a78d6] text-white" />
-            <StatCard bare label="Staff On Duty" value={data.staffOnDuty} icon="⏱️" iconClass="bg-[#1baf7a] text-white" />
+            <StatCard bare label="Residents" value={data.residentCount} />
+            <StatCard bare label="Staff On Duty" value={data.staffOnDuty} />
             <StatCard
               bare
               label="Needs Attention"
               value={data.needsAttention}
               tone={data.needsAttention > 0 ? "warning" : undefined}
-              icon="⚠️"
-              iconClass="bg-accent-600 text-white"
             />
-            <StatCard bare label="Compliance" value={data.compliance} suffix="%" icon="🛡️" iconClass="bg-emerald-600 text-white" />
+            <StatCard bare label="Compliance" value={data.compliance} suffix="%" />
           </StatStrip>
 
           <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">

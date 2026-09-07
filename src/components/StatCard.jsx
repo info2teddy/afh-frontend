@@ -41,13 +41,11 @@ function useCountUp(target, duration = 600) {
 // (rendered as-is, no animation — only a plain number can be counted up).
 // format: "currency" renders $ with a sign, and colors by the FINAL value's
 // sign when emphasize is set (never flickers mid-count).
-// icon/iconClass: optional decorative badge (e.g. Dashboard's colorful stat
-// row) — omit both and a cell renders with no icon.
 // bare: renders as a plain white grid cell with no border/shadow/rounding of
 // its own, for use inside <StatStrip> (one shared boundary instead of N
 // boxes — the dividers come from the grid's own gap, see StatStrip).
 // Omit it and a card is fully self-contained, as every StatCard used to be.
-export function StatCard({ label, value, tone, emphasize, format, suffix = "", icon, iconClass, bare }) {
+export function StatCard({ label, value, tone, emphasize, format, suffix = "", bare }) {
   const isNumeric = typeof value === "number";
   const animated = useCountUp(value);
 
@@ -79,11 +77,6 @@ export function StatCard({ label, value, tone, emphasize, format, suffix = "", i
 
   return (
     <div className={wrapperClass}>
-      {icon && (
-        <div className={`mb-2.5 flex h-9 w-9 items-center justify-center rounded-lg text-base ${iconClass}`} aria-hidden="true">
-          {icon}
-        </div>
-      )}
       <div className={`text-2xl font-semibold tabular-nums ${colorClass}`}>{display}</div>
       <div className="mt-0.5 text-xs text-stone-500">{label}</div>
     </div>
