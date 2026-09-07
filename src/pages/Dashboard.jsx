@@ -43,7 +43,6 @@ export function Dashboard() {
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
-  const greetingIcon = hour < 12 ? "🌅" : hour < 18 ? "☀️" : "🌙";
   const user = auth.getUser();
 
   return (
@@ -53,8 +52,7 @@ export function Dashboard() {
         style={{ background: "linear-gradient(135deg, rgba(61,90,128,0.08), rgba(224,122,95,0.08))" }}
       >
         <p className="text-sm text-stone-500">{tenant?.name}</p>
-        <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight text-stone-900">
-          <span aria-hidden="true">{greetingIcon}</span>
+        <h1 className="text-2xl font-semibold tracking-tight text-stone-900">
           {greeting}{user?.email ? `, ${user.email.split("@")[0]}` : ""}
         </h1>
       </div>
@@ -82,14 +80,12 @@ export function Dashboard() {
           </StatStrip>
 
           <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-4 flex items-center gap-2 text-base font-semibold text-stone-900">
-              <span aria-hidden="true">📋</span> Today's priorities
-            </h2>
+            <h2 className="mb-4 text-base font-semibold text-stone-900">Today's priorities</h2>
 
             {data.summary && (
-              <div className="mb-4 flex items-start gap-2 rounded-lg bg-brand-50 px-3 py-2.5 text-sm text-brand-900">
-                <span className="mt-0.5 shrink-0 rounded bg-brand-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand-700">
-                  ✨ AI summary
+              <div className="mb-4 flex items-start gap-2 rounded-lg bg-stone-50 px-3 py-2.5 text-sm text-stone-700">
+                <span className="mt-0.5 shrink-0 rounded bg-stone-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-stone-500">
+                  AI summary
                 </span>
                 <span>{data.summary}</span>
               </div>

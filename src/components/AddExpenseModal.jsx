@@ -98,7 +98,7 @@ export function AddExpenseModal({ onClose, onCreated }) {
         <div>
           <label className={labelClass} htmlFor="expense-receipt">Receipt</label>
           <label className="flex cursor-pointer items-center justify-center rounded-lg border border-dashed border-stone-300 px-3 py-2.5 text-sm text-stone-500 hover:border-stone-400 hover:text-stone-700">
-            {scanning ? "Scanning receipt…" : receiptFile ? receiptFile.name : "📎 Upload or scan a receipt"}
+            {scanning ? "Scanning receipt…" : receiptFile ? receiptFile.name : "Upload or scan a receipt"}
             <input
               id="expense-receipt"
               type="file"

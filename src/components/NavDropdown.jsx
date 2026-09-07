@@ -13,7 +13,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { NavLink, useLocation } from "react-router-dom";
 
-export function NavDropdown({ label, icon, items }) {
+export function NavDropdown({ label, items }) {
   const [open, setOpen] = useState(false);
   const [menuPos, setMenuPos] = useState(null);
   const buttonRef = useRef(null);
@@ -68,7 +68,6 @@ export function NavDropdown({ label, icon, items }) {
             : "border-transparent text-stone-500 hover:text-stone-800"
         }`}
       >
-        <span aria-hidden="true">{icon}</span>
         {label}
         <svg
           className={`h-3 w-3 text-stone-400 transition-transform ${open ? "rotate-180" : ""}`}
@@ -103,12 +102,11 @@ export function NavDropdown({ label, icon, items }) {
                 to={item.to}
                 onClick={() => setOpen(false)}
                 className={({ isActive }) =>
-                  `flex items-center gap-2 px-3 py-2 text-sm transition-colors ${
+                  `block px-3 py-2 text-sm transition-colors ${
                     isActive ? "bg-brand-50 font-medium text-brand-700" : "text-stone-700 hover:bg-stone-50"
                   }`
                 }
               >
-                <span aria-hidden="true">{item.icon}</span>
                 {item.label}
               </NavLink>
             ))}

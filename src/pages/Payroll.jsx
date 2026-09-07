@@ -2,6 +2,9 @@
 import { useState } from "react";
 import { api } from "../lib/api";
 import { Button } from "../components/Button";
+import { StatusPill } from "../components/StatusPill";
+
+const STATUS_TONE = { calculated: "neutral", submitted: "success" };
 
 export function Payroll() {
   const [periodStart, setPeriodStart] = useState("");
@@ -81,9 +84,7 @@ export function Payroll() {
               ${Number(run.totalGrossPay).toFixed(2)}
               <span className="ml-1.5 text-sm font-normal text-stone-500">gross pay</span>
             </div>
-            <span className="rounded-full bg-stone-100 px-2.5 py-1 text-xs font-medium capitalize text-stone-600">
-              {run.status}
-            </span>
+            <StatusPill tone={STATUS_TONE[run.status] || "neutral"}>{run.status}</StatusPill>
           </div>
 
           <div className="divide-y divide-stone-100 border-t border-stone-100 text-sm">

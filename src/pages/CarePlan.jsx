@@ -92,7 +92,7 @@ export function CarePlan() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight text-stone-900">Care plan</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-stone-900">Care Plans</h1>
         <p className="mt-1 text-sm text-stone-500">
           AI-drafted, date-specific care plan — review and adjust before use
         </p>

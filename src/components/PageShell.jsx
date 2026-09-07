@@ -11,53 +11,48 @@ import { NavDropdown } from "./NavDropdown";
 // everything else groups into a dropdown by function, so the bar reads as
 // seven top-level choices instead of eleven flat, same-weight tabs.
 const NAV_ITEMS = [
-  { type: "link", to: "/", label: "Dashboard", icon: "🏠" },
-  { type: "link", to: "/residents", label: "Residents", icon: "👤" },
+  { type: "link", to: "/", label: "Dashboard" },
+  { type: "link", to: "/residents", label: "Residents" },
   {
     type: "dropdown",
     label: "Care Team",
-    icon: "👥",
     items: [
-      { to: "/care-team", label: "Roster", icon: "👥" },
-      { to: "/onboarding", label: "Onboarding", icon: "📝" },
+      { to: "/care-team", label: "Roster" },
+      { to: "/onboarding", label: "Onboarding" },
     ],
   },
   {
     type: "dropdown",
     label: "Operations",
-    icon: "⏱",
     items: [
-      { to: "/timekeeping", label: "Timekeeping", icon: "⏱" },
-      { to: "/clock", label: "Clock", icon: "🕐" },
+      { to: "/timekeeping", label: "Timekeeping" },
+      { to: "/clock", label: "Clock" },
     ],
   },
   {
     type: "dropdown",
     label: "Compliance",
-    icon: "🎓",
     items: [
-      { to: "/credentials", label: "Credentials", icon: "🎓" },
-      { to: "/documents", label: "Documents", icon: "📄" },
+      { to: "/credentials", label: "Credentials" },
+      { to: "/documents", label: "Documents" },
     ],
   },
   {
     type: "dropdown",
     label: "Finance",
-    icon: "💰",
     items: [
-      { to: "/finance", label: "Overview", icon: "📊" },
-      { to: "/analytics", label: "Analytics", icon: "📈" },
-      { to: "/expenses", label: "Expenses", icon: "🧾" },
-      { to: "/payroll", label: "Payroll", icon: "💰" },
+      { to: "/finance", label: "Overview" },
+      { to: "/analytics", label: "Analytics" },
+      { to: "/expenses", label: "Expenses" },
+      { to: "/payroll", label: "Payroll" },
     ],
   },
   {
     type: "dropdown",
     label: "Settings",
-    icon: "⚙️",
     items: [
-      { to: "/care-plan", label: "Care Plans", icon: "📋" },
-      { to: "/settings", label: "General", icon: "⚙️" },
+      { to: "/care-plan", label: "Care Plans" },
+      { to: "/settings", label: "General" },
     ],
   },
 ];
@@ -140,11 +135,10 @@ export function PageShell({ children }) {
             {NAV_ITEMS.map((entry) =>
               entry.type === "link" ? (
                 <NavLink key={entry.to} to={entry.to} end={entry.to === "/"} className={navLinkClass}>
-                  <span className="mr-1.5" aria-hidden="true">{entry.icon}</span>
                   {entry.label}
                 </NavLink>
               ) : (
-                <NavDropdown key={entry.label} label={entry.label} icon={entry.icon} items={entry.items} />
+                <NavDropdown key={entry.label} label={entry.label} items={entry.items} />
               )
             )}
           </nav>

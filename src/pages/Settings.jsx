@@ -6,6 +6,7 @@ import { CardSkeleton } from "../components/CardSkeleton";
 import { HomeFormModal } from "../components/HomeFormModal";
 import { QuickBooksMappings } from "../components/QuickBooksMappings";
 import { TeamLoginsCard } from "../components/TeamLoginsCard";
+import { StatusPill } from "../components/StatusPill";
 
 export function Settings() {
   const [status, setStatus] = useState(null);
@@ -130,9 +131,7 @@ export function Settings() {
               </p>
             </div>
             {status.connected ? (
-              <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
-                Connected
-              </span>
+              <StatusPill tone="success">Connected</StatusPill>
             ) : (
               <Button variant="primary" onClick={handleConnect} disabled={connecting}>
                 {connecting ? "Opening…" : "Connect QuickBooks"}

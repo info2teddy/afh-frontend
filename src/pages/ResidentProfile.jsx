@@ -87,7 +87,7 @@ export function ResidentProfile() {
 function Field({ label, children }) {
   return (
     <div>
-      <div className="text-xs font-medium uppercase tracking-wide text-stone-400">{label}</div>
+      <div className="text-xs font-medium uppercase tracking-wide text-stone-500">{label}</div>
       <div className="mt-1 text-sm text-stone-900">{children ?? <span className="text-stone-400">—</span>}</div>
     </div>
   );

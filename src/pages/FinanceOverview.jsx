@@ -8,15 +8,6 @@ import { CardSkeleton } from "../components/CardSkeleton";
 import { StatCard } from "../components/StatCard";
 import { StatStrip } from "../components/StatStrip";
 
-const CATEGORY_ICON = {
-  Rent: "🏠",
-  "Food & Supplies": "🍎",
-  Utilities: "💡",
-  "Medical Supplies": "🩺",
-  Insurance: "📋",
-  Other: "🗂",
-};
-
 const thisMonth = () => new Date().toISOString().slice(0, 7);
 
 function monthLabel(monthStr) {
@@ -80,19 +71,13 @@ export function FinanceOverview() {
               <div className="flex flex-col gap-2.5">
                 {data.expensesByCategory.map((c) => (
                   <div key={c.category} className="flex items-center justify-between rounded-lg px-3 py-2 text-sm">
-                    <span className="text-stone-700">
-                      <span className="mr-2" aria-hidden="true">{CATEGORY_ICON[c.category] || "🗂"}</span>
-                      {c.category}
-                    </span>
+                    <span className="text-stone-700">{c.category}</span>
                     <span className="font-medium text-stone-900">${c.amount.toFixed(2)}</span>
                   </div>
                 ))}
                 {data.payroll > 0 && (
                   <div className="flex items-center justify-between border-t border-stone-100 px-3 py-2 pt-3 text-sm">
-                    <span className="text-stone-700">
-                      <span className="mr-2" aria-hidden="true">👩‍⚕️</span>
-                      Payroll
-                    </span>
+                    <span className="text-stone-700">Payroll</span>
                     <span className="font-medium text-stone-900">${data.payroll.toFixed(2)}</span>
                   </div>
                 )}
