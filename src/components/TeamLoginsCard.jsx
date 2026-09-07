@@ -87,9 +87,9 @@ export function TeamLoginsCard() {
   }
 
   return (
-    <div className="mt-8 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+    <div className="mt-8">
       <h2 className="text-sm font-medium text-stone-900">Team &amp; tablet logins</h2>
-      <p className="mt-1 text-sm text-stone-500">Invite a teammate, or set up a restricted login for a shared clock-in tablet.</p>
+      <p className="mb-4 mt-1 text-sm text-stone-500">Invite a teammate, or set up a restricted login for a shared clock-in tablet.</p>
 
       {error && <p className="mt-4 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>}
 

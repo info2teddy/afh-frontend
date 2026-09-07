@@ -10,6 +10,7 @@ import { Button } from "../components/Button";
 import { ScrollFade } from "../components/ScrollFade";
 import { AddEmployeeModal } from "../components/AddEmployeeModal";
 import { StatCard } from "../components/StatCard";
+import { StatStrip } from "../components/StatStrip";
 
 const STATUS_TONE = { active: "success", inactive: "neutral", terminated: "neutral" };
 
@@ -62,12 +63,12 @@ export function CareTeam() {
       </div>
 
       {stats && (
-        <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <StatCard label="Team Members" value={stats.total} />
-          <StatCard label="Active" value={stats.active} />
-          <StatCard label="Needs Attention" value={stats.needsAttention} tone={stats.needsAttention > 0 ? "warning" : undefined} />
-          <StatCard label="Live-in" value={stats.liveIn} />
-        </div>
+        <StatStrip>
+          <StatCard bare label="Team Members" value={stats.total} />
+          <StatCard bare label="Active" value={stats.active} />
+          <StatCard bare label="Needs Attention" value={stats.needsAttention} tone={stats.needsAttention > 0 ? "warning" : undefined} />
+          <StatCard bare label="Live-in" value={stats.liveIn} />
+        </StatStrip>
       )}
 
       {error && (

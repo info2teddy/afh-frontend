@@ -143,7 +143,7 @@ export function Settings() {
           {!status.connected && (
             <p className="mt-4 text-xs text-stone-500">
               This opens QuickBooks in a new tab. Once you approve access there, come back here and{" "}
-              <button onClick={loadStatus} className="font-medium text-brand-700 hover:underline">
+              <button onClick={loadStatus} className="font-medium text-stone-700 underline hover:text-stone-900">
                 refresh
               </button>
               .

@@ -124,7 +124,7 @@ export function TenantSwitcher() {
             {!creating ? (
               <button
                 onClick={() => setCreating(true)}
-                className="w-full rounded-lg px-2 py-1.5 text-left text-sm text-brand-700 hover:bg-brand-50"
+                className="w-full rounded-lg px-2 py-1.5 text-left text-sm font-medium text-stone-700 hover:bg-stone-50 hover:text-stone-900"
               >
                 + Add a business
               </button>

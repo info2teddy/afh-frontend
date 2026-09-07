@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { api, auth } from "../lib/api";
 import { CardSkeleton } from "../components/CardSkeleton";
 import { StatCard } from "../components/StatCard";
+import { StatStrip } from "../components/StatStrip";
 
 const CATEGORY_ICON = {
   Rent: "🏠",
@@ -63,12 +64,12 @@ export function FinanceOverview() {
 
       {data && (
         <>
-          <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <StatCard label="Revenue" value={data.revenue} format="currency" />
-            <StatCard label="Expenses" value={data.expenses} format="currency" />
-            <StatCard label="Payroll" value={data.payroll} format="currency" />
-            <StatCard label="Net Income" value={data.netIncome} format="currency" emphasize />
-          </div>
+          <StatStrip>
+            <StatCard bare label="Revenue" value={data.revenue} format="currency" />
+            <StatCard bare label="Expenses" value={data.expenses} format="currency" />
+            <StatCard bare label="Payroll" value={data.payroll} format="currency" />
+            <StatCard bare label="Net Income" value={data.netIncome} format="currency" emphasize />
+          </StatStrip>
 
           <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
             <h2 className="mb-4 text-base font-semibold text-stone-900">Expenses by Category</h2>

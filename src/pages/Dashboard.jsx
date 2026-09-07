@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { api, auth } from "../lib/api";
 import { CardSkeleton } from "../components/CardSkeleton";
 import { StatCard } from "../components/StatCard";
+import { StatStrip } from "../components/StatStrip";
 
 export function Dashboard() {
   const tenant = auth.getTenant();
@@ -68,18 +69,19 @@ export function Dashboard() {
 
       {data && (
         <>
-          <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <StatCard label="Residents" value={data.residentCount} icon="👤" iconClass="bg-[#2a78d6] text-white" />
-            <StatCard label="Staff On Duty" value={data.staffOnDuty} icon="⏱️" iconClass="bg-[#1baf7a] text-white" />
+          <StatStrip>
+            <StatCard bare label="Residents" value={data.residentCount} icon="👤" iconClass="bg-[#2a78d6] text-white" />
+            <StatCard bare label="Staff On Duty" value={data.staffOnDuty} icon="⏱️" iconClass="bg-[#1baf7a] text-white" />
             <StatCard
+              bare
               label="Needs Attention"
               value={data.needsAttention}
               tone={data.needsAttention > 0 ? "warning" : undefined}
               icon="⚠️"
               iconClass="bg-accent-600 text-white"
             />
-            <StatCard label="Compliance" value={data.compliance} suffix="%" icon="🛡️" iconClass="bg-emerald-600 text-white" />
-          </div>
+            <StatCard bare label="Compliance" value={data.compliance} suffix="%" icon="🛡️" iconClass="bg-emerald-600 text-white" />
+          </StatStrip>
 
           <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
             <h2 className="mb-4 flex items-center gap-2 text-base font-semibold text-stone-900">

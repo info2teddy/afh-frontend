@@ -10,6 +10,7 @@ import { Button } from "../components/Button";
 import { AddResidentModal } from "../components/AddResidentModal";
 import { ScrollFade } from "../components/ScrollFade";
 import { StatCard } from "../components/StatCard";
+import { StatStrip } from "../components/StatStrip";
 
 const STATUS_TONE = { active: "success", discharging: "warning", discharged: "neutral" };
 const todayUTC = () => new Date().toISOString().slice(0, 10);
@@ -91,12 +92,12 @@ export function ResidentList() {
       </div>
 
       {stats && (
-        <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <StatCard label="Residents" value={stats.total} />
-          <StatCard label="Active Care" value={stats.activeCare} />
-          <StatCard label="Needs Care Plan" value={stats.needsPlanCount} tone={stats.needsPlanCount > 0 ? "warning" : undefined} />
-          <StatCard label="Care Plan Compliance" value={stats.compliance === null ? "—" : stats.compliance} suffix="%" />
-        </div>
+        <StatStrip>
+          <StatCard bare label="Residents" value={stats.total} />
+          <StatCard bare label="Active Care" value={stats.activeCare} />
+          <StatCard bare label="Needs Care Plan" value={stats.needsPlanCount} tone={stats.needsPlanCount > 0 ? "warning" : undefined} />
+          <StatCard bare label="Care Plan Compliance" value={stats.compliance === null ? "—" : stats.compliance} suffix="%" />
+        </StatStrip>
       )}
 
       {error && (
@@ -172,7 +173,7 @@ export function ResidentList() {
                         <Link
                           to={`/residents/${r.id}`}
                           onClick={(e) => e.stopPropagation()}
-                          className="rounded hover:text-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40"
+                          className="rounded hover:text-stone-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/40"
                         >
                           {r.name}
                         </Link>

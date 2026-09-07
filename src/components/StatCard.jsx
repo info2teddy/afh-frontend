@@ -42,9 +42,11 @@ function useCountUp(target, duration = 600) {
 // format: "currency" renders $ with a sign, and colors by the FINAL value's
 // sign when emphasize is set (never flickers mid-count).
 // icon/iconClass: optional decorative badge (e.g. Dashboard's colorful stat
-// row) — omit both and a card renders exactly as it always has, so other
-// pages (CareTeam, ResidentList, FinanceOverview) are unaffected.
-export function StatCard({ label, value, tone, emphasize, format, suffix = "", icon, iconClass }) {
+// row) — omit both and a cell renders with no icon.
+// bare: renders as a plain flex-1 cell with no border/shadow/rounding of its
+// own, for use inside <StatStrip> (one shared boundary instead of N boxes).
+// Omit it and a card is fully self-contained, as every StatCard used to be.
+export function StatCard({ label, value, tone, emphasize, format, suffix = "", icon, iconClass, bare }) {
   const isNumeric = typeof value === "number";
   const animated = useCountUp(value);
 
@@ -70,8 +72,12 @@ export function StatCard({ label, value, tone, emphasize, format, suffix = "", i
         ? "text-accent-600"
         : "text-stone-900";
 
+  const wrapperClass = bare
+    ? "flex-1 p-4"
+    : "rounded-2xl border border-stone-200 bg-white p-4 shadow-sm transition-shadow duration-200 hover:shadow-md";
+
   return (
-    <div className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm transition-shadow duration-200 hover:shadow-md">
+    <div className={wrapperClass}>
       {icon && (
         <div className={`mb-2.5 flex h-9 w-9 items-center justify-center rounded-lg text-base ${iconClass}`} aria-hidden="true">
           {icon}

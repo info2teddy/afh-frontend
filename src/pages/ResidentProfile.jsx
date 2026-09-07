@@ -202,7 +202,7 @@ function CarePlanTab({ residentId }) {
           className={`${inputClass} mb-3 w-full resize-none`}
         />
         <div className="flex flex-wrap items-center gap-3">
-          <label className="flex cursor-pointer items-center justify-center rounded-lg border border-dashed border-stone-300 px-3 py-2.5 text-sm text-stone-500 hover:border-brand-500 hover:text-brand-700">
+          <label className="flex cursor-pointer items-center justify-center rounded-lg border border-dashed border-stone-300 px-3 py-2.5 text-sm text-stone-500 hover:border-stone-400 hover:text-stone-700">
             {documentFile ? documentFile.name : "Upload a document"}
             <input
               type="file"
