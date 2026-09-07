@@ -85,7 +85,7 @@ export function PageShell({ children }) {
 
   return (
     <div className="min-h-screen bg-stone-50">
-      <header className="border-b border-stone-200 bg-white">
+      <header className="relative border-b border-stone-200 bg-white">
         <div className="mx-auto flex max-w-5xl items-center gap-4 px-6 py-3">
           <span className="flex shrink-0 items-center gap-1.5 text-sm font-semibold tracking-tight text-stone-900">
             <img src={carefitIcon} alt="" className="h-5 w-auto" />
@@ -94,7 +94,7 @@ export function PageShell({ children }) {
 
           <span className="h-4 w-px shrink-0 bg-stone-200" />
 
-          <div className="min-w-0 shrink-0">
+          <div className="min-w-0 max-w-[8rem] sm:max-w-[16rem]">
             {isAdmin ? (
               <TenantSwitcher />
             ) : (

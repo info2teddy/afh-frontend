@@ -70,7 +70,7 @@ export function TenantSwitcher() {
         onClick={openMenu}
         className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm text-stone-600 transition-colors hover:bg-stone-100"
       >
-        <span className="max-w-[14rem] truncate font-medium text-stone-900">
+        <span className="max-w-[7rem] truncate font-medium text-stone-900 sm:max-w-[14rem]">
           {currentTenant?.name || "Select a business"}
         </span>
         <svg className="h-3.5 w-3.5 text-stone-400" viewBox="0 0 20 20" fill="currentColor">
