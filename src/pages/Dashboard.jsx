@@ -42,13 +42,18 @@ export function Dashboard() {
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+  const greetingIcon = hour < 12 ? "🌅" : hour < 18 ? "☀️" : "🌙";
   const user = auth.getUser();
 
   return (
     <div>
-      <div className="mb-6">
+      <div
+        className="mb-6 rounded-2xl p-5"
+        style={{ background: "linear-gradient(135deg, rgba(61,90,128,0.08), rgba(224,122,95,0.08))" }}
+      >
         <p className="text-sm text-stone-500">{tenant?.name}</p>
-        <h1 className="text-2xl font-semibold tracking-tight text-stone-900">
+        <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight text-stone-900">
+          <span aria-hidden="true">{greetingIcon}</span>
           {greeting}{user?.email ? `, ${user.email.split("@")[0]}` : ""}
         </h1>
       </div>
@@ -64,19 +69,27 @@ export function Dashboard() {
       {data && (
         <>
           <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <StatCard label="Residents" value={data.residentCount} />
-            <StatCard label="Staff On Duty" value={data.staffOnDuty} />
-            <StatCard label="Needs Attention" value={data.needsAttention} tone={data.needsAttention > 0 ? "warning" : undefined} />
-            <StatCard label="Compliance" value={data.compliance} suffix="%" />
+            <StatCard label="Residents" value={data.residentCount} icon="👤" iconClass="bg-[#2a78d6] text-white" />
+            <StatCard label="Staff On Duty" value={data.staffOnDuty} icon="⏱️" iconClass="bg-[#1baf7a] text-white" />
+            <StatCard
+              label="Needs Attention"
+              value={data.needsAttention}
+              tone={data.needsAttention > 0 ? "warning" : undefined}
+              icon="⚠️"
+              iconClass="bg-accent-600 text-white"
+            />
+            <StatCard label="Compliance" value={data.compliance} suffix="%" icon="🛡️" iconClass="bg-emerald-600 text-white" />
           </div>
 
           <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-4 text-base font-semibold text-stone-900">Today's priorities</h2>
+            <h2 className="mb-4 flex items-center gap-2 text-base font-semibold text-stone-900">
+              <span aria-hidden="true">📋</span> Today's priorities
+            </h2>
 
             {data.summary && (
               <div className="mb-4 flex items-start gap-2 rounded-lg bg-brand-50 px-3 py-2.5 text-sm text-brand-900">
                 <span className="mt-0.5 shrink-0 rounded bg-brand-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand-700">
-                  AI summary
+                  ✨ AI summary
                 </span>
                 <span>{data.summary}</span>
               </div>
@@ -98,10 +111,11 @@ export function Dashboard() {
 }
 
 const DOT = { danger: "bg-rose-500", warning: "bg-accent-500", success: "bg-emerald-500" };
+const ROW_TINT = { danger: "bg-rose-50/60 hover:bg-rose-50", warning: "bg-accent-50/60 hover:bg-accent-50", success: "bg-emerald-50/60 hover:bg-emerald-50" };
 
 function PriorityRow({ tone, to, children }) {
   const content = (
-    <div className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-stone-700 transition-colors hover:bg-stone-50">
+    <div className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-stone-700 transition-colors ${ROW_TINT[tone]}`}>
       <span className={`h-2 w-2 shrink-0 rounded-full ${DOT[tone]}`} />
       <span>{children}</span>
     </div>

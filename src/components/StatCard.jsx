@@ -41,7 +41,10 @@ function useCountUp(target, duration = 600) {
 // (rendered as-is, no animation — only a plain number can be counted up).
 // format: "currency" renders $ with a sign, and colors by the FINAL value's
 // sign when emphasize is set (never flickers mid-count).
-export function StatCard({ label, value, tone, emphasize, format, suffix = "" }) {
+// icon/iconClass: optional decorative badge (e.g. Dashboard's colorful stat
+// row) — omit both and a card renders exactly as it always has, so other
+// pages (CareTeam, ResidentList, FinanceOverview) are unaffected.
+export function StatCard({ label, value, tone, emphasize, format, suffix = "", icon, iconClass }) {
   const isNumeric = typeof value === "number";
   const animated = useCountUp(value);
 
@@ -69,6 +72,11 @@ export function StatCard({ label, value, tone, emphasize, format, suffix = "" })
 
   return (
     <div className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm transition-shadow duration-200 hover:shadow-md">
+      {icon && (
+        <div className={`mb-2.5 flex h-9 w-9 items-center justify-center rounded-lg text-base ${iconClass}`} aria-hidden="true">
+          {icon}
+        </div>
+      )}
       <div className={`text-2xl font-semibold tabular-nums ${colorClass}`}>{display}</div>
       <div className="mt-0.5 text-xs text-stone-500">{label}</div>
     </div>
