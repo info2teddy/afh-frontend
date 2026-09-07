@@ -52,9 +52,9 @@ export function NavDropdown({ label, icon, items }) {
       <button
         ref={buttonRef}
         onClick={() => (open ? setOpen(false) : openMenu())}
-        className={`flex items-center gap-1.5 border-b-2 px-3 py-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40 focus-visible:ring-inset ${
+        className={`flex items-center gap-1.5 border-b-2 px-3 py-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 focus-visible:ring-inset ${
           isActiveGroup
-            ? "border-emerald-600 font-medium text-stone-900"
+            ? "border-brand-600 font-medium text-stone-900"
             : "border-transparent text-stone-500 hover:text-stone-800"
         }`}
       >
@@ -94,7 +94,7 @@ export function NavDropdown({ label, icon, items }) {
                 onClick={() => setOpen(false)}
                 className={({ isActive }) =>
                   `flex items-center gap-2 px-3 py-2 text-sm transition-colors ${
-                    isActive ? "bg-emerald-50 font-medium text-emerald-700" : "text-stone-700 hover:bg-stone-50"
+                    isActive ? "bg-brand-50 font-medium text-brand-700" : "text-stone-700 hover:bg-stone-50"
                   }`
                 }
               >

@@ -54,6 +54,8 @@ export function StatCard({ label, value, tone, emphasize, format, suffix = "" })
     display = `${Math.round(animated).toLocaleString()}${suffix}`;
   }
 
+  // Positive/negative and warning stay semantic colors (green/red/orange),
+  // independent of the brand palette — see StatusPill for the same rule.
   const colorClass =
     format === "currency"
       ? emphasize
@@ -62,7 +64,7 @@ export function StatCard({ label, value, tone, emphasize, format, suffix = "" })
           : "text-emerald-700"
         : "text-stone-900"
       : tone === "warning"
-        ? "text-amber-600"
+        ? "text-accent-600"
         : "text-stone-900";
 
   return (

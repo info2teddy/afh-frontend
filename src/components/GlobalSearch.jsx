@@ -61,7 +61,7 @@ export function GlobalSearch() {
           }}
           onFocus={() => setOpen(true)}
           placeholder="Search residents, staff…"
-          className="w-full rounded-lg border border-stone-300 bg-stone-50 py-1.5 pl-8 pr-3 text-sm text-stone-900 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+          className="w-full rounded-lg border border-stone-300 bg-stone-50 py-1.5 pl-8 pr-3 text-sm text-stone-900 focus:border-brand-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20"
         />
       </div>
       {open && q && (

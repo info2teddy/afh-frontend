@@ -74,8 +74,8 @@ export function Dashboard() {
             <h2 className="mb-4 text-base font-semibold text-stone-900">Today's priorities</h2>
 
             {data.summary && (
-              <div className="mb-4 flex items-start gap-2 rounded-lg bg-emerald-50 px-3 py-2.5 text-sm text-emerald-900">
-                <span className="mt-0.5 shrink-0 rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-700">
+              <div className="mb-4 flex items-start gap-2 rounded-lg bg-brand-50 px-3 py-2.5 text-sm text-brand-900">
+                <span className="mt-0.5 shrink-0 rounded bg-brand-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand-700">
                   AI summary
                 </span>
                 <span>{data.summary}</span>
@@ -97,7 +97,7 @@ export function Dashboard() {
   );
 }
 
-const DOT = { danger: "bg-rose-500", warning: "bg-amber-500", success: "bg-emerald-500" };
+const DOT = { danger: "bg-rose-500", warning: "bg-accent-500", success: "bg-emerald-500" };
 
 function PriorityRow({ tone, to, children }) {
   const content = (

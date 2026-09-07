@@ -21,7 +21,7 @@ export function KioskShell({ children }) {
         <span className="text-sm font-medium text-stone-700">{tenant?.name}</span>
         <button
           onClick={handleLogout}
-          className="rounded text-xs text-stone-400 transition-colors hover:text-stone-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40 focus-visible:ring-offset-2"
+          className="rounded text-xs text-stone-400 transition-colors hover:text-stone-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 focus-visible:ring-offset-2"
         >
           Log out
         </button>

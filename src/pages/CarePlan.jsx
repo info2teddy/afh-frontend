@@ -87,7 +87,7 @@ export function CarePlan() {
   }
 
   const inputClass =
-    "rounded-lg border border-stone-300 px-3 py-2.5 text-sm text-stone-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20";
+    "rounded-lg border border-stone-300 px-3 py-2.5 text-sm text-stone-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20";
 
   return (
     <div>
@@ -126,7 +126,7 @@ export function CarePlan() {
             className={`${inputClass} flex-1 resize-none`}
           />
           <div className="flex flex-col gap-1 sm:w-64">
-            <label className="flex cursor-pointer items-center justify-center rounded-lg border border-dashed border-stone-300 px-3 py-2.5 text-sm text-stone-500 hover:border-emerald-500 hover:text-emerald-700">
+            <label className="flex cursor-pointer items-center justify-center rounded-lg border border-dashed border-stone-300 px-3 py-2.5 text-sm text-stone-500 hover:border-brand-500 hover:text-brand-700">
               {documentFile ? documentFile.name : "Upload a document (PDF or image)"}
               <input
                 type="file"
@@ -200,7 +200,7 @@ export function CarePlan() {
                 <button
                   type="button"
                   onClick={() => handleDownload(p)}
-                  className="rounded-full border border-stone-200 px-2.5 py-1 text-xs font-medium text-stone-500 hover:border-emerald-500 hover:text-emerald-700"
+                  className="rounded-full border border-stone-200 px-2.5 py-1 text-xs font-medium text-stone-500 hover:border-brand-500 hover:text-brand-700"
                 >
                   Download
                 </button>

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../lib/api";
 import { Button } from "../components/Button";
+import carefitIcon from "../assets/carefit-icon.svg";
 
 export function Login() {
   const [email, setEmail] = useState("");
@@ -34,18 +35,14 @@ export function Login() {
       className="flex min-h-screen items-center justify-center px-4"
       style={{
         background:
-          "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(5,150,105,0.08), transparent), #fafaf9",
+          "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(61,90,128,0.08), transparent), #fafaf9",
       }}
     >
       <div className="w-full max-w-sm" style={{ animation: "panel-in 300ms cubic-bezier(0.16, 1, 0.3, 1)" }}>
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-600 shadow-sm shadow-emerald-600/20">
-            <svg viewBox="0 0 24 24" className="h-6 w-6 text-white" fill="currentColor">
-              <path d="M12 3 3 10v11h6.5v-6h5v6H21V10z" />
-            </svg>
-          </div>
+          <img src={carefitIcon} alt="" className="mx-auto mb-4 h-14 w-auto" />
           <div className="mb-1.5 text-lg font-semibold tracking-tight text-stone-900">
-            CareFit <span className="text-emerald-600">Connect</span>
+            CareFit <span className="text-brand-600">Connect</span>
           </div>
           <p className="text-sm text-stone-500">Sign in to manage your home</p>
         </div>
@@ -62,7 +59,7 @@ export function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               autoFocus
-              className="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+              className="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
             />
           </div>
           <div>
@@ -72,7 +69,7 @@ export function Login() {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+              className="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
             />
           </div>
 

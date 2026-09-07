@@ -1,13 +1,17 @@
+// Success/warning/danger stay their conventional semantic colors regardless
+// of brand — "green means good" shouldn't change just because the brand
+// palette did. Only interactive/brand chrome (buttons, links, nav) uses
+// brand-*/accent-* elsewhere in the app.
 const TONES = {
   success: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
-  warning: "bg-amber-50 text-amber-700 ring-amber-600/20",
+  warning: "bg-accent-50 text-accent-700 ring-accent-600/20",
   danger: "bg-rose-50 text-rose-700 ring-rose-600/20",
   neutral: "bg-stone-100 text-stone-600 ring-stone-500/10",
 };
 
 const DOTS = {
   success: "bg-emerald-500",
-  warning: "bg-amber-500",
+  warning: "bg-accent-500",
   danger: "bg-rose-500",
   neutral: "bg-stone-400",
 };

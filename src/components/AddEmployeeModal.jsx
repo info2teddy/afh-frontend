@@ -6,7 +6,7 @@ import { Button } from "./Button";
 import { Select } from "./Select";
 
 const inputClass =
-  "w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm text-stone-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20";
+  "w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm text-stone-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20";
 const labelClass = "mb-1 block text-xs font-medium text-stone-600";
 
 export function AddEmployeeModal({ onClose, onCreated }) {
@@ -114,7 +114,7 @@ export function AddEmployeeModal({ onClose, onCreated }) {
         </div>
 
         <label className="flex items-center gap-2 text-sm text-stone-700">
-          <input type="checkbox" checked={form.liveIn} onChange={(e) => set("liveIn", e.target.checked)} className="h-4 w-4 rounded border-stone-300 text-emerald-600 focus:ring-emerald-500/20" />
+          <input type="checkbox" checked={form.liveIn} onChange={(e) => set("liveIn", e.target.checked)} className="h-4 w-4 rounded border-stone-300 text-brand-600 focus:ring-brand-500/20" />
           Live-in caregiver
         </label>
 

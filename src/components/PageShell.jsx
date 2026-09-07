@@ -1,6 +1,7 @@
 // src/components/PageShell.jsx
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { auth } from "../lib/api";
+import carefitIcon from "../assets/carefit-icon.svg";
 import { useScrollFade } from "../lib/useScrollFade";
 import { TenantSwitcher } from "./TenantSwitcher";
 import { GlobalSearch } from "./GlobalSearch";
@@ -62,9 +63,9 @@ const NAV_ITEMS = [
 ];
 
 const navLinkClass = ({ isActive }) =>
-  `shrink-0 border-b-2 px-3 py-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40 focus-visible:ring-inset ${
+  `shrink-0 border-b-2 px-3 py-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 focus-visible:ring-inset ${
     isActive
-      ? "border-emerald-600 font-medium text-stone-900"
+      ? "border-brand-600 font-medium text-stone-900"
       : "border-transparent text-stone-500 hover:text-stone-800"
   }`;
 
@@ -86,8 +87,9 @@ export function PageShell({ children }) {
     <div className="min-h-screen bg-stone-50">
       <header className="border-b border-stone-200 bg-white">
         <div className="mx-auto flex max-w-5xl items-center gap-4 px-6 py-3">
-          <span className="shrink-0 text-sm font-semibold tracking-tight text-stone-900">
-            CareFit <span className="text-emerald-600">Connect</span>
+          <span className="flex shrink-0 items-center gap-1.5 text-sm font-semibold tracking-tight text-stone-900">
+            <img src={carefitIcon} alt="" className="h-5 w-auto" />
+            CareFit <span className="text-brand-600">Connect</span>
           </span>
 
           <span className="h-4 w-px shrink-0 bg-stone-200" />
@@ -112,7 +114,7 @@ export function PageShell({ children }) {
             )}
             <button
               onClick={handleLogout}
-              className="rounded text-sm text-stone-500 transition-colors hover:text-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40 focus-visible:ring-offset-2"
+              className="rounded text-sm text-stone-500 transition-colors hover:text-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 focus-visible:ring-offset-2"
             >
               Log out
             </button>

@@ -6,7 +6,7 @@ import { Button } from "./Button";
 import { Select } from "./Select";
 
 const inputClass =
-  "w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm text-stone-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20";
+  "w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm text-stone-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20";
 const labelClass = "mb-1 block text-xs font-medium text-stone-600";
 
 export function AddResidentModal({ onClose, onCreated }) {

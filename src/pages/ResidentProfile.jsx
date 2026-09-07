@@ -63,7 +63,7 @@ export function ResidentProfile() {
               onClick={() => setTab(t.key)}
               className={`shrink-0 border-b-2 px-3 py-2.5 text-sm transition-colors ${
                 tab === t.key
-                  ? "border-emerald-600 font-medium text-stone-900"
+                  ? "border-brand-600 font-medium text-stone-900"
                   : "border-transparent text-stone-500 hover:text-stone-800"
               }`}
             >
@@ -188,7 +188,7 @@ function CarePlanTab({ residentId }) {
   }
 
   const inputClass =
-    "rounded-lg border border-stone-300 px-3 py-2.5 text-sm text-stone-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20";
+    "rounded-lg border border-stone-300 px-3 py-2.5 text-sm text-stone-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20";
 
   return (
     <div>
@@ -202,7 +202,7 @@ function CarePlanTab({ residentId }) {
           className={`${inputClass} mb-3 w-full resize-none`}
         />
         <div className="flex flex-wrap items-center gap-3">
-          <label className="flex cursor-pointer items-center justify-center rounded-lg border border-dashed border-stone-300 px-3 py-2.5 text-sm text-stone-500 hover:border-emerald-500 hover:text-emerald-700">
+          <label className="flex cursor-pointer items-center justify-center rounded-lg border border-dashed border-stone-300 px-3 py-2.5 text-sm text-stone-500 hover:border-brand-500 hover:text-brand-700">
             {documentFile ? documentFile.name : "Upload a document"}
             <input
               type="file"
@@ -313,7 +313,7 @@ function NotesTab({ residentId }) {
           onChange={(e) => setDraft(e.target.value)}
           placeholder="Add a note about this resident…"
           rows={3}
-          className="mb-3 w-full resize-none rounded-lg border border-stone-300 px-3 py-2.5 text-sm text-stone-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+          className="mb-3 w-full resize-none rounded-lg border border-stone-300 px-3 py-2.5 text-sm text-stone-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
         />
         <Button variant="primary" size="sm" onClick={handleAdd} disabled={saving || !draft.trim()}>
           {saving ? "Adding…" : "Add note"}
@@ -400,7 +400,7 @@ function BillingTab({ residentId }) {
           type="month"
           value={month}
           onChange={(e) => setMonth(e.target.value)}
-          className="rounded-lg border border-stone-300 px-3 py-2.5 text-sm text-stone-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+          className="rounded-lg border border-stone-300 px-3 py-2.5 text-sm text-stone-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
         />
         <Button variant="primary" onClick={handleGenerate} disabled={generating}>
           {generating ? "Generating…" : "Generate invoice for this month"}

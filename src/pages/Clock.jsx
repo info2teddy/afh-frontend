@@ -105,12 +105,12 @@ export function Clock() {
                 onClick={() => selectEmployee(e.id)}
                 className={`rounded-2xl border p-4 text-left shadow-sm transition-colors ${
                   isSelected
-                    ? "border-emerald-500 bg-emerald-50"
+                    ? "border-brand-500 bg-brand-50"
                     : "border-stone-200 bg-white hover:bg-stone-50"
                 }`}
               >
                 <div className="font-medium text-stone-900">{e.name}</div>
-                <div className={`mt-1 text-xs ${isOpen ? "text-emerald-700" : "text-stone-500"}`}>
+                <div className={`mt-1 text-xs ${isOpen ? "text-brand-700" : "text-stone-500"}`}>
                   {isOpen ? "Clocked in" : "Clocked out"}
                 </div>
               </button>
@@ -149,7 +149,7 @@ export function Clock() {
                   min="0"
                   value={sleepExcluded}
                   onChange={(e) => setSleepExcluded(e.target.value)}
-                  className="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                  className="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
                 />
               </div>
               <label className="flex items-center gap-2 text-sm text-stone-700">
@@ -157,7 +157,7 @@ export function Clock() {
                   type="checkbox"
                   checked={sleepInterrupted}
                   onChange={(e) => setSleepInterrupted(e.target.checked)}
-                  className="h-4 w-4 rounded border-stone-300 text-emerald-600 focus:ring-emerald-500/40"
+                  className="h-4 w-4 rounded border-stone-300 text-brand-600 focus:ring-brand-500/40"
                 />
                 Sleep was interrupted
               </label>
@@ -172,7 +172,7 @@ export function Clock() {
               maxLength={6}
               value={pin}
               onChange={(e) => setPin(e.target.value.replace(/\D/g, ""))}
-              className="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm tracking-widest focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+              className="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm tracking-widest focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
               autoFocus
             />
           </div>

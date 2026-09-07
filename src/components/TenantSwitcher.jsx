@@ -99,7 +99,7 @@ export function TenantSwitcher() {
                 onClick={() => handleSwitch(t.id)}
                 disabled={switching === t.id}
                 className={`flex w-full items-center justify-between px-3 py-2 text-left text-sm transition-colors hover:bg-stone-50 ${
-                  t.id === currentTenant?.id ? "bg-emerald-50/60" : ""
+                  t.id === currentTenant?.id ? "bg-brand-50/60" : ""
                 }`}
               >
                 <span>
@@ -110,7 +110,7 @@ export function TenantSwitcher() {
                   </span>
                 </span>
                 {t.id === currentTenant?.id && (
-                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500" />
                 )}
                 {switching === t.id && <span className="text-xs text-stone-400">Switching…</span>}
               </button>
@@ -121,7 +121,7 @@ export function TenantSwitcher() {
             {!creating ? (
               <button
                 onClick={() => setCreating(true)}
-                className="w-full rounded-lg px-2 py-1.5 text-left text-sm text-emerald-700 hover:bg-emerald-50"
+                className="w-full rounded-lg px-2 py-1.5 text-left text-sm text-brand-700 hover:bg-brand-50"
               >
                 + Add a business
               </button>
@@ -132,12 +132,12 @@ export function TenantSwitcher() {
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
                   placeholder="Business name"
-                  className="w-full rounded-lg border border-stone-300 px-2.5 py-1.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                  className="w-full rounded-lg border border-stone-300 px-2.5 py-1.5 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
                 />
                 <button
                   type="submit"
                   disabled={savingNew}
-                  className="shrink-0 rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-60"
+                  className="shrink-0 rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-60"
                 >
                   {savingNew ? "…" : "Add"}
                 </button>

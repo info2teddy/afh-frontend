@@ -93,7 +93,7 @@ export function Timekeeping() {
             <div
               key={i}
               className={`mt-3 rounded-lg px-3 py-2 text-xs ${
-                f.level === "overtime" ? "bg-rose-50 text-rose-700" : "bg-amber-50 text-amber-700"
+                f.level === "overtime" ? "bg-rose-50 text-rose-700" : "bg-accent-50 text-accent-700"
               }`}
             >
               {f.message}

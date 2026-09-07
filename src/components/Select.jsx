@@ -2,7 +2,7 @@ export function Select({ className = "", ...props }) {
   return (
     <div className="relative inline-block">
       <select
-        className={`appearance-none rounded-lg border border-stone-300 bg-white py-2.5 pl-3 pr-9 text-sm text-stone-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 ${className}`}
+        className={`appearance-none rounded-lg border border-stone-300 bg-white py-2.5 pl-3 pr-9 text-sm text-stone-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 ${className}`}
         {...props}
       />
       <svg

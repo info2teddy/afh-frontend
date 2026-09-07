@@ -114,7 +114,7 @@ export function TeamLoginsCard() {
                     value={inviteEmail}
                     onChange={(e) => setInviteEmail(e.target.value)}
                     placeholder="name@company.com"
-                    className="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                    className="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
                   />
                 </div>
                 <div className="flex-1 min-w-[10rem]">
@@ -124,7 +124,7 @@ export function TeamLoginsCard() {
                     value={invitePassword}
                     onChange={(e) => setInvitePassword(e.target.value)}
                     placeholder="Choose a password to share with them"
-                    className="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                    className="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
                   />
                 </div>
                 <Button type="submit" variant="primary" size="sm" disabled={inviting}>

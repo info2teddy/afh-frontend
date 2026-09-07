@@ -97,7 +97,7 @@ export function Analytics() {
                     </div>
                     <div className="h-2 overflow-hidden rounded-full bg-stone-100">
                       <div
-                        className="h-full rounded-full bg-emerald-600"
+                        className="h-full rounded-full bg-brand-600"
                         style={{ width: `${Math.min(100, h.occupancyPct)}%` }}
                       />
                     </div>

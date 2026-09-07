@@ -77,7 +77,7 @@ export function Documents() {
                 {docs.map((d) => (
                   <tr key={d.id} className="transition-colors hover:bg-stone-50">
                     <td className="whitespace-nowrap px-5 py-3.5 font-medium text-stone-900">
-                      <Link to={`/residents/${d.residentId}?tab=documents`} className="hover:text-emerald-700">
+                      <Link to={`/residents/${d.residentId}?tab=documents`} className="hover:text-brand-700">
                         {d.residentName}
                       </Link>
                     </td>

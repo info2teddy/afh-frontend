@@ -43,7 +43,7 @@ export function Eula() {
           You retain ownership of the resident, employee, and business data you enter into the
           Service. You grant us a license to process that data solely to provide the Service to
           you, as described in our{" "}
-          <a href="/legal/privacy" className="text-emerald-700 hover:underline">Privacy Policy</a>.
+          <a href="/legal/privacy" className="text-brand-700 hover:underline">Privacy Policy</a>.
         </p>
       </Section>
 
@@ -96,7 +96,7 @@ export function Eula() {
       <Section title="12. Contact">
         <p>
           Questions about this agreement? Contact us at{" "}
-          <a href="mailto:legal@carefitconnect.com" className="text-emerald-700 hover:underline">
+          <a href="mailto:legal@carefitconnect.com" className="text-brand-700 hover:underline">
             legal@carefitconnect.com
           </a>
           .

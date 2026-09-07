@@ -2,6 +2,35 @@
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  /* Brand navy — from the CareFit logo mark's badge color (#3d5a80, anchored
+     at 600). Used for primary/interactive chrome: buttons, active nav, links,
+     focus rings. Semantic colors (success/warning/danger) stay independent —
+     see StatusPill.jsx and StatCard.jsx. */
+  --color-brand-50: #eef1f6;
+  --color-brand-100: #dce2ec;
+  --color-brand-200: #b9c5da;
+  --color-brand-300: #96a8c7;
+  --color-brand-400: #6f86ac;
+  --color-brand-500: #526a8f;
+  --color-brand-600: #3d5a80;
+  --color-brand-700: #324a68;
+  --color-brand-800: #283a52;
+  --color-brand-900: #1d2b3d;
+
+  /* Brand terracotta — from the logo mark's fill color (#e07a5f, anchored at
+     600). Used only for the "warning" semantic tone, replacing amber, so the
+     second brand color gets real use without touching success/danger. */
+  --color-accent-50: #fdf1ed;
+  --color-accent-100: #fbe1d8;
+  --color-accent-200: #f6c2b0;
+  --color-accent-300: #f0a086;
+  --color-accent-400: #e88c72;
+  --color-accent-500: #e8967d;
+  --color-accent-600: #e07a5f;
+  --color-accent-700: #c15f45;
+  --color-accent-800: #9c4c38;
+  --color-accent-900: #7a3c2c;
 }
 
 body {

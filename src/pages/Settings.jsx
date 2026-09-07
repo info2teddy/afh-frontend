@@ -143,7 +143,7 @@ export function Settings() {
           {!status.connected && (
             <p className="mt-4 text-xs text-stone-500">
               This opens QuickBooks in a new tab. Once you approve access there, come back here and{" "}
-              <button onClick={loadStatus} className="font-medium text-emerald-700 hover:underline">
+              <button onClick={loadStatus} className="font-medium text-brand-700 hover:underline">
                 refresh
               </button>
               .
@@ -177,7 +177,7 @@ export function Settings() {
                   onChange={(ev) =>
                     setPinDrafts((d) => ({ ...d, [e.id]: ev.target.value.replace(/\D/g, "") }))
                   }
-                  className="w-28 rounded-lg border border-stone-300 px-3 py-2 text-sm tracking-widest focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                  className="w-28 rounded-lg border border-stone-300 px-3 py-2 text-sm tracking-widest focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
                 />
                 <Button
                   size="sm"

@@ -113,7 +113,7 @@ export function ResidentList() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search residents…"
-            className="min-w-[200px] flex-1 rounded-lg border border-stone-300 px-3 py-2.5 text-sm text-stone-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+            className="min-w-[200px] flex-1 rounded-lg border border-stone-300 px-3 py-2.5 text-sm text-stone-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
           />
           <Select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
             <option value="">All statuses</option>
@@ -172,7 +172,7 @@ export function ResidentList() {
                         <Link
                           to={`/residents/${r.id}`}
                           onClick={(e) => e.stopPropagation()}
-                          className="rounded hover:text-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40"
+                          className="rounded hover:text-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40"
                         >
                           {r.name}
                         </Link>

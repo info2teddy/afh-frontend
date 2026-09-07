@@ -87,7 +87,7 @@ export function PrivacyPolicy() {
       <Section title="Contact us">
         <p>
           Questions about this policy or your data? Contact us at{" "}
-          <a href="mailto:legal@carefitconnect.com" className="text-emerald-700 hover:underline">
+          <a href="mailto:legal@carefitconnect.com" className="text-brand-700 hover:underline">
             legal@carefitconnect.com
           </a>
           .
