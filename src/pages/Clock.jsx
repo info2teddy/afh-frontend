@@ -103,14 +103,14 @@ export function Clock() {
               <button
                 key={e.id}
                 onClick={() => selectEmployee(e.id)}
-                className={`rounded-2xl border p-4 text-left shadow-sm transition-colors ${
+                className={`rounded-2xl border p-4 text-left shadow-sm transition-all duration-150 active:scale-[0.97] ${
                   isSelected
                     ? "border-brand-500 bg-brand-50"
                     : "border-stone-200 bg-white hover:bg-stone-50"
                 }`}
               >
                 <div className="font-medium text-stone-900">{e.name}</div>
-                <div className={`mt-1 text-xs ${isOpen ? "text-brand-700" : "text-stone-500"}`}>
+                <div className={`mt-1 text-xs ${isOpen ? "text-emerald-700" : "text-stone-500"}`}>
                   {isOpen ? "Clocked in" : "Clocked out"}
                 </div>
               </button>

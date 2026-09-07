@@ -65,7 +65,10 @@ export function GlobalSearch() {
         />
       </div>
       {open && q && (
-        <div className="absolute left-0 top-full z-20 mt-1 w-72 rounded-lg border border-stone-200 bg-white py-2 shadow-lg">
+        <div
+          className="absolute left-0 top-full z-20 mt-1 w-72 rounded-lg border border-stone-200 bg-white py-2 shadow-lg"
+          style={{ transformOrigin: "top left", animation: "dropdown-in 140ms cubic-bezier(0.16, 1, 0.3, 1)" }}
+        >
           {!hasResults && <p className="px-3 py-2 text-sm text-stone-400">No matches for "{query}"</p>}
           {matchedResidents.length > 0 && (
             <div className="mb-1">

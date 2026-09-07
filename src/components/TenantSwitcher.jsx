@@ -83,7 +83,10 @@ export function TenantSwitcher() {
       </button>
 
       {open && (
-        <div className="absolute left-0 top-full z-20 mt-2 w-72 overflow-hidden rounded-xl border border-stone-200 bg-white shadow-lg">
+        <div
+          className="absolute left-0 top-full z-20 mt-2 w-72 overflow-hidden rounded-xl border border-stone-200 bg-white shadow-lg"
+          style={{ transformOrigin: "top left", animation: "dropdown-in 140ms cubic-bezier(0.16, 1, 0.3, 1)" }}
+        >
           <div className="border-b border-stone-100 px-3 py-2 text-xs font-medium uppercase tracking-wide text-stone-400">
             Your businesses
           </div>
