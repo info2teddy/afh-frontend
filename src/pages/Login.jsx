@@ -37,7 +37,7 @@ export function Login() {
           "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(5,150,105,0.08), transparent), #fafaf9",
       }}
     >
-      <div className="w-full max-w-sm">
+      <div className="w-full max-w-sm" style={{ animation: "panel-in 300ms cubic-bezier(0.16, 1, 0.3, 1)" }}>
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-600 shadow-sm shadow-emerald-600/20">
             <svg viewBox="0 0 24 24" className="h-6 w-6 text-white" fill="currentColor">

@@ -98,7 +98,7 @@ export function Settings() {
         {homes && homes.length > 0 && (
           <div className="divide-y divide-stone-100 rounded-2xl border border-stone-200 bg-white shadow-sm">
             {homes.map((h) => (
-              <div key={h.id} className="flex items-center gap-3 px-5 py-4">
+              <div key={h.id} className="flex items-center gap-3 px-5 py-4 transition-colors hover:bg-stone-50">
                 <div className="flex-1">
                   <div className="text-sm font-medium text-stone-900">{h.name}</div>
                   <div className="text-xs text-stone-500">

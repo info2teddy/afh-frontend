@@ -224,7 +224,11 @@ function CarePlanTab({ residentId }) {
 
       <div className="flex flex-col gap-4">
         {plans?.map((p) => (
-          <div key={p.id} className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+          <div
+            key={p.id}
+            className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
+            style={{ animation: "panel-in 220ms cubic-bezier(0.16, 1, 0.3, 1)" }}
+          >
             <div className="mb-3 flex items-center justify-between">
               <div className="text-base font-semibold text-stone-900">{formatFriendlyDate(p.planDate)}</div>
               <span className="rounded-full bg-stone-100 px-2.5 py-1 text-xs font-medium text-stone-500">{p.model}</span>
@@ -258,7 +262,7 @@ function DocumentsTab({ residentId }) {
         <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm">
           <div className="divide-y divide-stone-100">
             {docs.map((p) => (
-              <div key={p.id} className="flex items-center justify-between px-5 py-3.5 text-sm">
+              <div key={p.id} className="flex items-center justify-between px-5 py-3.5 text-sm transition-colors hover:bg-stone-50">
                 <div>
                   <div className="font-medium text-stone-900">{p.sourceDocumentName}</div>
                   <div className="text-xs text-stone-400">Attached {formatFriendlyDate(p.planDate)}</div>
@@ -322,7 +326,11 @@ function NotesTab({ residentId }) {
 
       <div className="flex flex-col gap-3">
         {notes?.map((n) => (
-          <div key={n.id} className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
+          <div
+            key={n.id}
+            className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm"
+            style={{ animation: "panel-in 220ms cubic-bezier(0.16, 1, 0.3, 1)" }}
+          >
             <p className="text-sm text-stone-700">{n.content}</p>
             <p className="mt-2 text-xs text-stone-400">
               {n.author?.email || "Unknown"} · {formatFriendlyDate(n.createdAt)}
@@ -405,7 +413,11 @@ function BillingTab({ residentId }) {
 
       <div className="flex flex-col gap-4">
         {invoices?.map((inv) => (
-          <div key={inv.id} className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+          <div
+            key={inv.id}
+            className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
+            style={{ animation: "panel-in 220ms cubic-bezier(0.16, 1, 0.3, 1)" }}
+          >
             <div className="mb-4 flex items-center justify-between">
               <div className="text-base font-semibold text-stone-900">
                 {new Date(inv.billingPeriodStart).toLocaleDateString(undefined, {

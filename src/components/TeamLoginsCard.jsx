@@ -138,7 +138,7 @@ export function TeamLoginsCard() {
             ) : (
               <div className="divide-y divide-stone-100 rounded-xl border border-stone-200">
                 {teammates.map((u) => (
-                  <div key={u.id} className="flex items-center justify-between gap-3 px-4 py-3">
+                  <div key={u.id} className="flex items-center justify-between gap-3 px-4 py-3 transition-colors hover:bg-stone-50">
                     <span className="text-sm text-stone-700">{u.email}</span>
                     <Button size="sm" variant="secondary" onClick={() => handleRemove(u.id)} disabled={removingId === u.id}>
                       {removingId === u.id ? "Removing…" : "Remove"}
@@ -179,7 +179,7 @@ export function TeamLoginsCard() {
             ) : (
               <div className="divide-y divide-stone-100 rounded-xl border border-stone-200">
                 {kioskLogins.map((u) => (
-                  <div key={u.id} className="flex items-center justify-between gap-3 px-4 py-3">
+                  <div key={u.id} className="flex items-center justify-between gap-3 px-4 py-3 transition-colors hover:bg-stone-50">
                     <span className="font-mono text-sm text-stone-700">{u.email}</span>
                     <Button size="sm" variant="secondary" onClick={() => handleRemove(u.id)} disabled={removingId === u.id}>
                       {removingId === u.id ? "Removing…" : "Remove"}
