@@ -59,14 +59,14 @@ export function AddEmployeeModal({ onClose, onCreated }) {
     <Modal title="Add team member" onClose={onClose}>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
-          <label className={labelClass}>Name *</label>
-          <input className={inputClass} value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="Full name" />
+          <label className={labelClass} htmlFor="employee-name">Name *</label>
+          <input id="employee-name" className={inputClass} value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="Full name" />
         </div>
 
         {homes && homes.length > 1 && (
           <div>
-            <label className={labelClass}>Home *</label>
-            <Select className="w-full" value={form.homeId} onChange={(e) => set("homeId", e.target.value)}>
+            <label className={labelClass} htmlFor="employee-home">Home *</label>
+            <Select id="employee-home" className="w-full" value={form.homeId} onChange={(e) => set("homeId", e.target.value)}>
               <option value="">Select a home…</option>
               {homes.map((h) => (
                 <option key={h.id} value={h.id}>{h.name}</option>
@@ -77,8 +77,8 @@ export function AddEmployeeModal({ onClose, onCreated }) {
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className={labelClass}>Role *</label>
-            <Select className="w-full" value={form.role} onChange={(e) => set("role", e.target.value)}>
+            <label className={labelClass} htmlFor="employee-role">Role *</label>
+            <Select id="employee-role" className="w-full" value={form.role} onChange={(e) => set("role", e.target.value)}>
               <option value="caregiver">Caregiver</option>
               <option value="resident_manager">Resident Manager</option>
               <option value="rn_delegator">RN Delegator</option>
@@ -86,22 +86,23 @@ export function AddEmployeeModal({ onClose, onCreated }) {
             </Select>
           </div>
           <div>
-            <label className={labelClass}>Hire date *</label>
-            <input type="date" className={inputClass} value={form.hireDate} onChange={(e) => set("hireDate", e.target.value)} />
+            <label className={labelClass} htmlFor="employee-hire-date">Hire date *</label>
+            <input id="employee-hire-date" type="date" className={inputClass} value={form.hireDate} onChange={(e) => set("hireDate", e.target.value)} />
           </div>
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className={labelClass}>Employment type *</label>
-            <Select className="w-full" value={form.employmentType} onChange={(e) => set("employmentType", e.target.value)}>
+            <label className={labelClass} htmlFor="employee-type">Employment type *</label>
+            <Select id="employee-type" className="w-full" value={form.employmentType} onChange={(e) => set("employmentType", e.target.value)}>
               <option value="hourly">Hourly</option>
               <option value="salary">Salary</option>
             </Select>
           </div>
           <div>
-            <label className={labelClass}>Pay rate *</label>
+            <label className={labelClass} htmlFor="employee-pay-rate">Pay rate *</label>
             <input
+              id="employee-pay-rate"
               type="number"
               min="0"
               step="0.01"

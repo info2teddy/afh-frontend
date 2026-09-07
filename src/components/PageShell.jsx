@@ -85,6 +85,12 @@ export function PageShell({ children }) {
 
   return (
     <div className="min-h-screen bg-stone-50">
+      <a
+        href="#main-content"
+        className="sr-only rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50"
+      >
+        Skip to content
+      </a>
       <header className="relative border-b border-stone-200 bg-white">
         <div className="mx-auto flex max-w-5xl items-center gap-4 px-6 py-3">
           <span className="flex shrink-0 items-center gap-1.5 text-sm font-semibold tracking-tight text-stone-900">
@@ -149,7 +155,7 @@ export function PageShell({ children }) {
           )}
         </div>
       </header>
-      <main className="mx-auto max-w-5xl px-6 py-10">
+      <main id="main-content" tabIndex={-1} className="mx-auto max-w-5xl px-6 py-10 focus:outline-none">
         <div key={location.pathname} style={{ animation: "fade-in 200ms ease-out" }}>
           {children}
         </div>

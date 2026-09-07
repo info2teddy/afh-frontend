@@ -46,22 +46,22 @@ export function HomeFormModal({ home, onClose, onSaved }) {
     <Modal title={home ? "Edit facility" : "Add facility"} onClose={onClose}>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
-          <label className={labelClass}>Name *</label>
-          <input className={inputClass} value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="e.g. Willow Creek Main House" />
+          <label className={labelClass} htmlFor="home-name">Name *</label>
+          <input id="home-name" className={inputClass} value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="e.g. Willow Creek Main House" />
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className={labelClass}>License number *</label>
-            <input className={inputClass} value={form.licenseNumber} onChange={(e) => set("licenseNumber", e.target.value)} placeholder="AFH-000001" />
+            <label className={labelClass} htmlFor="home-license">License number *</label>
+            <input id="home-license" className={inputClass} value={form.licenseNumber} onChange={(e) => set("licenseNumber", e.target.value)} placeholder="AFH-000001" />
           </div>
           <div>
-            <label className={labelClass}>Capacity *</label>
-            <input type="number" min="1" className={inputClass} value={form.capacity} onChange={(e) => set("capacity", e.target.value)} placeholder="6" />
+            <label className={labelClass} htmlFor="home-capacity">Capacity *</label>
+            <input id="home-capacity" type="number" min="1" className={inputClass} value={form.capacity} onChange={(e) => set("capacity", e.target.value)} placeholder="6" />
           </div>
         </div>
         <div>
-          <label className={labelClass}>Address</label>
-          <input className={inputClass} value={form.address} onChange={(e) => set("address", e.target.value)} placeholder="123 Willow Creek Rd, Mill Creek, WA" />
+          <label className={labelClass} htmlFor="home-address">Address</label>
+          <input id="home-address" className={inputClass} value={form.address} onChange={(e) => set("address", e.target.value)} placeholder="123 Willow Creek Rd, Mill Creek, WA" />
         </div>
 
         {error && <p className="rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>}

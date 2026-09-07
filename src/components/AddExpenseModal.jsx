@@ -96,10 +96,11 @@ export function AddExpenseModal({ onClose, onCreated }) {
     <Modal title="Add expense" onClose={onClose}>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
-          <label className={labelClass}>Receipt</label>
+          <label className={labelClass} htmlFor="expense-receipt">Receipt</label>
           <label className="flex cursor-pointer items-center justify-center rounded-lg border border-dashed border-stone-300 px-3 py-2.5 text-sm text-stone-500 hover:border-stone-400 hover:text-stone-700">
             {scanning ? "Scanning receipt…" : receiptFile ? receiptFile.name : "📎 Upload or scan a receipt"}
             <input
+              id="expense-receipt"
               type="file"
               accept="application/pdf,image/png,image/jpeg,image/webp"
               onChange={handleFileChange}
@@ -111,18 +112,19 @@ export function AddExpenseModal({ onClose, onCreated }) {
         </div>
 
         <div>
-          <label className={labelClass}>Vendor</label>
-          <input className={inputClass} value={form.vendor} onChange={(e) => set("vendor", e.target.value)} placeholder="e.g. Costco" />
+          <label className={labelClass} htmlFor="expense-vendor">Vendor</label>
+          <input id="expense-vendor" className={inputClass} value={form.vendor} onChange={(e) => set("vendor", e.target.value)} placeholder="e.g. Costco" />
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className={labelClass}>Date *</label>
-            <input type="date" className={inputClass} value={form.date} onChange={(e) => set("date", e.target.value)} />
+            <label className={labelClass} htmlFor="expense-date">Date *</label>
+            <input id="expense-date" type="date" className={inputClass} value={form.date} onChange={(e) => set("date", e.target.value)} />
           </div>
           <div>
-            <label className={labelClass}>Amount *</label>
+            <label className={labelClass} htmlFor="expense-amount">Amount *</label>
             <input
+              id="expense-amount"
               type="number"
               min="0"
               step="0.01"
@@ -136,16 +138,16 @@ export function AddExpenseModal({ onClose, onCreated }) {
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className={labelClass}>Category *</label>
-            <Select className="w-full" value={form.category} onChange={(e) => set("category", e.target.value)}>
+            <label className={labelClass} htmlFor="expense-category">Category *</label>
+            <Select id="expense-category" className="w-full" value={form.category} onChange={(e) => set("category", e.target.value)}>
               {CATEGORIES.map((c) => (
                 <option key={c} value={c}>{c}</option>
               ))}
             </Select>
           </div>
           <div>
-            <label className={labelClass}>Payment method</label>
-            <Select className="w-full" value={form.paymentMethod} onChange={(e) => set("paymentMethod", e.target.value)}>
+            <label className={labelClass} htmlFor="expense-payment-method">Payment method</label>
+            <Select id="expense-payment-method" className="w-full" value={form.paymentMethod} onChange={(e) => set("paymentMethod", e.target.value)}>
               <option value="business_card">Business Card</option>
               <option value="check">Check</option>
               <option value="cash">Cash</option>
@@ -156,8 +158,8 @@ export function AddExpenseModal({ onClose, onCreated }) {
 
         {homes && homes.length > 1 && (
           <div>
-            <label className={labelClass}>Facility *</label>
-            <Select className="w-full" value={form.homeId} onChange={(e) => set("homeId", e.target.value)}>
+            <label className={labelClass} htmlFor="expense-home">Facility *</label>
+            <Select id="expense-home" className="w-full" value={form.homeId} onChange={(e) => set("homeId", e.target.value)}>
               <option value="">Select a facility…</option>
               {homes.map((h) => (
                 <option key={h.id} value={h.id}>{h.name}</option>
@@ -167,8 +169,9 @@ export function AddExpenseModal({ onClose, onCreated }) {
         )}
 
         <div>
-          <label className={labelClass}>Notes</label>
+          <label className={labelClass} htmlFor="expense-notes">Notes</label>
           <textarea
+            id="expense-notes"
             rows={2}
             className={`${inputClass} resize-none`}
             value={form.notes}

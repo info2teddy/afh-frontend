@@ -129,8 +129,8 @@ export function Clock() {
 
           {!openShift && (
             <div className="mb-4">
-              <label className="mb-1.5 block text-sm font-medium text-stone-700">Shift type</label>
-              <Select value={shiftType} onChange={(e) => setShiftType(e.target.value)} className="w-full">
+              <label className="mb-1.5 block text-sm font-medium text-stone-700" htmlFor="clock-shift-type">Shift type</label>
+              <Select id="clock-shift-type" value={shiftType} onChange={(e) => setShiftType(e.target.value)} className="w-full">
                 {SHIFT_TYPES.map((t) => (
                   <option key={t.value} value={t.value}>{t.label}</option>
                 ))}
@@ -141,10 +141,11 @@ export function Clock() {
           {openShift && showSleepFields && (
             <div className="mb-4 space-y-3">
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-stone-700">
+                <label className="mb-1.5 block text-sm font-medium text-stone-700" htmlFor="clock-sleep-excluded">
                   Sleep time excluded (minutes)
                 </label>
                 <input
+                  id="clock-sleep-excluded"
                   type="number"
                   min="0"
                   value={sleepExcluded}
@@ -165,8 +166,9 @@ export function Clock() {
           )}
 
           <div className="mb-4">
-            <label className="mb-1.5 block text-sm font-medium text-stone-700">PIN</label>
+            <label className="mb-1.5 block text-sm font-medium text-stone-700" htmlFor="clock-pin">PIN</label>
             <input
+              id="clock-pin"
               type="password"
               inputMode="numeric"
               maxLength={6}

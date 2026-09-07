@@ -46,8 +46,18 @@ export function GlobalSearch() {
         setMobileOpen(false);
       }
     }
+    function handleKey(e) {
+      if (e.key === "Escape") {
+        setOpen(false);
+        setMobileOpen(false);
+      }
+    }
     document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+      document.removeEventListener("keydown", handleKey);
+    };
   }, []);
 
   useEffect(() => {
@@ -116,6 +126,7 @@ export function GlobalSearch() {
           }}
           onFocus={() => setOpen(true)}
           placeholder="Search residents, staff…"
+          aria-label="Search residents, staff"
           className="w-full rounded-lg border border-stone-300 bg-stone-50 py-1.5 pl-8 pr-3 text-sm text-stone-900 focus:border-brand-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20"
         />
         {open && q && (
@@ -151,6 +162,7 @@ export function GlobalSearch() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search residents, staff…"
+              aria-label="Search residents, staff"
               className="w-full rounded-lg border border-stone-300 bg-stone-50 py-2 pl-8 pr-3 text-sm text-stone-900 focus:border-brand-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20"
             />
           </div>

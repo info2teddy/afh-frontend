@@ -108,8 +108,9 @@ export function TeamLoginsCard() {
             {inviteOpen && (
               <form onSubmit={handleInvite} className="mb-3 flex flex-wrap items-end gap-2 rounded-xl border border-stone-200 p-3">
                 <div className="flex-1 min-w-[10rem]">
-                  <label className="mb-1 block text-xs font-medium text-stone-600">Email</label>
+                  <label className="mb-1 block text-xs font-medium text-stone-600" htmlFor="invite-email">Email</label>
                   <input
+                    id="invite-email"
                     type="email"
                     value={inviteEmail}
                     onChange={(e) => setInviteEmail(e.target.value)}
@@ -118,8 +119,9 @@ export function TeamLoginsCard() {
                   />
                 </div>
                 <div className="flex-1 min-w-[10rem]">
-                  <label className="mb-1 block text-xs font-medium text-stone-600">Temporary password</label>
+                  <label className="mb-1 block text-xs font-medium text-stone-600" htmlFor="invite-password">Temporary password</label>
                   <input
+                    id="invite-password"
                     type="text"
                     value={invitePassword}
                     onChange={(e) => setInvitePassword(e.target.value)}

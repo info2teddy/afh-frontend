@@ -22,8 +22,18 @@ export function TenantSwitcher() {
         setCreating(false);
       }
     }
+    function onKeyDown(e) {
+      if (e.key === "Escape") {
+        setOpen(false);
+        setCreating(false);
+      }
+    }
     document.addEventListener("mousedown", onClickOutside);
-    return () => document.removeEventListener("mousedown", onClickOutside);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onClickOutside);
+      document.removeEventListener("keydown", onKeyDown);
+    };
   }, []);
 
   function openMenu() {
@@ -68,6 +78,8 @@ export function TenantSwitcher() {
     <div className="relative" ref={rootRef}>
       <button
         onClick={openMenu}
+        aria-haspopup="true"
+        aria-expanded={open}
         className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm text-stone-600 transition-colors hover:bg-stone-100"
       >
         <span className="max-w-[7rem] truncate font-medium text-stone-900 sm:max-w-[14rem]">

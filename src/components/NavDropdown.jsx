@@ -33,15 +33,23 @@ export function NavDropdown({ label, icon, items }) {
       if (buttonRef.current?.contains(e.target) || menuRef.current?.contains(e.target)) return;
       setOpen(false);
     }
+    function onKeyDown(e) {
+      if (e.key === "Escape") {
+        setOpen(false);
+        buttonRef.current?.focus();
+      }
+    }
     function onReposition() {
       const rect = buttonRef.current.getBoundingClientRect();
       setMenuPos({ top: rect.bottom + 4, left: rect.left });
     }
     document.addEventListener("mousedown", onClickOutside);
+    document.addEventListener("keydown", onKeyDown);
     window.addEventListener("scroll", onReposition, true);
     window.addEventListener("resize", onReposition);
     return () => {
       document.removeEventListener("mousedown", onClickOutside);
+      document.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("scroll", onReposition, true);
       window.removeEventListener("resize", onReposition);
     };
@@ -52,6 +60,8 @@ export function NavDropdown({ label, icon, items }) {
       <button
         ref={buttonRef}
         onClick={() => (open ? setOpen(false) : openMenu())}
+        aria-haspopup="true"
+        aria-expanded={open}
         className={`flex items-center gap-1.5 border-b-2 px-3 py-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 focus-visible:ring-inset ${
           isActiveGroup
             ? "border-brand-600 font-medium text-stone-900"

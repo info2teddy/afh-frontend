@@ -69,8 +69,9 @@ export function AddResidentModal({ onClose, onCreated }) {
     <Modal title="Add resident" onClose={onClose}>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
-          <label className={labelClass}>Name *</label>
+          <label className={labelClass} htmlFor="resident-name">Name *</label>
           <input
+            id="resident-name"
             className={inputClass}
             value={form.name}
             onChange={(e) => set("name", e.target.value)}
@@ -80,8 +81,8 @@ export function AddResidentModal({ onClose, onCreated }) {
 
         {homes && homes.length > 1 && (
           <div>
-            <label className={labelClass}>Home *</label>
-            <Select className="w-full" value={form.homeId} onChange={(e) => set("homeId", e.target.value)}>
+            <label className={labelClass} htmlFor="resident-home">Home *</label>
+            <Select id="resident-home" className="w-full" value={form.homeId} onChange={(e) => set("homeId", e.target.value)}>
               <option value="">Select a home…</option>
               {homes.map((h) => (
                 <option key={h.id} value={h.id}>{h.name}</option>
@@ -92,8 +93,9 @@ export function AddResidentModal({ onClose, onCreated }) {
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className={labelClass}>Date of birth</label>
+            <label className={labelClass} htmlFor="resident-dob">Date of birth</label>
             <input
+              id="resident-dob"
               type="date"
               className={inputClass}
               value={form.dateOfBirth}
@@ -101,8 +103,9 @@ export function AddResidentModal({ onClose, onCreated }) {
             />
           </div>
           <div>
-            <label className={labelClass}>Room</label>
+            <label className={labelClass} htmlFor="resident-room">Room</label>
             <input
+              id="resident-room"
               className={inputClass}
               value={form.room}
               onChange={(e) => set("room", e.target.value)}
@@ -113,16 +116,17 @@ export function AddResidentModal({ onClose, onCreated }) {
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className={labelClass}>Care level *</label>
-            <Select className="w-full" value={form.careLevel} onChange={(e) => set("careLevel", e.target.value)}>
+            <label className={labelClass} htmlFor="resident-care-level">Care level *</label>
+            <Select id="resident-care-level" className="w-full" value={form.careLevel} onChange={(e) => set("careLevel", e.target.value)}>
               <option value="level_1">Level 1 — Minimal Support</option>
               <option value="level_2">Level 2 — Moderate Support</option>
               <option value="level_3">Level 3 — Extensive Support</option>
             </Select>
           </div>
           <div>
-            <label className={labelClass}>Move-in date *</label>
+            <label className={labelClass} htmlFor="resident-move-in-date">Move-in date *</label>
             <input
+              id="resident-move-in-date"
               type="date"
               className={inputClass}
               value={form.moveInDate}
@@ -133,8 +137,8 @@ export function AddResidentModal({ onClose, onCreated }) {
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className={labelClass}>Payer *</label>
-            <Select className="w-full" value={form.payerType} onChange={(e) => set("payerType", e.target.value)}>
+            <label className={labelClass} htmlFor="resident-payer">Payer *</label>
+            <Select id="resident-payer" className="w-full" value={form.payerType} onChange={(e) => set("payerType", e.target.value)}>
               <option value="private_pay">Private Pay</option>
               <option value="medicaid">Medicaid</option>
               <option value="split">Split (Medicaid + Private)</option>
@@ -142,8 +146,9 @@ export function AddResidentModal({ onClose, onCreated }) {
           </div>
           {form.payerType === "split" && (
             <div>
-              <label className={labelClass}>Medicaid %</label>
+              <label className={labelClass} htmlFor="resident-medicaid-pct">Medicaid %</label>
               <input
+                id="resident-medicaid-pct"
                 type="number"
                 min="0"
                 max="100"
@@ -158,8 +163,9 @@ export function AddResidentModal({ onClose, onCreated }) {
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className={labelClass}>Next assessment</label>
+            <label className={labelClass} htmlFor="resident-next-assessment">Next assessment</label>
             <input
+              id="resident-next-assessment"
               type="date"
               className={inputClass}
               value={form.nextAssessmentDate}
@@ -167,8 +173,9 @@ export function AddResidentModal({ onClose, onCreated }) {
             />
           </div>
           <div>
-            <label className={labelClass}>Authorization</label>
+            <label className={labelClass} htmlFor="resident-authorization">Authorization</label>
             <Select
+              id="resident-authorization"
               className="w-full"
               value={form.authorizationStatus}
               onChange={(e) => set("authorizationStatus", e.target.value)}

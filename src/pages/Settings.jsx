@@ -173,6 +173,7 @@ export function Settings() {
                   inputMode="numeric"
                   maxLength={6}
                   placeholder="New PIN"
+                  aria-label={`New PIN for ${e.name}`}
                   value={pinDrafts[e.id] || ""}
                   onChange={(ev) =>
                     setPinDrafts((d) => ({ ...d, [e.id]: ev.target.value.replace(/\D/g, "") }))

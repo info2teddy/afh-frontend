@@ -52,8 +52,9 @@ export function Login() {
           className="space-y-4 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
         >
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-stone-600">Email</label>
+            <label className="mb-1.5 block text-xs font-medium text-stone-600" htmlFor="login-email">Email</label>
             <input
+              id="login-email"
               type="email"
               placeholder="name@company.com"
               value={email}
@@ -63,8 +64,9 @@ export function Login() {
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-stone-600">Password</label>
+            <label className="mb-1.5 block text-xs font-medium text-stone-600" htmlFor="login-password">Password</label>
             <input
+              id="login-password"
               type="password"
               placeholder="••••••••"
               value={password}
