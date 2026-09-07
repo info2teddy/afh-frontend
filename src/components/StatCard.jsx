@@ -43,8 +43,9 @@ function useCountUp(target, duration = 600) {
 // sign when emphasize is set (never flickers mid-count).
 // icon/iconClass: optional decorative badge (e.g. Dashboard's colorful stat
 // row) — omit both and a cell renders with no icon.
-// bare: renders as a plain flex-1 cell with no border/shadow/rounding of its
-// own, for use inside <StatStrip> (one shared boundary instead of N boxes).
+// bare: renders as a plain white grid cell with no border/shadow/rounding of
+// its own, for use inside <StatStrip> (one shared boundary instead of N
+// boxes — the dividers come from the grid's own gap, see StatStrip).
 // Omit it and a card is fully self-contained, as every StatCard used to be.
 export function StatCard({ label, value, tone, emphasize, format, suffix = "", icon, iconClass, bare }) {
   const isNumeric = typeof value === "number";
@@ -73,7 +74,7 @@ export function StatCard({ label, value, tone, emphasize, format, suffix = "", i
         : "text-stone-900";
 
   const wrapperClass = bare
-    ? "flex-1 p-4"
+    ? "bg-white p-4"
     : "rounded-2xl border border-stone-200 bg-white p-4 shadow-sm transition-shadow duration-200 hover:shadow-md";
 
   return (
