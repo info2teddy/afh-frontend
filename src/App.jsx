@@ -1,5 +1,5 @@
 // src/App.jsx
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { PageShell } from "./components/PageShell";
 import { KioskShell } from "./components/KioskShell";
 import { RequireAuth } from "./components/RequireAuth";
@@ -32,6 +32,7 @@ import { Eula } from "./pages/legal/Eula";
 // so this is a UX nicety, not the actual security boundary.
 function AuthedApp() {
   const user = auth.getUser();
+  const isAdmin = user?.role === "admin";
 
   if (user?.role === "kiosk") {
     return (
@@ -58,7 +59,10 @@ function AuthedApp() {
         <Route path="/analytics" element={<Analytics />} />
         <Route path="/expenses" element={<Expenses />} />
         <Route path="/care-plan" element={<CarePlan />} />
-        <Route path="/settings" element={<Settings />} />
+        {/* Facilities + QuickBooks are admin-only — see PageShell's nav
+            filtering, which is the UX nicety; this route guard is the actual
+            boundary against a manager just typing the URL. */}
+        <Route path="/settings" element={isAdmin ? <Settings /> : <Navigate to="/" replace />} />
       </Routes>
     </PageShell>
   );

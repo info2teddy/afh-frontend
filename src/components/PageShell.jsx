@@ -16,15 +16,21 @@ import { Icon } from "./icons";
 // Dashboard and Residents are daily-use enough to stay standalone; everything
 // else groups under one icon (shown on the group's first item) plus a small
 // section label, same content as before — just laid out vertically now.
+// "Settings" (Facilities + QuickBooks) is admin-only — flagged by the user
+// as too technical/risky for an AFH owner to configure. It's appended below
+// as a standalone link only when isAdmin, rather than a group, since with
+// Care Plans moved out (it's a resident-care tool, not a settings page) it
+// was down to a single item anyway.
 const NAV_ITEMS = [
   { type: "link", to: "/", label: "Dashboard", icon: "home" },
   { type: "link", to: "/residents", label: "Residents", icon: "resident" },
   { type: "group", label: "Care Team", icon: "team", items: [{ to: "/care-team", label: "Roster" }, { to: "/onboarding", label: "Onboarding" }] },
   { type: "group", label: "Operations", icon: "clock", items: [{ to: "/timekeeping", label: "Timekeeping" }, { to: "/clock", label: "Clock" }] },
-  { type: "group", label: "Compliance", icon: "shield", items: [{ to: "/credentials", label: "Credentials" }, { to: "/documents", label: "Documents" }] },
+  { type: "group", label: "Compliance", icon: "shield", items: [{ to: "/credentials", label: "Credentials" }, { to: "/documents", label: "Documents" }, { to: "/care-plan", label: "Care Plans" }] },
   { type: "group", label: "Finance", icon: "finance", items: [{ to: "/finance", label: "Overview" }, { to: "/analytics", label: "Analytics" }, { to: "/expenses", label: "Expenses" }, { to: "/payroll", label: "Payroll" }] },
-  { type: "group", label: "Settings", icon: "gear", items: [{ to: "/settings", label: "General" }, { to: "/care-plan", label: "Care Plans" }] },
 ];
+
+const ADMIN_NAV_ITEM = { type: "link", to: "/settings", label: "Settings", icon: "gear" };
 
 function itemClass({ isActive }) {
   return `relative flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13.5px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 ${
@@ -177,7 +183,7 @@ export function PageShell({ children }) {
         </div>
 
         <nav className="flex flex-1 flex-col gap-0.5">
-          {NAV_ITEMS.map((entry) =>
+          {(isAdmin ? [...NAV_ITEMS, ADMIN_NAV_ITEM] : NAV_ITEMS).map((entry) =>
             entry.type === "link" ? (
               <NavLink key={entry.to} to={entry.to} end={entry.to === "/"} className={itemClass}>
                 <Icon name={entry.icon} />

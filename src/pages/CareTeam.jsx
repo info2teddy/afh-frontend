@@ -11,6 +11,7 @@ import { ScrollFade } from "../components/ScrollFade";
 import { AddEmployeeModal } from "../components/AddEmployeeModal";
 import { StatCard } from "../components/StatCard";
 import { StatStrip } from "../components/StatStrip";
+import { TeamLoginsCard } from "../components/TeamLoginsCard";
 
 const STATUS_TONE = { active: "success", inactive: "neutral", terminated: "neutral" };
 
@@ -26,12 +27,34 @@ export function CareTeam() {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
+  const [pinDrafts, setPinDrafts] = useState({});
+  const [savingPinFor, setSavingPinFor] = useState(null);
+  const [pinMessage, setPinMessage] = useState(null);
   const navigate = useNavigate();
 
   function load() {
     api.employees.list().then(setEmployees).catch((err) => setError(err.message));
   }
   useEffect(load, []);
+
+  async function handleSetPin(employeeId) {
+    const pin = pinDrafts[employeeId] || "";
+    if (!/^\d{4,6}$/.test(pin)) {
+      setPinMessage({ employeeId, error: "PIN must be 4-6 digits." });
+      return;
+    }
+    setSavingPinFor(employeeId);
+    setPinMessage(null);
+    try {
+      await api.employees.setPin(employeeId, pin);
+      setPinMessage({ employeeId, error: null });
+      setPinDrafts((d) => ({ ...d, [employeeId]: "" }));
+    } catch (err) {
+      setPinMessage({ employeeId, error: err.message });
+    } finally {
+      setSavingPinFor(null);
+    }
+  }
 
   const filtered = useMemo(() => {
     if (!employees) return null;
@@ -155,6 +178,46 @@ export function CareTeam() {
           </ScrollFade>
         </div>
       )}
+
+      {employees && employees.length > 0 && (
+        <div className="mt-8">
+          <h2 className="mb-1 text-sm font-medium text-stone-900">Clock-in PINs</h2>
+          <p className="mb-4 text-sm text-stone-500">
+            Each caregiver uses this PIN to clock in/out on the shared home tablet — see{" "}
+            <span className="font-medium">Clock</span> in the nav.
+          </p>
+
+          <div className="divide-y divide-stone-100 rounded-2xl border border-stone-200 bg-white shadow-sm">
+            {employees.map((e) => (
+              <div key={e.id} className="flex items-center gap-3 px-5 py-4">
+                <div className="flex-1 text-sm font-medium text-stone-900">{e.name}</div>
+                <input
+                  type="password"
+                  inputMode="numeric"
+                  maxLength={6}
+                  placeholder="New PIN"
+                  aria-label={`New PIN for ${e.name}`}
+                  value={pinDrafts[e.id] || ""}
+                  onChange={(ev) =>
+                    setPinDrafts((d) => ({ ...d, [e.id]: ev.target.value.replace(/\D/g, "") }))
+                  }
+                  className="w-28 rounded-lg border border-stone-300 px-3 py-2 text-sm tracking-widest focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                />
+                <Button size="sm" onClick={() => handleSetPin(e.id)} disabled={savingPinFor === e.id}>
+                  {savingPinFor === e.id ? "Saving…" : "Set PIN"}
+                </Button>
+                {pinMessage?.employeeId === e.id && (
+                  <span className={`text-xs ${pinMessage.error ? "text-rose-600" : "text-emerald-700"}`}>
+                    {pinMessage.error || "Saved"}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <TeamLoginsCard />
 
       {showAddModal && (
         <AddEmployeeModal
