@@ -48,11 +48,11 @@ export function Dashboard() {
   return (
     <div>
       <div
-        className="mb-6 rounded-2xl p-5"
+        className="mb-6 rounded-2xl p-6"
         style={{ background: "linear-gradient(135deg, rgba(61,90,128,0.08), rgba(224,122,95,0.08))" }}
       >
-        <p className="text-sm text-stone-500">{tenant?.name}</p>
-        <h1 className="text-2xl font-semibold tracking-tight text-stone-900">
+        <p className="font-display text-[15px] italic tracking-wide text-brand-600">{tenant?.name}</p>
+        <h1 className="mt-1.5 text-balance font-display text-3xl font-medium leading-tight tracking-tight text-stone-900">
           {greeting}{user?.email ? `, ${user.email.split("@")[0]}` : ""}
         </h1>
       </div>

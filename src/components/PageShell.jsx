@@ -1,68 +1,118 @@
 // src/components/PageShell.jsx
+// Sidebar layout, replacing the old horizontal top-nav-with-dropdowns —
+// validated first as a mockup the user reviewed before this was wired up.
+// A flat, always-visible grouped list beats click-to-open dropdown menus for
+// discoverability, and as a side effect removes an entire class of dropdown
+// accessibility work (portal positioning, aria-haspopup/expanded, Escape
+// handling) since nothing here is a popup anymore — it's just links.
+import { useEffect, useRef, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { auth } from "../lib/api";
 import carefitIcon from "../assets/carefit-icon.svg";
-import { useScrollFade } from "../lib/useScrollFade";
 import { TenantSwitcher } from "./TenantSwitcher";
 import { GlobalSearch } from "./GlobalSearch";
-import { NavDropdown } from "./NavDropdown";
 
-// Dashboard and Residents are daily-use enough to stay as standalone links;
-// everything else groups into a dropdown by function, so the bar reads as
-// seven top-level choices instead of eleven flat, same-weight tabs.
+const ICONS = {
+  home: <path d="M4 11l8-7 8 7M6 9.5V20h5v-6h2v6h5V9.5" />,
+  resident: <><circle cx="12" cy="8" r="3.3" /><path d="M5.5 20c0-4 3-6.7 6.5-6.7s6.5 2.7 6.5 6.7" /></>,
+  team: <><circle cx="9" cy="8.5" r="2.8" /><circle cx="16.5" cy="9.5" r="2.2" /><path d="M3.5 20c0-3.6 2.5-6 5.5-6s5.5 2.4 5.5 6" /><path d="M15 14.3c2.4.2 4 2.2 4 5.7" /></>,
+  clock: <><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5v5l3.3 2" /></>,
+  shield: <><path d="M12 3.2l7 2.8v5.7c0 4.6-3 7.7-7 9.1-4-1.4-7-4.5-7-9.1V6l7-2.8Z" /><path d="M9 12l2 2 4.2-4.5" /></>,
+  finance: <><path d="M4 20V11" /><path d="M10.5 20V6.5" /><path d="M17 20v-8" /><path d="M3 20h18" /></>,
+  gear: <><circle cx="12" cy="12" r="3" /><path d="M12 3v2.4M12 18.6V21M4.9 6.5l1.9 1.4M17.2 16.1l1.9 1.4M4.9 17.5l1.9-1.4M17.2 7.9l1.9-1.4M3 12h2.4M18.6 12H21" /></>,
+};
+
+function Icon({ name, className }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className || "h-[18px] w-[18px] shrink-0"} stroke="currentColor" strokeWidth="1.75" fill="none" strokeLinecap="round" strokeLinejoin="round">
+      {ICONS[name]}
+    </svg>
+  );
+}
+
+// Dashboard and Residents are daily-use enough to stay standalone; everything
+// else groups under one icon (shown on the group's first item) plus a small
+// section label, same content as before — just laid out vertically now.
 const NAV_ITEMS = [
-  { type: "link", to: "/", label: "Dashboard" },
-  { type: "link", to: "/residents", label: "Residents" },
-  {
-    type: "dropdown",
-    label: "Care Team",
-    items: [
-      { to: "/care-team", label: "Roster" },
-      { to: "/onboarding", label: "Onboarding" },
-    ],
-  },
-  {
-    type: "dropdown",
-    label: "Operations",
-    items: [
-      { to: "/timekeeping", label: "Timekeeping" },
-      { to: "/clock", label: "Clock" },
-    ],
-  },
-  {
-    type: "dropdown",
-    label: "Compliance",
-    items: [
-      { to: "/credentials", label: "Credentials" },
-      { to: "/documents", label: "Documents" },
-    ],
-  },
-  {
-    type: "dropdown",
-    label: "Finance",
-    items: [
-      { to: "/finance", label: "Overview" },
-      { to: "/analytics", label: "Analytics" },
-      { to: "/expenses", label: "Expenses" },
-      { to: "/payroll", label: "Payroll" },
-    ],
-  },
-  {
-    type: "dropdown",
-    label: "Settings",
-    items: [
-      { to: "/care-plan", label: "Care Plans" },
-      { to: "/settings", label: "General" },
-    ],
-  },
+  { type: "link", to: "/", label: "Dashboard", icon: "home" },
+  { type: "link", to: "/residents", label: "Residents", icon: "resident" },
+  { type: "group", label: "Care Team", icon: "team", items: [{ to: "/care-team", label: "Roster" }, { to: "/onboarding", label: "Onboarding" }] },
+  { type: "group", label: "Operations", icon: "clock", items: [{ to: "/timekeeping", label: "Timekeeping" }, { to: "/clock", label: "Clock" }] },
+  { type: "group", label: "Compliance", icon: "shield", items: [{ to: "/credentials", label: "Credentials" }, { to: "/documents", label: "Documents" }] },
+  { type: "group", label: "Finance", icon: "finance", items: [{ to: "/finance", label: "Overview" }, { to: "/analytics", label: "Analytics" }, { to: "/expenses", label: "Expenses" }, { to: "/payroll", label: "Payroll" }] },
+  { type: "group", label: "Settings", icon: "gear", items: [{ to: "/settings", label: "General" }, { to: "/care-plan", label: "Care Plans" }] },
 ];
 
-const navLinkClass = ({ isActive }) =>
-  `shrink-0 border-b-2 px-3 py-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 focus-visible:ring-inset ${
+function itemClass({ isActive }) {
+  return `relative flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13.5px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 ${
     isActive
-      ? "border-brand-600 font-medium text-stone-900"
-      : "border-transparent text-stone-500 hover:text-stone-800"
+      ? "bg-white/15 font-medium text-white before:absolute before:-left-3.5 before:bottom-1.5 before:top-1.5 before:w-[3px] before:rounded-r before:bg-accent-500 before:content-['']"
+      : "text-brand-100 hover:bg-white/10 hover:text-white"
   }`;
+}
+
+const SIDEBAR_COLLAPSED_KEY = "carefit_sidebar_collapsed";
+
+function UserMenu({ user, isAdmin, onLogout, collapsed }) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function onClickOutside(e) {
+      if (rootRef.current && !rootRef.current.contains(e.target)) setOpen(false);
+    }
+    function onKeyDown(e) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("mousedown", onClickOutside);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onClickOutside);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
+  const name = user?.email?.split("@")[0] || "";
+
+  return (
+    <div ref={rootRef} className="relative mt-auto border-t border-white/10 pt-3">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="true"
+        aria-expanded={open}
+        className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500"
+      >
+        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-500 text-[11px] font-semibold text-white">
+          {name.slice(0, 2).toUpperCase()}
+        </span>
+        <span className={`min-w-0 flex-1 ${collapsed ? "lg:hidden" : ""}`}>
+          <span className="block truncate text-[12.5px] font-medium text-white">{name}</span>
+          <span className="block truncate text-[11px] text-brand-200/80">{user?.email}</span>
+        </span>
+      </button>
+
+      {open && (
+        <div
+          className="absolute bottom-full left-0 z-20 mb-2 w-56 overflow-hidden rounded-xl border border-stone-200 bg-white py-1.5 shadow-lg"
+          style={{ transformOrigin: "bottom left", animation: "dropdown-in 140ms cubic-bezier(0.16, 1, 0.3, 1)" }}
+        >
+          {isAdmin && (
+            <div className="px-3.5 py-1.5">
+              <span className="rounded-full bg-stone-100 px-2 py-0.5 text-xs font-medium text-stone-500">Admin</span>
+            </div>
+          )}
+          <button
+            onClick={onLogout}
+            className="block w-full px-3.5 py-2 text-left text-sm text-stone-700 hover:bg-stone-50"
+          >
+            Log out
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export function PageShell({ children }) {
   const navigate = useNavigate();
@@ -71,7 +121,30 @@ export function PageShell({ children }) {
   const tenant = auth.getTenant();
   const isAdmin = user?.role === "admin";
 
-  const { ref: navRef, canScrollLeft, canScrollRight, onScroll: updateScrollState } = useScrollFade();
+  const [collapsed, setCollapsed] = useState(() => localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === "1");
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const hamburgerRef = useRef(null);
+
+  useEffect(() => setDrawerOpen(false), [location.pathname]);
+
+  useEffect(() => {
+    if (!drawerOpen) return;
+    function onKeyDown(e) {
+      if (e.key === "Escape") {
+        setDrawerOpen(false);
+        hamburgerRef.current?.focus();
+      }
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [drawerOpen]);
+
+  function toggleCollapsed() {
+    setCollapsed((c) => {
+      localStorage.setItem(SIDEBAR_COLLAPSED_KEY, c ? "0" : "1");
+      return !c;
+    });
+  }
 
   function handleLogout() {
     auth.logout();
@@ -79,21 +152,89 @@ export function PageShell({ children }) {
   }
 
   return (
-    <div className="min-h-screen bg-stone-50">
+    <div className="min-h-screen bg-stone-50 lg:flex">
       <a
         href="#main-content"
         className="sr-only rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50"
       >
         Skip to content
       </a>
-      <header className="relative border-b border-stone-200 bg-white">
-        <div className="mx-auto flex max-w-5xl items-center gap-4 px-6 py-3">
-          <span className="flex shrink-0 items-center gap-1.5 text-sm font-semibold tracking-tight text-stone-900">
-            <img src={carefitIcon} alt="" className="h-5 w-auto" />
-            CareFit <span className="text-brand-600">Connect</span>
-          </span>
 
-          <span className="h-4 w-px shrink-0 bg-stone-200" />
+      {/* Backdrop only exists below lg, where the sidebar is an off-canvas drawer */}
+      <div
+        onClick={() => setDrawerOpen(false)}
+        className={`fixed inset-0 z-30 bg-stone-900/40 transition-opacity lg:hidden ${
+          drawerOpen ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+        aria-hidden="true"
+      />
+
+      <aside
+        className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col overflow-y-auto bg-brand-700 p-3.5 text-brand-100 transition-transform duration-200 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 lg:transition-none ${
+          collapsed ? "lg:w-[70px]" : "lg:w-64"
+        } ${drawerOpen ? "translate-x-0" : "-translate-x-full"}`}
+      >
+        <div className="mb-2 flex items-center justify-between border-b border-white/10 px-1 pb-3.5">
+          <span className="flex min-w-0 items-center gap-2">
+            <img src={carefitIcon} alt="" className="h-5 w-5 shrink-0" />
+            <span className={`truncate text-sm font-semibold text-white ${collapsed ? "lg:hidden" : ""}`}>CareFit</span>
+          </span>
+          <button
+            onClick={toggleCollapsed}
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            className="hidden shrink-0 rounded-md p-1 text-brand-200 hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 lg:flex"
+          >
+            <svg viewBox="0 0 24 24" className={`h-4 w-4 transition-transform ${collapsed ? "rotate-180" : ""}`} stroke="currentColor" strokeWidth="1.75" fill="none" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 5l-7 7 7 7" />
+            </svg>
+          </button>
+        </div>
+
+        <nav className="flex flex-1 flex-col gap-0.5">
+          {NAV_ITEMS.map((entry) =>
+            entry.type === "link" ? (
+              <NavLink key={entry.to} to={entry.to} end={entry.to === "/"} className={itemClass}>
+                <Icon name={entry.icon} />
+                <span className={collapsed ? "lg:hidden" : ""}>{entry.label}</span>
+              </NavLink>
+            ) : (
+              <div key={entry.label} className="mt-3.5 border-t border-white/10 pt-3.5 first:mt-0 first:border-0 first:pt-0">
+                <div className={`px-2.5 pb-1.5 text-[11px] font-semibold tracking-wide text-brand-200/75 ${collapsed ? "lg:hidden" : ""}`}>
+                  {entry.label}
+                </div>
+                {entry.items.map((item, i) => (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    className={({ isActive }) =>
+                      `${itemClass({ isActive })} ${i === 0 ? "" : `pl-9 text-[13px] ${collapsed ? "lg:hidden" : ""}`}`
+                    }
+                  >
+                    {i === 0 && <Icon name={entry.icon} />}
+                    <span className={i === 0 && collapsed ? "lg:hidden" : ""}>{item.label}</span>
+                  </NavLink>
+                ))}
+              </div>
+            )
+          )}
+        </nav>
+
+        <UserMenu user={user} isAdmin={isAdmin} onLogout={handleLogout} collapsed={collapsed} />
+      </aside>
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        <div className="relative flex items-center gap-3 border-b border-stone-200 bg-white px-4 py-2.5 lg:px-6">
+          <button
+            ref={hamburgerRef}
+            onClick={() => setDrawerOpen(true)}
+            aria-label="Open menu"
+            className="rounded-md p-1.5 text-stone-500 hover:bg-stone-100 hover:text-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 lg:hidden"
+          >
+            <svg viewBox="0 0 24 24" className="h-5 w-5" stroke="currentColor" strokeWidth="1.75" fill="none" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 7h16M4 12h16M4 17h16" />
+            </svg>
+          </button>
 
           <div className="min-w-0 max-w-[8rem] sm:max-w-[16rem]">
             {isAdmin ? (
@@ -106,54 +247,14 @@ export function PageShell({ children }) {
           <div className="flex flex-1 justify-end">
             <GlobalSearch />
           </div>
+        </div>
 
-          <div className="flex shrink-0 items-center gap-4">
-            {isAdmin && (
-              <span className="hidden rounded-full bg-stone-100 px-2 py-0.5 text-xs font-medium text-stone-500 sm:inline-flex">
-                Admin
-              </span>
-            )}
-            <button
-              onClick={handleLogout}
-              className="rounded text-sm text-stone-500 transition-colors hover:text-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 focus-visible:ring-offset-2"
-            >
-              Log out
-            </button>
+        <main id="main-content" tabIndex={-1} className="mx-auto w-full max-w-5xl flex-1 px-6 py-10 focus:outline-none">
+          <div key={location.pathname} style={{ animation: "fade-in 200ms ease-out" }}>
+            {children}
           </div>
-        </div>
-        <div className="relative mx-auto max-w-5xl border-t border-stone-100">
-          {canScrollLeft && (
-            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 flex w-8 items-center bg-gradient-to-r from-white to-transparent">
-              <span className="text-stone-400">‹</span>
-            </div>
-          )}
-          <nav
-            ref={navRef}
-            onScroll={updateScrollState}
-            className="no-scrollbar flex items-center gap-1 overflow-x-auto px-4"
-          >
-            {NAV_ITEMS.map((entry) =>
-              entry.type === "link" ? (
-                <NavLink key={entry.to} to={entry.to} end={entry.to === "/"} className={navLinkClass}>
-                  {entry.label}
-                </NavLink>
-              ) : (
-                <NavDropdown key={entry.label} label={entry.label} items={entry.items} />
-              )
-            )}
-          </nav>
-          {canScrollRight && (
-            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 flex w-8 items-center justify-end bg-gradient-to-l from-white to-transparent">
-              <span className="text-stone-400">›</span>
-            </div>
-          )}
-        </div>
-      </header>
-      <main id="main-content" tabIndex={-1} className="mx-auto max-w-5xl px-6 py-10 focus:outline-none">
-        <div key={location.pathname} style={{ animation: "fade-in 200ms ease-out" }}>
-          {children}
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }
