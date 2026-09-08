@@ -5,6 +5,7 @@
 // FinanceOverview. Unified here so every stat tile in the app gets the same
 // hover feedback and count-up animation for free.
 import { useEffect, useRef, useState } from "react";
+import { Icon } from "./icons";
 
 function useCountUp(target, duration = 600) {
   const [value, setValue] = useState(typeof target === "number" ? 0 : target);
@@ -41,11 +42,11 @@ function useCountUp(target, duration = 600) {
 // (rendered as-is, no animation — only a plain number can be counted up).
 // format: "currency" renders $ with a sign, and colors by the FINAL value's
 // sign when emphasize is set (never flickers mid-count).
-// bare: renders as a plain white grid cell with no border/shadow/rounding of
-// its own, for use inside <StatStrip> (one shared boundary instead of N
-// boxes — the dividers come from the grid's own gap, see StatStrip).
-// Omit it and a card is fully self-contained, as every StatCard used to be.
-export function StatCard({ label, value, tone, emphasize, format, suffix = "", bare }) {
+// icon: optional, from src/components/icons.jsx — rendered small and muted
+// next to the label, same plain monochrome treatment as the sidebar nav.
+// No colored badge behind it this time; that was the earlier version of
+// this exact idea and it was explicitly not what was wanted.
+export function StatCard({ label, value, tone, emphasize, format, suffix = "", icon }) {
   const isNumeric = typeof value === "number";
   const animated = useCountUp(value);
 
@@ -71,14 +72,13 @@ export function StatCard({ label, value, tone, emphasize, format, suffix = "", b
         ? "text-accent-600"
         : "text-stone-900";
 
-  const wrapperClass = bare
-    ? "bg-white p-4"
-    : "rounded-2xl border border-stone-200 bg-white p-4 shadow-sm transition-shadow duration-200 hover:shadow-md";
-
   return (
-    <div className={wrapperClass}>
+    <div className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm transition-shadow duration-200 hover:shadow-md">
       <div className={`text-2xl font-semibold tabular-nums ${colorClass}`}>{display}</div>
-      <div className="mt-0.5 text-xs text-stone-500">{label}</div>
+      <div className="mt-0.5 flex items-center gap-1.5 text-xs text-stone-500">
+        {icon && <Icon name={icon} className="h-3.5 w-3.5 shrink-0 text-stone-400" />}
+        {label}
+      </div>
     </div>
   );
 }

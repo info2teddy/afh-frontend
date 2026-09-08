@@ -64,10 +64,10 @@ export function CareTeam() {
 
       {stats && (
         <StatStrip>
-          <StatCard bare label="Team Members" value={stats.total} />
-          <StatCard bare label="Active" value={stats.active} />
-          <StatCard bare label="Needs Attention" value={stats.needsAttention} tone={stats.needsAttention > 0 ? "warning" : undefined} />
-          <StatCard bare label="Live-in" value={stats.liveIn} />
+          <StatCard label="Team Members" value={stats.total} />
+          <StatCard label="Active" value={stats.active} />
+          <StatCard label="Needs Attention" value={stats.needsAttention} tone={stats.needsAttention > 0 ? "warning" : undefined} />
+          <StatCard label="Live-in" value={stats.liveIn} />
         </StatStrip>
       )}
 

@@ -68,15 +68,15 @@ export function Dashboard() {
       {data && (
         <>
           <StatStrip>
-            <StatCard bare label="Residents" value={data.residentCount} />
-            <StatCard bare label="Staff On Duty" value={data.staffOnDuty} />
+            <StatCard label="Residents" value={data.residentCount} icon="resident" />
+            <StatCard label="Staff On Duty" value={data.staffOnDuty} icon="clock" />
             <StatCard
-              bare
               label="Needs Attention"
               value={data.needsAttention}
               tone={data.needsAttention > 0 ? "warning" : undefined}
+              icon="warning"
             />
-            <StatCard bare label="Compliance" value={data.compliance} suffix="%" />
+            <StatCard label="Compliance" value={data.compliance} suffix="%" icon="shield" />
           </StatStrip>
 
           <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">

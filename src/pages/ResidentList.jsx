@@ -93,10 +93,10 @@ export function ResidentList() {
 
       {stats && (
         <StatStrip>
-          <StatCard bare label="Residents" value={stats.total} />
-          <StatCard bare label="Active Care" value={stats.activeCare} />
-          <StatCard bare label="Needs Care Plan" value={stats.needsPlanCount} tone={stats.needsPlanCount > 0 ? "warning" : undefined} />
-          <StatCard bare label="Care Plan Compliance" value={stats.compliance === null ? "—" : stats.compliance} suffix="%" />
+          <StatCard label="Residents" value={stats.total} />
+          <StatCard label="Active Care" value={stats.activeCare} />
+          <StatCard label="Needs Care Plan" value={stats.needsPlanCount} tone={stats.needsPlanCount > 0 ? "warning" : undefined} />
+          <StatCard label="Care Plan Compliance" value={stats.compliance === null ? "—" : stats.compliance} suffix="%" />
         </StatStrip>
       )}
 

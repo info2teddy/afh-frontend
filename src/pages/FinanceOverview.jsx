@@ -57,10 +57,10 @@ export function FinanceOverview() {
       {data && (
         <>
           <StatStrip>
-            <StatCard bare label="Revenue" value={data.revenue} format="currency" />
-            <StatCard bare label="Expenses" value={data.expenses} format="currency" />
-            <StatCard bare label="Payroll" value={data.payroll} format="currency" />
-            <StatCard bare label="Net Income" value={data.netIncome} format="currency" emphasize />
+            <StatCard label="Revenue" value={data.revenue} format="currency" />
+            <StatCard label="Expenses" value={data.expenses} format="currency" />
+            <StatCard label="Payroll" value={data.payroll} format="currency" />
+            <StatCard label="Net Income" value={data.netIncome} format="currency" emphasize />
           </StatStrip>
 
           <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
