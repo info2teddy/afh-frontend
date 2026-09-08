@@ -80,7 +80,14 @@ export function Dashboard() {
           </StatStrip>
 
           <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-4 text-base font-semibold text-stone-900">Today's priorities</h2>
+            <div className="mb-4 flex items-center gap-2">
+              <h2 className="text-base font-semibold text-stone-900">Today's priorities</h2>
+              {data.needsAttention > 0 && (
+                <span className="rounded-full bg-accent-50 px-2 py-0.5 text-xs font-semibold tabular-nums text-accent-700">
+                  {data.needsAttention}
+                </span>
+              )}
+            </div>
 
             {data.summary && (
               <div className="mb-4 flex items-start gap-2 rounded-lg bg-stone-50 px-3 py-2.5 text-sm text-stone-700">
@@ -107,14 +114,31 @@ export function Dashboard() {
 }
 
 const DOT = { danger: "bg-rose-500", warning: "bg-accent-500", success: "bg-emerald-500" };
-const ROW_TINT = { danger: "bg-rose-50/60 hover:bg-rose-50", warning: "bg-accent-50/60 hover:bg-accent-50", success: "bg-emerald-50/60 hover:bg-emerald-50" };
+const ROW_TINT = { danger: "bg-rose-50/60", warning: "bg-accent-50/60", success: "bg-emerald-50/60" };
+const ROW_HOVER = { danger: "hover:bg-rose-50", warning: "hover:bg-accent-50", success: "hover:bg-emerald-50" };
 
 function PriorityRow({ tone, to, children }) {
+  const rowClass = `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-stone-700 transition-colors ${ROW_TINT[tone]} ${
+    to ? `${ROW_HOVER[tone]} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40` : ""
+  }`;
+
   const content = (
-    <div className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-stone-700 transition-colors ${ROW_TINT[tone]}`}>
+    <>
       <span className={`h-2 w-2 shrink-0 rounded-full ${DOT[tone]}`} />
-      <span>{children}</span>
-    </div>
+      <span className="flex-1">{children}</span>
+      {to && (
+        <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-stone-400" stroke="currentColor" strokeWidth="1.75" fill="none" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M9 6l6 6-6 6" />
+        </svg>
+      )}
+    </>
   );
-  return to ? <Link to={to}>{content}</Link> : content;
+
+  return to ? (
+    <Link to={to} className={rowClass}>
+      {content}
+    </Link>
+  ) : (
+    <div className={rowClass}>{content}</div>
+  );
 }
