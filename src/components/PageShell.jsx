@@ -249,7 +249,7 @@ export function PageShell({ children }) {
           </div>
         </div>
 
-        <main id="main-content" tabIndex={-1} className="mx-auto w-full max-w-5xl flex-1 px-6 py-10 focus:outline-none">
+        <main id="main-content" tabIndex={-1} className="w-full flex-1 px-6 py-10 focus:outline-none">
           <div key={location.pathname} style={{ animation: "fade-in 200ms ease-out" }}>
             {children}
           </div>
