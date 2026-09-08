@@ -160,7 +160,9 @@ export function PageShell({ children }) {
         <div className="mb-2 flex items-center justify-between border-b border-white/10 px-1 pb-3.5">
           <span className="flex min-w-0 items-center gap-2">
             <img src={carefitIcon} alt="" className="h-5 w-5 shrink-0" />
-            <span className={`truncate text-sm font-semibold text-white ${collapsed ? "lg:hidden" : ""}`}>CareFit</span>
+            <span className={`truncate text-sm font-semibold text-white ${collapsed ? "lg:hidden" : ""}`}>
+              CareFit <span className="text-accent-500">Connect</span>
+            </span>
           </span>
           <button
             onClick={toggleCollapsed}
