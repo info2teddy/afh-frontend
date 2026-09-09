@@ -100,6 +100,7 @@ export const api = {
     list: () => request("/residents"),
     get: (id) => request(`/residents/${id}`),
     create: (body) => request("/residents", { method: "POST", body: JSON.stringify(body) }),
+    setStatus: (id, body) => request(`/residents/${id}/status`, { method: "PATCH", body: JSON.stringify(body) }),
     notes: {
       list: (id) => request(`/residents/${id}/notes`),
       create: (id, content) => request(`/residents/${id}/notes`, { method: "POST", body: JSON.stringify({ content }) }),
@@ -120,6 +121,7 @@ export const api = {
     create: (body) => request("/employees", { method: "POST", body: JSON.stringify(body) }),
     expiringCredentials: (days = 60) => request(`/employees/credentials/expiring?days=${days}`),
     setPin: (id, pin) => request(`/employees/${id}/pin`, { method: "PATCH", body: JSON.stringify({ pin }) }),
+    setStatus: (id, body) => request(`/employees/${id}/status`, { method: "PATCH", body: JSON.stringify(body) }),
   },
   shifts: {
     week: (employeeId, weekStart) => request(`/shifts/employees/${employeeId}/week?weekStart=${weekStart}`),

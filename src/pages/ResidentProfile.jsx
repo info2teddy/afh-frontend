@@ -12,6 +12,7 @@ import { StatusPill } from "../components/StatusPill";
 import { Button } from "../components/Button";
 import { CardSkeleton } from "../components/CardSkeleton";
 import { ScrollFade } from "../components/ScrollFade";
+import { ResidentStatusModal } from "../components/ResidentStatusModal";
 
 const STATUS_TONE = { active: "success", discharging: "warning", discharged: "neutral" };
 const AUTH_TONE = { approved: "success", pending: "warning", denied: "danger" };
@@ -31,6 +32,7 @@ export function ResidentProfile() {
   const [resident, setResident] = useState(null);
   const [error, setError] = useState(null);
   const [tab, setTab] = useState(searchParams.get("tab") || "overview");
+  const [showStatusModal, setShowStatusModal] = useState(false);
 
   useEffect(() => {
     api.residents.get(id).then(setResident).catch((err) => setError(err.message));
@@ -42,15 +44,22 @@ export function ResidentProfile() {
         ← Residents
       </Link>
 
-      <div className="mb-6 mt-2">
-        <h1 className="text-2xl font-semibold tracking-tight text-stone-900">
-          {resident ? resident.name : "Resident"}
-        </h1>
-        <p className="mt-1 text-sm text-stone-500">
-          {resident
-            ? `${careLevelShortLabel(resident.careLevel)} · ${payerLabel(resident)} · ${resident.status}`
-            : "Loading…"}
-        </p>
+      <div className="mb-6 mt-2 flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-stone-900">
+            {resident ? resident.name : "Resident"}
+          </h1>
+          <p className="mt-1 text-sm text-stone-500">
+            {resident
+              ? `${careLevelShortLabel(resident.careLevel)} · ${payerLabel(resident)} · ${resident.status}`
+              : "Loading…"}
+          </p>
+        </div>
+        {resident && (
+          <Button variant="secondary" size="sm" onClick={() => setShowStatusModal(true)}>
+            Update status
+          </Button>
+        )}
       </div>
 
       {error && <p className="mb-4 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>}
@@ -80,6 +89,17 @@ export function ResidentProfile() {
       {resident && tab === "documents" && <DocumentsTab residentId={id} />}
       {resident && tab === "notes" && <NotesTab residentId={id} />}
       {resident && tab === "billing" && <BillingTab residentId={id} />}
+
+      {showStatusModal && (
+        <ResidentStatusModal
+          resident={resident}
+          onClose={() => setShowStatusModal(false)}
+          onSaved={(updated) => {
+            setResident((prev) => ({ ...prev, ...updated }));
+            setShowStatusModal(false);
+          }}
+        />
+      )}
     </div>
   );
 }

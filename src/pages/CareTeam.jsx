@@ -9,6 +9,7 @@ import { Select } from "../components/Select";
 import { Button } from "../components/Button";
 import { ScrollFade } from "../components/ScrollFade";
 import { AddEmployeeModal } from "../components/AddEmployeeModal";
+import { EmployeeStatusModal } from "../components/EmployeeStatusModal";
 import { StatCard } from "../components/StatCard";
 import { StatStrip } from "../components/StatStrip";
 
@@ -26,6 +27,8 @@ export function CareTeam() {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showInactive, setShowInactive] = useState(false);
+  const [statusEmployee, setStatusEmployee] = useState(null);
   const navigate = useNavigate();
 
   function load() {
@@ -36,11 +39,12 @@ export function CareTeam() {
   const filtered = useMemo(() => {
     if (!employees) return null;
     return employees.filter((e) => {
+      if (!showInactive && e.status !== "active") return false;
       if (search && !e.name.toLowerCase().includes(search.toLowerCase())) return false;
       if (roleFilter && e.role !== roleFilter) return false;
       return true;
     });
-  }, [employees, search, roleFilter]);
+  }, [employees, search, roleFilter, showInactive]);
 
   const stats = useMemo(() => {
     if (!employees) return null;
@@ -95,6 +99,15 @@ export function CareTeam() {
             <option value="rn_delegator">RN Delegator</option>
             <option value="other">Other</option>
           </Select>
+          <label className="flex items-center gap-1.5 text-sm text-stone-600">
+            <input
+              type="checkbox"
+              checked={showInactive}
+              onChange={(e) => setShowInactive(e.target.checked)}
+              className="h-4 w-4 rounded border-stone-300 text-brand-600 focus:ring-brand-500/40"
+            />
+            Show inactive
+          </label>
         </div>
       )}
 
@@ -146,7 +159,17 @@ export function CareTeam() {
                       <td className="whitespace-nowrap px-5 py-3.5">
                         <StatusPill tone={STATUS_TONE[e.status] || "neutral"}>{e.status}</StatusPill>
                       </td>
-                      <td className="whitespace-nowrap px-5 py-3.5 text-right text-stone-400">→</td>
+                      <td className="whitespace-nowrap px-5 py-3.5 text-right">
+                        <button
+                          onClick={(ev) => {
+                            ev.stopPropagation();
+                            setStatusEmployee(e);
+                          }}
+                          className="rounded-lg px-2.5 py-1 text-xs font-medium text-stone-500 hover:bg-stone-100 hover:text-stone-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40"
+                        >
+                          Status
+                        </button>
+                      </td>
                     </tr>
                   );
                 })}
@@ -162,6 +185,17 @@ export function CareTeam() {
           onCreated={() => {
             setShowAddModal(false);
             load();
+          }}
+        />
+      )}
+
+      {statusEmployee && (
+        <EmployeeStatusModal
+          employee={statusEmployee}
+          onClose={() => setStatusEmployee(null)}
+          onSaved={(updated) => {
+            setEmployees((prev) => prev.map((e) => (e.id === updated.id ? { ...e, ...updated } : e)));
+            setStatusEmployee(null);
           }}
         />
       )}
