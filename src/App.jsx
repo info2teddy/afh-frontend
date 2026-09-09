@@ -54,7 +54,8 @@ function AuthedApp() {
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/timekeeping" element={<Timekeeping />} />
         <Route path="/clock" element={<Clock />} />
-        <Route path="/payroll" element={<Payroll />} />
+        {/* Payroll is admin-only too — same route-guard pattern as Settings below. */}
+        <Route path="/payroll" element={isAdmin ? <Payroll /> : <Navigate to="/" replace />} />
         <Route path="/finance" element={<FinanceOverview />} />
         <Route path="/analytics" element={<Analytics />} />
         <Route path="/expenses" element={<Expenses />} />
