@@ -112,10 +112,13 @@ export function ClockKioskHeader() {
 
   const time = now.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit", second: "2-digit" });
   const date = now.toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+  const hour = now.getHours();
+  const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
   return (
     <div className="mb-6 grid grid-cols-1 divide-y divide-stone-200 overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm sm:grid-cols-2 sm:divide-x sm:divide-y-0">
       <div className="flex flex-col items-center justify-center gap-1 px-6 py-7 text-center">
+        <div className="font-display text-base italic text-brand-600">{greeting}</div>
         <div className="text-5xl font-semibold tabular-nums tracking-tight text-stone-900">{time}</div>
         <div className="text-sm text-stone-500">{date}</div>
       </div>

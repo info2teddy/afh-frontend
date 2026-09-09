@@ -16,17 +16,25 @@ export function KioskShell({ children }) {
   }
 
   return (
-    <div className="min-h-screen bg-stone-50">
-      <header className="flex items-center justify-between border-b border-stone-200 bg-white px-6 py-3">
-        <span className="text-sm font-medium text-stone-700">{tenant?.name}</span>
+    <div
+      className="min-h-screen"
+      style={{
+        background:
+          "radial-gradient(circle at 15% -10%, rgba(224,122,95,0.1), transparent 45%)," +
+          "radial-gradient(circle at 100% 0%, rgba(61,90,128,0.1), transparent 50%)," +
+          "#fafaf9",
+      }}
+    >
+      <header className="flex items-center justify-between px-6 py-4">
+        <span className="text-sm font-semibold text-stone-600">{tenant?.name}</span>
         <button
           onClick={handleLogout}
-          className="rounded text-xs text-stone-400 transition-colors hover:text-stone-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 focus-visible:ring-offset-2"
+          className="rounded p-1.5 text-xs text-stone-400 transition-colors hover:text-stone-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 focus-visible:ring-offset-2"
         >
           Log out
         </button>
       </header>
-      <main className="mx-auto max-w-5xl px-6 py-10">{children}</main>
+      <main className="mx-auto max-w-5xl px-6 pb-10">{children}</main>
     </div>
   );
 }
