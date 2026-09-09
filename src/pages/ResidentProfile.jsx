@@ -183,9 +183,19 @@ function PlaceholderTab({ text }) {
 // headers, "- " bullets, "**bold**" inline — so it renders as a structured
 // NCP document instead of a wall of text. See buildPrompt in the backend's
 // carePlans.js for the exact contract.
+const FIELD_LINE_RE = /^\*\*([^*]+):\*\*\s*(.*)$/;
+const isTableRuleRow = (cells) => cells.every((c) => /^:?-+:?$/.test(c));
+const splitTableRow = (line) =>
+  line
+    .replace(/^\||\|$/g, "")
+    .split("|")
+    .map((c) => c.trim());
+
 function CarePlanContent({ text }) {
+  const lines = text.split("\n");
   const blocks = [];
   let currentList = null;
+  let currentFields = null;
 
   function flushList() {
     if (currentList) {
@@ -193,24 +203,64 @@ function CarePlanContent({ text }) {
       currentList = null;
     }
   }
+  function flushFields() {
+    if (currentFields) {
+      blocks.push({ type: "fields", items: currentFields });
+      currentFields = null;
+    }
+  }
 
-  for (const rawLine of text.split("\n")) {
-    const line = rawLine.trim();
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i].trim();
+
     if (!line) {
       flushList();
+      flushFields();
+      i++;
       continue;
     }
     if (line.startsWith("## ")) {
       flushList();
+      flushFields();
       blocks.push({ type: "heading", text: line.slice(3).trim() });
-    } else if (line.startsWith("- ")) {
-      (currentList ||= []).push(line.slice(2).trim());
-    } else {
-      flushList();
-      blocks.push({ type: "para", text: line });
+      i++;
+      continue;
     }
+    if (line.startsWith("|")) {
+      flushList();
+      flushFields();
+      const tableLines = [];
+      while (i < lines.length && lines[i].trim().startsWith("|")) {
+        tableLines.push(lines[i].trim());
+        i++;
+      }
+      const rows = tableLines.map(splitTableRow).filter((cells) => !isTableRuleRow(cells));
+      if (rows.length > 0) {
+        blocks.push({ type: "table", header: rows[0], rows: rows.slice(1) });
+      }
+      continue;
+    }
+    if (line.startsWith("- ")) {
+      flushFields();
+      (currentList ||= []).push(line.slice(2).trim());
+      i++;
+      continue;
+    }
+    const fieldMatch = line.match(FIELD_LINE_RE);
+    if (fieldMatch) {
+      flushList();
+      (currentFields ||= []).push({ label: fieldMatch[1].trim(), value: fieldMatch[2].trim() });
+      i++;
+      continue;
+    }
+    flushList();
+    flushFields();
+    blocks.push({ type: "para", text: line });
+    i++;
   }
   flushList();
+  flushFields();
 
   function renderInline(str) {
     return str.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
@@ -219,7 +269,7 @@ function CarePlanContent({ text }) {
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       {blocks.map((block, i) => {
         if (block.type === "heading") {
           return (
@@ -229,6 +279,51 @@ function CarePlanContent({ text }) {
             >
               {block.text}
             </h3>
+          );
+        }
+        if (block.type === "fields") {
+          return (
+            <dl key={i} className="grid grid-cols-1 gap-x-6 gap-y-2.5 sm:grid-cols-2">
+              {block.items.map((f, j) => (
+                <div key={j}>
+                  <dt className="text-xs font-medium uppercase tracking-wide text-stone-500">{f.label}</dt>
+                  <dd className="mt-0.5 text-sm text-stone-900">{f.value ? renderInline(f.value) : "—"}</dd>
+                </div>
+              ))}
+            </dl>
+          );
+        }
+        if (block.type === "table") {
+          return (
+            <div key={i} className="overflow-hidden rounded-xl border border-stone-200">
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse text-left text-sm">
+                  <thead>
+                    <tr className="bg-stone-50/80 text-xs font-medium uppercase tracking-wide text-stone-500">
+                      {block.header.map((cell, j) => (
+                        <th key={j} className="border-b border-stone-200 px-4 py-2.5 align-top">
+                          {cell}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-stone-100">
+                    {block.rows.map((row, r) => (
+                      <tr key={r} className="align-top odd:bg-white even:bg-stone-50/40">
+                        {row.map((cell, c) => (
+                          <td
+                            key={c}
+                            className={`px-4 py-2.5 leading-relaxed text-stone-700 ${c === 0 ? "font-medium text-stone-900" : ""}`}
+                          >
+                            {renderInline(cell)}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           );
         }
         if (block.type === "list") {
