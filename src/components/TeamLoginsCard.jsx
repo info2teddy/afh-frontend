@@ -1,11 +1,11 @@
 // src/components/TeamLoginsCard.jsx
-// Self-service login management for a tenant's own staff: invite a teammate
-// (a real person, so they choose/see the actual password) and create the
-// restricted clock-in tablet login (see kioskRestrict.js on the backend —
+// Login management for a tenant's staff: invite a teammate (a real person,
+// so they choose/see the actual password) and create the restricted
+// clock-in tablet login (see kioskRestrict.js on the backend —
 // auto-generated credentials, since nobody but the tablet's browser ever
-// types them). A manager can do all of this for their OWN business; the
-// backend enforces that boundary independently (routes/auth.js), this is
-// just the UI for it. Replaces the old admin-only ClockLoginCard.
+// types them). Admin-only (lives in Settings) — this briefly was a manager
+// self-serve feature, but the backend (routes/auth.js) now requires admin
+// for all three routes this card calls, so this is the UI for that.
 import { useEffect, useState } from "react";
 import { auth } from "../lib/api";
 import { Button } from "./Button";
