@@ -13,7 +13,6 @@ import { StatCard } from "../components/StatCard";
 import { StatStrip } from "../components/StatStrip";
 
 const STATUS_TONE = { active: "success", discharging: "warning", discharged: "neutral" };
-const todayUTC = () => new Date().toISOString().slice(0, 10);
 
 function age(dateOfBirth) {
   if (!dateOfBirth) return null;
@@ -24,7 +23,7 @@ function age(dateOfBirth) {
 
 export function ResidentList() {
   const [residents, setResidents] = useState(null);
-  const [carePlanStatus, setCarePlanStatus] = useState({}); // residentId -> "up_to_date" | "needs_plan"
+  const [carePlanStatus, setCarePlanStatus] = useState({}); // residentId -> "on_file" | "needs_plan"
   const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -43,13 +42,13 @@ export function ResidentList() {
           data.map((r) =>
             api.carePlans
               .list(r.id)
-              .then((plans) => [r.id, plans.some((p) => p.planDate.slice(0, 10) === todayUTC())])
+              .then((plans) => [r.id, plans.length > 0])
               .catch(() => [r.id, null])
           )
         ).then((pairs) => {
           const map = {};
-          for (const [id, upToDate] of pairs) {
-            if (upToDate !== null) map[id] = upToDate ? "up_to_date" : "needs_plan";
+          for (const [id, onFile] of pairs) {
+            if (onFile !== null) map[id] = onFile ? "on_file" : "needs_plan";
           }
           setCarePlanStatus(map);
         });
@@ -74,7 +73,7 @@ export function ResidentList() {
     const activeCare = residents.filter((r) => r.status === "active").length;
     const needsPlanCount = residents.filter((r) => carePlanStatus[r.id] === "needs_plan").length;
     const known = residents.filter((r) => carePlanStatus[r.id]).length;
-    const upToDate = residents.filter((r) => carePlanStatus[r.id] === "up_to_date").length;
+    const upToDate = residents.filter((r) => carePlanStatus[r.id] === "on_file").length;
     const compliance = known > 0 ? Math.round((upToDate / known) * 100) : null;
     return { total: residents.length, activeCare, needsPlanCount, compliance };
   }, [residents, carePlanStatus]);
@@ -184,7 +183,7 @@ export function ResidentList() {
                       <td className="whitespace-nowrap px-5 py-3.5 text-stone-600">{careLevelShortLabel(r.careLevel)}</td>
                       <td className="whitespace-nowrap px-5 py-3.5 text-stone-600">{payerLabel(r)}</td>
                       <td className="whitespace-nowrap px-5 py-3.5">
-                        {cpStatus === "up_to_date" && <StatusPill tone="success">Up to date</StatusPill>}
+                        {cpStatus === "on_file" && <StatusPill tone="success">On file</StatusPill>}
                         {cpStatus === "needs_plan" && <StatusPill tone="warning">Needs plan</StatusPill>}
                         {!cpStatus && <span className="text-stone-400">—</span>}
                       </td>

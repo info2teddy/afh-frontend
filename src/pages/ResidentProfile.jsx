@@ -119,13 +119,13 @@ function age(dateOfBirth) {
 }
 
 function OverviewTab({ resident, onGoToTab }) {
-  const [carePlanStatus, setCarePlanStatus] = useState(null); // "up_to_date" | "needs_plan" | null (unknown)
+  const [latestPlan, setLatestPlan] = useState(undefined); // undefined = loading, null = none on file, object = latest
 
   useEffect(() => {
     api.carePlans
       .list(resident.id)
-      .then((plans) => setCarePlanStatus(plans.some((p) => p.planDate.slice(0, 10) === todayUTC()) ? "up_to_date" : "needs_plan"))
-      .catch(() => {});
+      .then((plans) => setLatestPlan(plans[0] || null))
+      .catch(() => setLatestPlan(null));
   }, [resident.id]);
 
   return (
@@ -156,12 +156,12 @@ function OverviewTab({ resident, onGoToTab }) {
       <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-base font-semibold text-stone-900">Today's care plan</h2>
-            {carePlanStatus === "up_to_date" && <p className="mt-1 text-sm text-stone-500">Generated for today.</p>}
-            {carePlanStatus === "needs_plan" && <p className="mt-1 text-sm text-stone-500">Not generated yet for today.</p>}
+            <h2 className="text-base font-semibold text-stone-900">Negotiated Care Plan (NCP)</h2>
+            {latestPlan && <p className="mt-1 text-sm text-stone-500">Last updated {formatFriendlyDate(latestPlan.planDate)}.</p>}
+            {latestPlan === null && <p className="mt-1 text-sm text-stone-500">No care plan on file yet.</p>}
           </div>
-          {carePlanStatus === "up_to_date" && <StatusPill tone="success">Up to date</StatusPill>}
-          {carePlanStatus === "needs_plan" && <StatusPill tone="warning">Needs plan</StatusPill>}
+          {latestPlan && <StatusPill tone="success">On file</StatusPill>}
+          {latestPlan === null && <StatusPill tone="warning">Needs plan</StatusPill>}
         </div>
         <Button variant="secondary" size="sm" className="mt-4" onClick={() => onGoToTab("care-plan")}>
           Go to Care Plan →
@@ -179,13 +179,84 @@ function PlaceholderTab({ text }) {
   );
 }
 
+// The AI writes plan content in a small markdown subset — "## " section
+// headers, "- " bullets, "**bold**" inline — so it renders as a structured
+// NCP document instead of a wall of text. See buildPrompt in the backend's
+// carePlans.js for the exact contract.
+function CarePlanContent({ text }) {
+  const blocks = [];
+  let currentList = null;
+
+  function flushList() {
+    if (currentList) {
+      blocks.push({ type: "list", items: currentList });
+      currentList = null;
+    }
+  }
+
+  for (const rawLine of text.split("\n")) {
+    const line = rawLine.trim();
+    if (!line) {
+      flushList();
+      continue;
+    }
+    if (line.startsWith("## ")) {
+      flushList();
+      blocks.push({ type: "heading", text: line.slice(3).trim() });
+    } else if (line.startsWith("- ")) {
+      (currentList ||= []).push(line.slice(2).trim());
+    } else {
+      flushList();
+      blocks.push({ type: "para", text: line });
+    }
+  }
+  flushList();
+
+  function renderInline(str) {
+    return str.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
+      part.startsWith("**") && part.endsWith("**") ? <strong key={i}>{part.slice(2, -2)}</strong> : <span key={i}>{part}</span>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-3">
+      {blocks.map((block, i) => {
+        if (block.type === "heading") {
+          return (
+            <h3
+              key={i}
+              className="mt-2 border-b border-stone-200 pb-1.5 text-sm font-semibold uppercase tracking-wide text-brand-700 first:mt-0"
+            >
+              {block.text}
+            </h3>
+          );
+        }
+        if (block.type === "list") {
+          return (
+            <ul key={i} className="list-disc space-y-1 pl-5 text-sm leading-relaxed text-stone-700">
+              {block.items.map((item, j) => (
+                <li key={j}>{renderInline(item)}</li>
+              ))}
+            </ul>
+          );
+        }
+        return (
+          <p key={i} className="text-sm leading-relaxed text-stone-700">
+            {renderInline(block.text)}
+          </p>
+        );
+      })}
+    </div>
+  );
+}
+
 function CarePlanTab({ residentId }) {
   const [plans, setPlans] = useState(null);
   const [error, setError] = useState(null);
   const [notes, setNotes] = useState("");
   const [documentFile, setDocumentFile] = useState(null);
   const [generating, setGenerating] = useState(false);
-  const planDate = todayUTC();
+  const [showHistory, setShowHistory] = useState(false);
 
   function load() {
     api.carePlans.list(residentId).then(setPlans).catch((err) => setError(err.message));
@@ -196,7 +267,7 @@ function CarePlanTab({ residentId }) {
     setGenerating(true);
     setError(null);
     try {
-      await api.carePlans.generate(residentId, planDate, { notes, document: documentFile });
+      await api.carePlans.generate(residentId, todayUTC(), { notes, document: documentFile });
       setNotes("");
       setDocumentFile(null);
       load();
@@ -210,14 +281,24 @@ function CarePlanTab({ residentId }) {
   const inputClass =
     "rounded-lg border border-stone-300 px-3 py-2.5 text-sm text-stone-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20";
 
+  const current = plans?.[0] || null;
+  const history = plans?.slice(1) || [];
+
   return (
     <div>
       <div className="mb-6 rounded-2xl border border-stone-200 bg-white p-5">
-        <p className="mb-3 text-sm font-medium text-stone-700">Generate today's care plan</p>
+        <p className="mb-1 text-sm font-medium text-stone-700">
+          {current ? "Update the Negotiated Care Plan" : "Draft the Negotiated Care Plan"}
+        </p>
+        <p className="mb-3 text-xs text-stone-500">
+          Describe what's changed — a new diagnosis, behavior, ADL need, medication, or discharge instructions — or
+          attach a physician's order or assessment form.
+          {current ? " The existing plan carries forward and is only updated where the new information applies." : ""}
+        </p>
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
-          placeholder="Notes for this resident — e.g. recent fall risk, dietary restriction, mood changes…"
+          placeholder="What's changed for this resident?"
           rows={3}
           className={`${inputClass} mb-3 w-full resize-none`}
         />
@@ -232,7 +313,7 @@ function CarePlanTab({ residentId }) {
             />
           </label>
           <Button variant="primary" onClick={handleGenerate} disabled={generating}>
-            {generating ? "Generating…" : "Generate care plan"}
+            {generating ? "Drafting…" : current ? "Update care plan" : "Draft care plan"}
           </Button>
         </div>
       </div>
@@ -240,23 +321,44 @@ function CarePlanTab({ residentId }) {
       {error && <p className="mb-4 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>}
 
       {!plans && <CardSkeleton lines={3} />}
-      {plans && plans.length === 0 && <PlaceholderTab text="No care plans generated yet for this resident." />}
+      {plans && plans.length === 0 && <PlaceholderTab text="No Negotiated Care Plan on file yet for this resident." />}
 
-      <div className="flex flex-col gap-4">
-        {plans?.map((p) => (
-          <div
-            key={p.id}
-            className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
-            style={{ animation: "panel-in 220ms cubic-bezier(0.16, 1, 0.3, 1)" }}
-          >
-            <div className="mb-3 flex items-center justify-between">
-              <div className="text-base font-semibold text-stone-900">{formatFriendlyDate(p.planDate)}</div>
-              <span className="rounded-full bg-stone-100 px-2.5 py-1 text-xs font-medium text-stone-500">{p.model}</span>
+      {current && (
+        <div
+          className="mb-4 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
+          style={{ animation: "panel-in 220ms cubic-bezier(0.16, 1, 0.3, 1)" }}
+        >
+          <div className="mb-4 flex items-center justify-between">
+            <div>
+              <div className="text-base font-semibold text-stone-900">Current Negotiated Care Plan</div>
+              <div className="text-xs text-stone-400">Last updated {formatFriendlyDate(current.planDate)}</div>
             </div>
-            <div className="whitespace-pre-wrap text-sm leading-relaxed text-stone-700">{p.content}</div>
+            <span className="rounded-full bg-stone-100 px-2.5 py-1 text-xs font-medium text-stone-500">{current.model}</span>
           </div>
-        ))}
-      </div>
+          <CarePlanContent text={current.content} />
+        </div>
+      )}
+
+      {history.length > 0 && (
+        <div className="mt-2">
+          <button
+            onClick={() => setShowHistory((v) => !v)}
+            className="rounded text-sm font-medium text-stone-500 hover:text-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/40"
+          >
+            {showHistory ? "Hide" : "Show"} revision history ({history.length})
+          </button>
+          {showHistory && (
+            <div className="mt-4 flex flex-col gap-4">
+              {history.map((p) => (
+                <div key={p.id} className="rounded-2xl border border-stone-200 bg-stone-50/60 p-6">
+                  <div className="mb-3 text-xs font-medium text-stone-400">{formatFriendlyDate(p.planDate)}</div>
+                  <CarePlanContent text={p.content} />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
