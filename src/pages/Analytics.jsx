@@ -2,10 +2,12 @@
 // Cross-facility trends built from this tenant's own real records — the same
 // invoices/payroll/expenses finance.js aggregates for one month, extended
 // across a trailing window, plus a current occupancy/census snapshot.
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { api } from "../lib/api";
 import { CardSkeleton } from "../components/CardSkeleton";
 import { Select } from "../components/Select";
+import { StatCard } from "../components/StatCard";
+import { StatStrip } from "../components/StatStrip";
 import { TrendChart } from "../components/TrendChart";
 import { careLevelShortLabel } from "../lib/format";
 
@@ -26,6 +28,21 @@ export function Analytics() {
     setData(null);
     api.analytics.overview(months).then(setData).catch((err) => setError(err.message));
   }, [months]);
+
+  const totals = useMemo(() => {
+    if (!data) return null;
+    const revenue = data.trend.reduce((sum, m) => sum + m.revenue, 0);
+    const netIncome = data.trend.reduce((sum, m) => sum + m.netIncome, 0);
+    const totalCapacity = data.occupancy.reduce((sum, h) => sum + h.capacity, 0);
+    const totalOccupied = data.occupancy.reduce((sum, h) => sum + h.occupied, 0);
+    const activeResidents = data.census.byCareLevel.reduce((sum, r) => sum + r.count, 0);
+    return {
+      revenue,
+      netIncome,
+      occupancyPct: totalCapacity > 0 ? Math.round((totalOccupied / totalCapacity) * 100) : null,
+      activeResidents,
+    };
+  }, [data]);
 
   return (
     <div>
@@ -49,6 +66,18 @@ export function Analytics() {
 
       {data && (
         <>
+          <StatStrip>
+            <StatCard label="Net income (range)" value={totals.netIncome} format="currency" emphasize icon="finance" />
+            <StatCard label="Revenue (range)" value={totals.revenue} format="currency" icon="finance" />
+            <StatCard
+              label="Occupancy"
+              value={totals.occupancyPct === null ? "—" : totals.occupancyPct}
+              suffix={totals.occupancyPct === null ? "" : "%"}
+              icon="home"
+            />
+            <StatCard label="Active residents" value={totals.activeResidents} icon="resident" />
+          </StatStrip>
+
           <div className="mb-8 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
             <h2 className="mb-4 text-base font-semibold text-stone-900">Revenue, expenses & payroll</h2>
             <TrendChart data={data.trend} />
@@ -68,10 +97,20 @@ export function Analytics() {
                   {data.trend.map((m) => (
                     <tr key={m.month}>
                       <td className="py-2.5 pr-4 text-stone-600">{m.label}</td>
-                      <td className="px-4 py-2.5 text-right text-stone-900">${m.revenue.toFixed(2)}</td>
-                      <td className="px-4 py-2.5 text-right text-stone-900">${m.expenses.toFixed(2)}</td>
-                      <td className="px-4 py-2.5 text-right text-stone-900">${m.payroll.toFixed(2)}</td>
-                      <td className={`py-2.5 pl-4 text-right font-medium ${m.netIncome < 0 ? "text-rose-600" : "text-emerald-700"}`}>
+                      <td className={`px-4 py-2.5 text-right tabular-nums ${m.revenue === 0 ? "text-stone-400" : "text-stone-900"}`}>
+                        ${m.revenue.toFixed(2)}
+                      </td>
+                      <td className={`px-4 py-2.5 text-right tabular-nums ${m.expenses === 0 ? "text-stone-400" : "text-stone-900"}`}>
+                        ${m.expenses.toFixed(2)}
+                      </td>
+                      <td className={`px-4 py-2.5 text-right tabular-nums ${m.payroll === 0 ? "text-stone-400" : "text-stone-900"}`}>
+                        ${m.payroll.toFixed(2)}
+                      </td>
+                      <td
+                        className={`py-2.5 pl-4 text-right tabular-nums font-medium ${
+                          m.netIncome === 0 ? "text-stone-400" : m.netIncome < 0 ? "text-rose-600" : "text-emerald-700"
+                        }`}
+                      >
                         {m.netIncome < 0 ? "-" : ""}${Math.abs(m.netIncome).toFixed(2)}
                       </td>
                     </tr>
@@ -91,8 +130,8 @@ export function Analytics() {
                   <div key={h.homeId}>
                     <div className="mb-1.5 flex items-center justify-between text-sm">
                       <span className="text-stone-700">{h.homeName}</span>
-                      <span className="font-medium text-stone-900">
-                        {h.occupied} / {h.capacity} residents
+                      <span className="tabular-nums text-stone-500">
+                        <span className="font-medium text-stone-900">{h.occupied} / {h.capacity}</span> residents · {h.occupancyPct}%
                       </span>
                     </div>
                     <div className="h-2 overflow-hidden rounded-full bg-stone-100">
@@ -136,9 +175,9 @@ function CensusCard({ title, rows, field, formatLabel }) {
       ) : (
         <div className="flex flex-col gap-2.5">
           {rows.map((r) => (
-            <div key={r[field]} className="flex items-center justify-between rounded-lg px-3 py-2 text-sm">
+            <div key={r[field]} className="flex items-center justify-between rounded-lg bg-stone-50/60 px-3 py-2 text-sm">
               <span className="text-stone-700">{formatLabel(r[field])}</span>
-              <span className="font-medium text-stone-900">{r.count}</span>
+              <span className="font-medium tabular-nums text-stone-900">{r.count}</span>
             </div>
           ))}
         </div>
