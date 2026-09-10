@@ -125,6 +125,7 @@ export const api = {
   },
   shifts: {
     week: (employeeId, weekStart) => request(`/shifts/employees/${employeeId}/week?weekStart=${weekStart}`),
+    weekOverview: (weekStart) => request(`/shifts/week-overview?weekStart=${weekStart}`),
     approve: (shiftIds, approvedBy) =>
       request("/shifts/approve", { method: "POST", body: JSON.stringify({ shiftIds, approvedBy }) }),
     open: () => request("/shifts/open"),

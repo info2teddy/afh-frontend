@@ -267,10 +267,12 @@ export function Clock() {
                     id="clock-sleep-excluded"
                     type="number"
                     min="0"
+                    max="480"
                     value={sleepExcluded}
                     onChange={(e) => setSleepExcluded(e.target.value)}
                     className="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
                   />
+                  <p className="mt-1 text-xs text-stone-500">Up to 480 (8 hours) — only if at least 5 hours were uninterrupted.</p>
                 </div>
                 <label className="flex items-center gap-2 text-sm text-stone-700">
                   <input
