@@ -146,6 +146,27 @@ export const api = {
         body: JSON.stringify({ templateName }),
       }),
     complete: (itemId) => request(`/onboarding/${itemId}/complete`, { method: "PATCH" }),
+    extract: (itemId, file) => {
+      const form = new FormData();
+      form.append("document", file);
+      return request(`/onboarding/${itemId}/extract`, { method: "POST", body: form });
+    },
+    verify: (itemId, { name, expirationDate, document }) => {
+      const form = new FormData();
+      form.append("name", name);
+      if (expirationDate) form.append("expirationDate", expirationDate);
+      form.append("document", document);
+      return request(`/onboarding/${itemId}/verify`, { method: "POST", body: form });
+    },
+    async openDocument(itemId) {
+      const token = getToken();
+      const res = await fetch(`${API_BASE}/onboarding/${itemId}/document`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      if (!res.ok) throw new Error("Couldn't load document.");
+      const blob = await res.blob();
+      window.open(URL.createObjectURL(blob), "_blank");
+    },
   },
   tenants: {
     list: () => request("/tenants"),

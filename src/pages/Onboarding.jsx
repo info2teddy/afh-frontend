@@ -6,6 +6,7 @@ import { StatusPill } from "../components/StatusPill";
 import { Button } from "../components/Button";
 import { Select } from "../components/Select";
 import { CardSkeleton } from "../components/CardSkeleton";
+import { VerifyOnboardingItemModal } from "../components/VerifyOnboardingItemModal";
 
 const STATUS_CONFIG = {
   done: { tone: "success", label: "Done" },
@@ -34,6 +35,7 @@ export function Onboarding() {
   const [error, setError] = useState(null);
   const [busyItemId, setBusyItemId] = useState(null);
   const [addingConditional, setAddingConditional] = useState(false);
+  const [verifyingItem, setVerifyingItem] = useState(null);
 
   useEffect(() => {
     api.employees.list().then(setEmployees).catch((err) => setError(err.message));
@@ -128,10 +130,16 @@ export function Onboarding() {
                 >
                   <div>
                     <div className="text-sm font-medium text-stone-900">{item.name}</div>
-                    {item.dueDate && (
+                    {isDone && item.requiresDocument && item.verifiedName && (
+                      <div className="mt-0.5 text-xs text-stone-500">
+                        Verified: {item.verifiedName}
+                        {item.verifiedExpirationDate && ` · Expires ${formatDate(item.verifiedExpirationDate)}`}
+                      </div>
+                    )}
+                    {!isDone && item.dueDate && (
                       <div className="mt-0.5 text-xs text-stone-500">Due {formatDate(item.dueDate)}</div>
                     )}
-                    {item.gateName && !item.dueDate && (
+                    {!isDone && item.gateName && !item.dueDate && (
                       <div className="mt-0.5 text-xs text-stone-500">
                         Required {item.gateName.replaceAll("_", " ")}
                       </div>
@@ -139,7 +147,17 @@ export function Onboarding() {
                   </div>
                   <div className="flex items-center gap-3">
                     <StatusPill tone={config.tone}>{config.label}</StatusPill>
-                    {!isDone && !isBlocked && (
+                    {isDone && item.requiresDocument && item.documentName && (
+                      <Button size="sm" variant="secondary" onClick={() => api.onboarding.openDocument(item.id)}>
+                        View document
+                      </Button>
+                    )}
+                    {!isDone && !isBlocked && item.requiresDocument && (
+                      <Button size="sm" onClick={() => setVerifyingItem(item)}>
+                        Verify
+                      </Button>
+                    )}
+                    {!isDone && !isBlocked && !item.requiresDocument && (
                       <Button
                         size="sm"
                         onClick={() => handleComplete(item.id)}
@@ -174,6 +192,17 @@ export function Onboarding() {
             )}
           </div>
         </div>
+      )}
+
+      {verifyingItem && (
+        <VerifyOnboardingItemModal
+          item={verifyingItem}
+          onClose={() => setVerifyingItem(null)}
+          onVerified={() => {
+            setVerifyingItem(null);
+            loadChecklist(employeeId);
+          }}
+        />
       )}
     </div>
   );
