@@ -38,7 +38,17 @@ function getNavItems(isAdmin) {
     { type: "group", label: "Compliance", icon: "shield", items: [{ to: "/credentials", label: "Credentials" }, { to: "/documents", label: "Documents" }, { to: "/care-plan", label: "Care Plans" }] },
     { type: "group", label: "Finance", icon: "finance", items: financeItems },
   ];
-  if (isAdmin) items.push({ type: "link", to: "/placement", label: "Placement", icon: "resident" });
+  if (isAdmin) {
+    items.push({
+      type: "group",
+      label: "Placement",
+      icon: "resident",
+      items: [
+        { to: "/placement/inquiries", label: "Inquiries" },
+        { to: "/placement/facilities", label: "Facilities" },
+      ],
+    });
+  }
   if (isAdmin) items.push({ type: "link", to: "/settings", label: "Settings", icon: "gear" });
   return items;
 }

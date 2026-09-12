@@ -20,9 +20,11 @@ import { Analytics } from "./pages/Analytics";
 import { Expenses } from "./pages/Expenses";
 import { CarePlan } from "./pages/CarePlan";
 import { Settings } from "./pages/Settings";
-import { Placement } from "./pages/Placement";
+import { PlacementInquiries } from "./pages/PlacementInquiries";
+import { PlacementFacilities } from "./pages/PlacementFacilities";
 import { PrivacyPolicy } from "./pages/legal/PrivacyPolicy";
 import { Eula } from "./pages/legal/Eula";
+import { AfhIntakeForm } from "./pages/AfhIntakeForm";
 
 // A kiosk-role login (a shared clock-in tablet, see Settings' "Clock-in
 // tablet" card) only ever sees the Clock page — no nav, no other routes,
@@ -65,7 +67,9 @@ function AuthedApp() {
             one) and admin-only for the same reason Facilities/QuickBooks are —
             see placements.js's own comment for why it deliberately isn't
             tenant-scoped like everything else. */}
-        <Route path="/placement" element={isAdmin ? <Placement /> : <Navigate to="/" replace />} />
+        <Route path="/placement" element={<Navigate to="/placement/inquiries" replace />} />
+        <Route path="/placement/inquiries" element={isAdmin ? <PlacementInquiries /> : <Navigate to="/" replace />} />
+        <Route path="/placement/facilities" element={isAdmin ? <PlacementFacilities /> : <Navigate to="/" replace />} />
         {/* Facilities + QuickBooks are admin-only — see PageShell's nav
             filtering, which is the UX nicety; this route guard is the actual
             boundary against a manager just typing the URL. */}
@@ -82,6 +86,9 @@ export function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/legal/privacy" element={<PrivacyPolicy />} />
         <Route path="/legal/eula" element={<Eula />} />
+        {/* Public, unauthenticated — an outside AFH filling this out has no
+            CareFit Connect account at all. See publicIntake.js on the backend. */}
+        <Route path="/afh-intake" element={<AfhIntakeForm />} />
         <Route
           path="/*"
           element={

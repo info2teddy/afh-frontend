@@ -177,6 +177,8 @@ export const api = {
     facilities: {
       list: () => request("/placements/facilities"),
       create: (body) => request("/placements/facilities", { method: "POST", body: JSON.stringify(body) }),
+      update: (id, body) => request(`/placements/facilities/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
+      review: (id) => request(`/placements/facilities/${id}/review`, { method: "POST" }),
     },
     inquiries: {
       list: () => request("/placements/inquiries"),
@@ -184,6 +186,11 @@ export const api = {
       update: (id, body) => request(`/placements/inquiries/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
       place: (id, body) => request(`/placements/inquiries/${id}/place`, { method: "POST", body: JSON.stringify(body) }),
     },
+  },
+  // The one unauthenticated endpoint in the app — an outside AFH submitting
+  // itself has no CareFit Connect login at all. See AfhIntakeForm.jsx.
+  publicIntake: {
+    submit: (body) => request("/public/afh-intake", { method: "POST", body: JSON.stringify(body) }),
   },
   carePlans: {
     list: (residentId) => request(`/care-plans?residentId=${residentId}`),
