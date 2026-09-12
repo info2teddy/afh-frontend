@@ -110,6 +110,7 @@ export const api = {
     list: () => request("/homes"),
     create: (body) => request("/homes", { method: "POST", body: JSON.stringify(body) }),
     update: (id, body) => request(`/homes/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
+    delete: (id) => request(`/homes/${id}`, { method: "DELETE" }),
   },
   invoices: {
     list: (residentId) => request(`/invoices${residentId ? `?residentId=${residentId}` : ""}`),
@@ -179,12 +180,14 @@ export const api = {
       create: (body) => request("/placements/facilities", { method: "POST", body: JSON.stringify(body) }),
       update: (id, body) => request(`/placements/facilities/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
       review: (id) => request(`/placements/facilities/${id}/review`, { method: "POST" }),
+      delete: (id) => request(`/placements/facilities/${id}`, { method: "DELETE" }),
     },
     inquiries: {
       list: () => request("/placements/inquiries"),
       create: (body) => request("/placements/inquiries", { method: "POST", body: JSON.stringify(body) }),
       update: (id, body) => request(`/placements/inquiries/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
       place: (id, body) => request(`/placements/inquiries/${id}/place`, { method: "POST", body: JSON.stringify(body) }),
+      delete: (id) => request(`/placements/inquiries/${id}`, { method: "DELETE" }),
     },
   },
   // The one unauthenticated endpoint in the app — an outside AFH submitting
@@ -246,6 +249,7 @@ export const api = {
       return request("/expenses/extract-receipt", { method: "POST", body: form });
     },
     sync: (id) => request(`/expenses/${id}/sync`, { method: "POST" }),
+    delete: (id) => request(`/expenses/${id}`, { method: "DELETE" }),
     async viewReceipt(id) {
       const token = getToken();
       const res = await fetch(`${API_BASE}/expenses/${id}/receipt`, {

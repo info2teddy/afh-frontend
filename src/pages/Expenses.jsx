@@ -17,6 +17,8 @@ export function Expenses() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [syncingId, setSyncingId] = useState(null);
   const [syncError, setSyncError] = useState(null);
+  const [removingId, setRemovingId] = useState(null);
+  const [removeError, setRemoveError] = useState(null);
 
   function load() {
     api.expenses.list({ month }).then(setExpenses).catch((err) => setError(err.message));
@@ -33,6 +35,19 @@ export function Expenses() {
       setSyncError({ id, message: err.message });
     } finally {
       setSyncingId(null);
+    }
+  }
+
+  async function handleDelete(id) {
+    setRemovingId(id);
+    setRemoveError(null);
+    try {
+      await api.expenses.delete(id);
+      setExpenses((prev) => prev.filter((e) => e.id !== id));
+    } catch (err) {
+      setRemoveError({ id, message: err.message });
+    } finally {
+      setRemovingId(null);
     }
   }
 
@@ -125,11 +140,23 @@ export function Expenses() {
                       )}
                     </td>
                     <td className="whitespace-nowrap px-5 py-3.5 text-right">
-                      {e.receiptName && (
-                        <Button variant="secondary" size="sm" onClick={() => api.expenses.viewReceipt(e.id)}>
-                          Receipt
-                        </Button>
-                      )}
+                      <div className="flex justify-end gap-2">
+                        {e.receiptName && (
+                          <Button variant="secondary" size="sm" onClick={() => api.expenses.viewReceipt(e.id)}>
+                            Receipt
+                          </Button>
+                        )}
+                        {!e.qboSynced && (
+                          <div>
+                            <Button variant="secondary" size="sm" onClick={() => handleDelete(e.id)} disabled={removingId === e.id}>
+                              {removingId === e.id ? "Removing…" : "Remove"}
+                            </Button>
+                            {removeError?.id === e.id && (
+                              <p className="mt-1 max-w-xs text-xs text-rose-600">{removeError.message}</p>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}

@@ -17,7 +17,21 @@ export function PlacementFacilities() {
   const [showAddFacility, setShowAddFacility] = useState(false);
   const [reviewingFacility, setReviewingFacility] = useState(null);
   const [linkCopied, setLinkCopied] = useState(false);
+  const [removingId, setRemovingId] = useState(null);
   const intakeUrl = `${window.location.origin}/afh-intake`;
+
+  async function handleDelete(facility) {
+    setRemovingId(facility.id);
+    setError(null);
+    try {
+      await api.placements.facilities.delete(facility.id);
+      setFacilities((prev) => prev.filter((f) => f.id !== facility.id));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setRemovingId(null);
+    }
+  }
 
   function handleCopyLink() {
     navigator.clipboard.writeText(intakeUrl).then(() => {
@@ -126,11 +140,18 @@ export function PlacementFacilities() {
                       {f.culturalNotes || <span className="text-stone-400">—</span>}
                     </td>
                     <td className="whitespace-nowrap px-5 py-3.5 text-right">
-                      {f.pendingReview && (
-                        <Button size="sm" onClick={() => setReviewingFacility(f)}>
-                          Review
-                        </Button>
-                      )}
+                      <div className="flex justify-end gap-2">
+                        {f.pendingReview && (
+                          <Button size="sm" onClick={() => setReviewingFacility(f)}>
+                            Review
+                          </Button>
+                        )}
+                        {!f.isTenantLinked && (
+                          <Button size="sm" variant="secondary" onClick={() => handleDelete(f)} disabled={removingId === f.id}>
+                            {removingId === f.id ? "Removing…" : "Remove"}
+                          </Button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}

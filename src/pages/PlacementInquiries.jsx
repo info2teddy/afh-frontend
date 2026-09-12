@@ -51,6 +51,19 @@ export function PlacementInquiries() {
     }
   }
 
+  async function handleDelete(inquiry) {
+    setBusyId(inquiry.id);
+    setError(null);
+    try {
+      await api.placements.inquiries.delete(inquiry.id);
+      setInquiries((prev) => prev.filter((i) => i.id !== inquiry.id));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusyId(null);
+    }
+  }
+
   const stats = inquiries && {
     newCount: inquiries.filter((i) => i.status === "new").length,
     urgentCount: inquiries.filter((i) => i.urgency === "urgent" && !["placed", "declined"].includes(i.status)).length,
@@ -139,14 +152,21 @@ export function PlacementInquiries() {
                         )}
                       </td>
                       <td className="whitespace-nowrap px-5 py-3.5 text-right">
-                        {!isFinal && (
-                          <Button size="sm" onClick={() => setPlacingInquiry(inq)}>
-                            Place
-                          </Button>
-                        )}
-                        {inq.status === "placed" && inq.placedFacility && (
-                          <span className="text-xs text-stone-500">at {inq.placedFacility.name}</span>
-                        )}
+                        <div className="flex justify-end gap-2">
+                          {!isFinal && (
+                            <Button size="sm" onClick={() => setPlacingInquiry(inq)}>
+                              Place
+                            </Button>
+                          )}
+                          {inq.status === "placed" && inq.placedFacility && (
+                            <span className="text-xs text-stone-500">at {inq.placedFacility.name}</span>
+                          )}
+                          {inq.status !== "placed" && (
+                            <Button size="sm" variant="secondary" onClick={() => handleDelete(inq)} disabled={busyId === inq.id}>
+                              {busyId === inq.id ? "Removing…" : "Remove"}
+                            </Button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   );

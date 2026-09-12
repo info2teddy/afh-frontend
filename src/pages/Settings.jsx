@@ -23,6 +23,7 @@ export function Settings() {
   const [pinDrafts, setPinDrafts] = useState({});
   const [savingPinFor, setSavingPinFor] = useState(null);
   const [pinMessage, setPinMessage] = useState(null);
+  const [removingHomeId, setRemovingHomeId] = useState(null);
 
   function loadHomes() {
     api.homes.list().then(setHomes).catch((err) => setError(err.message));
@@ -58,6 +59,19 @@ export function Settings() {
       setPinMessage({ employeeId, error: err.message });
     } finally {
       setSavingPinFor(null);
+    }
+  }
+
+  async function handleDeleteHome(home) {
+    setRemovingHomeId(home.id);
+    setError(null);
+    try {
+      await api.homes.delete(home.id);
+      setHomes((prev) => prev.filter((h) => h.id !== home.id));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setRemovingHomeId(null);
     }
   }
 
@@ -116,6 +130,11 @@ export function Settings() {
                 <Button size="sm" variant="secondary" onClick={() => setHomeModal(h)}>
                   Edit
                 </Button>
+                {h._count.residents === 0 && (
+                  <Button size="sm" variant="secondary" onClick={() => handleDeleteHome(h)} disabled={removingHomeId === h.id}>
+                    {removingHomeId === h.id ? "Removing…" : "Remove"}
+                  </Button>
+                )}
               </div>
             ))}
           </div>
