@@ -173,6 +173,18 @@ export const api = {
     list: () => request("/tenants"),
     create: (name) => request("/tenants", { method: "POST", body: JSON.stringify({ name }) }),
   },
+  placements: {
+    facilities: {
+      list: () => request("/placements/facilities"),
+      create: (body) => request("/placements/facilities", { method: "POST", body: JSON.stringify(body) }),
+    },
+    inquiries: {
+      list: () => request("/placements/inquiries"),
+      create: (body) => request("/placements/inquiries", { method: "POST", body: JSON.stringify(body) }),
+      update: (id, body) => request(`/placements/inquiries/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
+      place: (id, body) => request(`/placements/inquiries/${id}/place`, { method: "POST", body: JSON.stringify(body) }),
+    },
+  },
   carePlans: {
     list: (residentId) => request(`/care-plans?residentId=${residentId}`),
     // `document` is an optional File (PDF/PNG/JPEG/WEBP) — e.g. a physician's

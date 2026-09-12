@@ -20,6 +20,7 @@ import { Analytics } from "./pages/Analytics";
 import { Expenses } from "./pages/Expenses";
 import { CarePlan } from "./pages/CarePlan";
 import { Settings } from "./pages/Settings";
+import { Placement } from "./pages/Placement";
 import { PrivacyPolicy } from "./pages/legal/PrivacyPolicy";
 import { Eula } from "./pages/legal/Eula";
 
@@ -60,6 +61,11 @@ function AuthedApp() {
         <Route path="/analytics" element={<Analytics />} />
         <Route path="/expenses" element={<Expenses />} />
         <Route path="/care-plan" element={<CarePlan />} />
+        {/* Placement is cross-tenant (spans every AFH, not just the current
+            one) and admin-only for the same reason Facilities/QuickBooks are —
+            see placements.js's own comment for why it deliberately isn't
+            tenant-scoped like everything else. */}
+        <Route path="/placement" element={isAdmin ? <Placement /> : <Navigate to="/" replace />} />
         {/* Facilities + QuickBooks are admin-only — see PageShell's nav
             filtering, which is the UX nicety; this route guard is the actual
             boundary against a manager just typing the URL. */}
