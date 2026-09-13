@@ -209,6 +209,10 @@ export const api = {
         create: (id, body) => request(`/placements/inquiries/${id}/introductions`, { method: "POST", body: JSON.stringify(body) }),
         update: (introId, body) => request(`/placements/introductions/${introId}`, { method: "PATCH", body: JSON.stringify(body) }),
       },
+      tasks: {
+        list: (id) => request(`/placements/inquiries/${id}/tasks`),
+        update: (taskId, body) => request(`/placements/tasks/${taskId}`, { method: "PATCH", body: JSON.stringify(body) }),
+      },
     },
   },
   // The one unauthenticated endpoint in the app — an outside AFH submitting

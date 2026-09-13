@@ -19,6 +19,7 @@ import { ClosePlacementModal } from "../components/ClosePlacementModal";
 import { PlacementMatches } from "../components/PlacementMatches";
 import { PlacementShortlist } from "../components/PlacementShortlist";
 import { PlacementIntroductions } from "../components/PlacementIntroductions";
+import { PlacementTasks } from "../components/PlacementTasks";
 
 const PAYER_LABELS = { private_pay: "Private Pay", medicaid: "Medicaid", split: "Split" };
 
@@ -165,10 +166,19 @@ export function PlacementDetail() {
       {/* Next best action */}
       {placement.nextAction?.message && (
         <div className="mb-6 rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
-          <div className="text-xs font-medium uppercase tracking-wide text-stone-500">Next Step</div>
+          <div className="flex items-center justify-between">
+            <div className="text-xs font-medium uppercase tracking-wide text-stone-500">Next Step</div>
+            {placement.nextAction.overdue && <StatusPill tone="danger">Overdue</StatusPill>}
+          </div>
           <p className="mt-1 text-sm text-stone-800">{placement.nextAction.message}</p>
         </div>
       )}
+
+      {/* Tasks */}
+      <div className="mb-6 rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
+        <h2 className="mb-3 text-sm font-medium text-stone-900">Tasks</h2>
+        <PlacementTasks placementId={id} onChanged={refreshAfterWorkflowChange} />
+      </div>
 
       <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
         {/* Overview */}
