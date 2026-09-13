@@ -189,16 +189,33 @@ export const api = {
       list: () => request("/placements/inquiries"),
       get: (id) => request(`/placements/inquiries/${id}`),
       events: (id) => request(`/placements/inquiries/${id}/events`),
+      matches: (id) => request(`/placements/inquiries/${id}/matches`),
       create: (body) => request("/placements/inquiries", { method: "POST", body: JSON.stringify(body) }),
       update: (id, body) => request(`/placements/inquiries/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
       place: (id, body) => request(`/placements/inquiries/${id}/place`, { method: "POST", body: JSON.stringify(body) }),
       delete: (id) => request(`/placements/inquiries/${id}`, { method: "DELETE" }),
+      shortlist: {
+        list: (id) => request(`/placements/inquiries/${id}/shortlist`),
+        add: (id, facilityId) => request(`/placements/inquiries/${id}/shortlist`, { method: "POST", body: JSON.stringify({ facilityId }) }),
+        remove: (id, facilityId) => request(`/placements/inquiries/${id}/shortlist/${facilityId}`, { method: "DELETE" }),
+        reorder: (id, facilityIds) => request(`/placements/inquiries/${id}/shortlist/reorder`, { method: "PATCH", body: JSON.stringify({ facilityIds }) }),
+      },
+      share: {
+        generate: (id) => request(`/placements/inquiries/${id}/share`, { method: "POST" }),
+        revoke: (id) => request(`/placements/inquiries/${id}/share`, { method: "DELETE" }),
+      },
+      introductions: {
+        list: (id) => request(`/placements/inquiries/${id}/introductions`),
+        create: (id, body) => request(`/placements/inquiries/${id}/introductions`, { method: "POST", body: JSON.stringify(body) }),
+        update: (introId, body) => request(`/placements/introductions/${introId}`, { method: "PATCH", body: JSON.stringify(body) }),
+      },
     },
   },
   // The one unauthenticated endpoint in the app — an outside AFH submitting
   // itself has no CareFit Connect login at all. See AfhIntakeForm.jsx.
   publicIntake: {
     submit: (body) => request("/public/afh-intake", { method: "POST", body: JSON.stringify(body) }),
+    familyReview: (token) => request(`/public/placement-review/${token}`),
   },
   carePlans: {
     list: (residentId) => request(`/care-plans?residentId=${residentId}`),

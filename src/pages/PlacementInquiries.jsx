@@ -58,7 +58,7 @@ export function PlacementInquiries() {
     newCount: placements.filter((p) => p.stage === "NEW").length,
     urgentCount: placements.filter((p) => p.urgency === "urgent" && !["COMPLETED", "CLOSED"].includes(p.stage)).length,
     inProgressCount: placements.filter((p) => !["NEW", "COMPLETED", "CLOSED"].includes(p.stage)).length,
-    placedCount: placements.filter((p) => p.placedFacilityId).length,
+    placedCount: placements.filter((p) => p.placedAt).length,
   };
 
   const placeableFacilities = facilities?.filter((f) => !f.pendingReview) || [];
@@ -136,15 +136,15 @@ export function PlacementInquiries() {
                     </td>
                     <td className="whitespace-nowrap px-5 py-3.5 text-right" onClick={(e) => e.stopPropagation()}>
                       <div className="flex justify-end gap-2">
-                        {!p.placedFacilityId && (
+                        {!p.placedAt && (
                           <Button size="sm" onClick={() => setPlacingInquiry(p)}>
                             Place
                           </Button>
                         )}
-                        {p.placedFacilityId && p.placedFacility && (
+                        {p.placedAt && p.placedFacility && (
                           <span className="text-xs text-stone-500">at {p.placedFacility.name}</span>
                         )}
-                        {!p.placedFacilityId && (
+                        {!p.placedAt && (
                           <Button size="sm" variant="secondary" onClick={() => handleDelete(p)} disabled={busyId === p.id}>
                             {busyId === p.id ? "Removing…" : "Remove"}
                           </Button>

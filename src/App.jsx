@@ -26,6 +26,7 @@ import { PlacementFacilities } from "./pages/PlacementFacilities";
 import { PrivacyPolicy } from "./pages/legal/PrivacyPolicy";
 import { Eula } from "./pages/legal/Eula";
 import { AfhIntakeForm } from "./pages/AfhIntakeForm";
+import { PlacementFamilyReview } from "./pages/PlacementFamilyReview";
 
 // A kiosk-role login (a shared clock-in tablet, see Settings' "Clock-in
 // tablet" card) only ever sees the Clock page — no nav, no other routes,
@@ -91,6 +92,10 @@ export function App() {
         {/* Public, unauthenticated — an outside AFH filling this out has no
             CareFit Connect account at all. See publicIntake.js on the backend. */}
         <Route path="/afh-intake" element={<AfhIntakeForm />} />
+        {/* Public, unauthenticated — a family reviewing shortlisted AFHs has
+            no CareFit Connect account. Gated by an opaque, unguessable,
+            expiring token, not a login — see publicIntake.js on the backend. */}
+        <Route path="/family-review/:token" element={<PlacementFamilyReview />} />
         <Route
           path="/*"
           element={

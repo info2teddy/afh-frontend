@@ -16,6 +16,9 @@ import { CardSkeleton } from "../components/CardSkeleton";
 import { Icon } from "../components/icons";
 import { PlaceInquiryModal } from "../components/PlaceInquiryModal";
 import { ClosePlacementModal } from "../components/ClosePlacementModal";
+import { PlacementMatches } from "../components/PlacementMatches";
+import { PlacementShortlist } from "../components/PlacementShortlist";
+import { PlacementIntroductions } from "../components/PlacementIntroductions";
 
 const PAYER_LABELS = { private_pay: "Private Pay", medicaid: "Medicaid", split: "Split" };
 
@@ -30,16 +33,27 @@ export function PlacementDetail() {
   const [assignBusy, setAssignBusy] = useState(false);
   const [showPlace, setShowPlace] = useState(false);
   const [showClose, setShowClose] = useState(false);
+  const [shortlistEntries, setShortlistEntries] = useState(null);
 
   function load() {
     api.placements.inquiries.get(id).then(setPlacement).catch((err) => setError(err.message));
     api.placements.inquiries.events(id).then(setEvents).catch((err) => setError(err.message));
   }
+  function loadShortlist() {
+    api.placements.inquiries.shortlist.list(id).then(setShortlistEntries).catch(() => {});
+  }
   useEffect(load, [id]);
+  useEffect(loadShortlist, [id]);
   useEffect(() => {
     api.placements.facilities.list().then(setFacilities).catch(() => {});
     api.placements.staff.list().then(setStaff).catch(() => {});
   }, []);
+
+  function refreshAfterWorkflowChange() {
+    loadShortlist();
+    api.placements.inquiries.get(id).then(setPlacement);
+    api.placements.inquiries.events(id).then(setEvents);
+  }
 
   async function handleStageChange(stage) {
     if (stage === "CLOSED") {
@@ -96,7 +110,7 @@ export function PlacementDetail() {
         </div>
         <div className="flex items-center gap-2">
           <StatusPill tone={STAGE_TONE[placement.stage]}>{STAGE_LABELS[placement.stage] || titleCase(placement.stage)}</StatusPill>
-          {!placement.placedFacilityId && (
+          {!placement.placedAt && (
             <Button size="sm" onClick={() => setShowPlace(true)}>
               Place
             </Button>
@@ -197,6 +211,36 @@ export function PlacementDetail() {
           </dl>
         </div>
       </div>
+
+      {!placement.placedAt && (
+        <>
+          {/* Matches */}
+          <div className="mb-6 rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
+            <h2 className="mb-3 text-sm font-medium text-stone-900">Matches</h2>
+            <PlacementMatches
+              placementId={id}
+              shortlistedIds={new Set((shortlistEntries || []).map((e) => e.facilityId))}
+              onShortlist={refreshAfterWorkflowChange}
+            />
+          </div>
+
+          {/* Shortlist + Family Review */}
+          <div className="mb-6 rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
+            <h2 className="mb-3 text-sm font-medium text-stone-900">Shortlist &amp; Family Review</h2>
+            <PlacementShortlist placement={placement} entries={shortlistEntries} onChanged={refreshAfterWorkflowChange} />
+          </div>
+
+          {/* Introductions & decisions */}
+          <div className="mb-6 rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
+            <h2 className="mb-3 text-sm font-medium text-stone-900">Introductions &amp; Decisions</h2>
+            <PlacementIntroductions
+              placementId={id}
+              shortlistEntries={shortlistEntries}
+              onChanged={refreshAfterWorkflowChange}
+            />
+          </div>
+        </>
+      )}
 
       {/* Stage control */}
       <div className="mb-6 rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
