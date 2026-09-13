@@ -20,6 +20,8 @@ import { PlacementMatches } from "../components/PlacementMatches";
 import { PlacementShortlist } from "../components/PlacementShortlist";
 import { PlacementIntroductions } from "../components/PlacementIntroductions";
 import { PlacementTasks } from "../components/PlacementTasks";
+import { PlacementDocuments } from "../components/PlacementDocuments";
+import { PlacementCommunications } from "../components/PlacementCommunications";
 
 const PAYER_LABELS = { private_pay: "Private Pay", medicaid: "Medicaid", split: "Split" };
 
@@ -251,6 +253,18 @@ export function PlacementDetail() {
           </div>
         </>
       )}
+
+      {/* Documents */}
+      <div className="mb-6 rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
+        <h2 className="mb-3 text-sm font-medium text-stone-900">Documents</h2>
+        <PlacementDocuments placementId={id} />
+      </div>
+
+      {/* Communications */}
+      <div className="mb-6 rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
+        <h2 className="mb-3 text-sm font-medium text-stone-900">Communications</h2>
+        <PlacementCommunications placementId={id} />
+      </div>
 
       {/* Stage control */}
       <div className="mb-6 rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">

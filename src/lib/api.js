@@ -213,6 +213,30 @@ export const api = {
         list: (id) => request(`/placements/inquiries/${id}/tasks`),
         update: (taskId, body) => request(`/placements/tasks/${taskId}`, { method: "PATCH", body: JSON.stringify(body) }),
       },
+      documents: {
+        list: (id) => request(`/placements/inquiries/${id}/documents`),
+        upload: (id, { file, category, required }) => {
+          const form = new FormData();
+          form.append("file", file);
+          form.append("category", category);
+          if (required) form.append("required", "true");
+          return request(`/placements/inquiries/${id}/documents`, { method: "POST", body: form });
+        },
+        delete: (docId) => request(`/placements/documents/${docId}`, { method: "DELETE" }),
+        async view(docId) {
+          const token = getToken();
+          const res = await fetch(`${API_BASE}/placements/documents/${docId}/file`, {
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+          });
+          if (!res.ok) throw new Error("Couldn't load document.");
+          const blob = await res.blob();
+          window.open(URL.createObjectURL(blob), "_blank");
+        },
+      },
+      communications: {
+        list: (id) => request(`/placements/inquiries/${id}/communications`),
+        create: (id, body) => request(`/placements/inquiries/${id}/communications`, { method: "POST", body: JSON.stringify(body) }),
+      },
     },
   },
   // The one unauthenticated endpoint in the app — an outside AFH submitting
