@@ -49,6 +49,17 @@ export function daysUntil(dateStr) {
   return Math.ceil(diff / 86400000);
 }
 
+// For real timestamps (not date-only strings) — displayed in the viewer's
+// local timezone, unlike formatFriendlyDate's UTC-pinned date-only format.
+export function formatDateTime(dateStr) {
+  return new Date(dateStr).toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
 export function payerLabel(resident) {
   if (resident.payerType === "split") return `Medicaid — ${resident.medicaidSplitPct}%`;
   if (resident.payerType === "medicaid") return "Medicaid";

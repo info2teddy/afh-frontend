@@ -21,6 +21,7 @@ import { Expenses } from "./pages/Expenses";
 import { CarePlan } from "./pages/CarePlan";
 import { Settings } from "./pages/Settings";
 import { PlacementInquiries } from "./pages/PlacementInquiries";
+import { PlacementDetail } from "./pages/PlacementDetail";
 import { PlacementFacilities } from "./pages/PlacementFacilities";
 import { PrivacyPolicy } from "./pages/legal/PrivacyPolicy";
 import { Eula } from "./pages/legal/Eula";
@@ -69,6 +70,7 @@ function AuthedApp() {
             tenant-scoped like everything else. */}
         <Route path="/placement" element={<Navigate to="/placement/inquiries" replace />} />
         <Route path="/placement/inquiries" element={isAdmin ? <PlacementInquiries /> : <Navigate to="/" replace />} />
+        <Route path="/placement/inquiries/:id" element={isAdmin ? <PlacementDetail /> : <Navigate to="/" replace />} />
         <Route path="/placement/facilities" element={isAdmin ? <PlacementFacilities /> : <Navigate to="/" replace />} />
         {/* Facilities + QuickBooks are admin-only — see PageShell's nav
             filtering, which is the UX nicety; this route guard is the actual

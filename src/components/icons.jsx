@@ -12,6 +12,7 @@ const PATHS = {
   finance: <><path d="M4 20V11" /><path d="M10.5 20V6.5" /><path d="M17 20v-8" /><path d="M3 20h18" /></>,
   gear: <><circle cx="12" cy="12" r="3" /><path d="M12 3v2.4M12 18.6V21M4.9 6.5l1.9 1.4M17.2 16.1l1.9 1.4M4.9 17.5l1.9-1.4M17.2 7.9l1.9-1.4M3 12h2.4M18.6 12H21" /></>,
   warning: <><path d="M12 3.5l9 15.6H3L12 3.5Z" /><path d="M12 9.5v4.2" /><path d="M12 17h.01" /></>,
+  check: <path d="M5 12.5l4.5 4.5L19 7.5" />,
 };
 
 export function Icon({ name, className }) {

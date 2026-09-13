@@ -44,7 +44,7 @@ function getNavItems(isAdmin) {
       label: "Placement",
       icon: "resident",
       items: [
-        { to: "/placement/inquiries", label: "Inquiries" },
+        { to: "/placement/inquiries", label: "Placements" },
         { to: "/placement/facilities", label: "Facilities" },
       ],
     });

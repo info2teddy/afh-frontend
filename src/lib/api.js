@@ -175,6 +175,9 @@ export const api = {
     create: (name) => request("/tenants", { method: "POST", body: JSON.stringify({ name }) }),
   },
   placements: {
+    staff: {
+      list: () => request("/placements/staff"),
+    },
     facilities: {
       list: () => request("/placements/facilities"),
       create: (body) => request("/placements/facilities", { method: "POST", body: JSON.stringify(body) }),
@@ -184,6 +187,8 @@ export const api = {
     },
     inquiries: {
       list: () => request("/placements/inquiries"),
+      get: (id) => request(`/placements/inquiries/${id}`),
+      events: (id) => request(`/placements/inquiries/${id}/events`),
       create: (body) => request("/placements/inquiries", { method: "POST", body: JSON.stringify(body) }),
       update: (id, body) => request(`/placements/inquiries/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
       place: (id, body) => request(`/placements/inquiries/${id}/place`, { method: "POST", body: JSON.stringify(body) }),

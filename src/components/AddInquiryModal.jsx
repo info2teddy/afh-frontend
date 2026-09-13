@@ -29,6 +29,7 @@ export function AddInquiryModal({ onClose, onCreated }) {
     careLevelNeeded: "level_2",
     payerType: "medicaid",
     culturalPreferences: "",
+    specialtyCareNeeded: "",
     urgency: "normal",
     notes: "",
   });
@@ -56,7 +57,7 @@ export function AddInquiryModal({ onClose, onCreated }) {
   }
 
   return (
-    <Modal title="New placement inquiry" onClose={onClose}>
+    <Modal title="New placement" onClose={onClose}>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
           <label className={labelClass} htmlFor="inquiry-name">Resident name *</label>
@@ -152,6 +153,17 @@ export function AddInquiryModal({ onClose, onCreated }) {
         </div>
 
         <div>
+          <label className={labelClass} htmlFor="inquiry-specialty">Specialty care needed</label>
+          <input
+            id="inquiry-specialty"
+            className={inputClass}
+            value={form.specialtyCareNeeded}
+            onChange={(e) => set("specialtyCareNeeded", e.target.value)}
+            placeholder="e.g. Dementia care, non-ambulatory support"
+          />
+        </div>
+
+        <div>
           <label className={labelClass} htmlFor="inquiry-notes">Notes</label>
           <textarea
             id="inquiry-notes"
@@ -169,7 +181,7 @@ export function AddInquiryModal({ onClose, onCreated }) {
             Cancel
           </Button>
           <Button type="submit" variant="primary" disabled={saving}>
-            {saving ? "Adding…" : "Add inquiry"}
+            {saving ? "Adding…" : "Add placement"}
           </Button>
         </div>
       </form>
