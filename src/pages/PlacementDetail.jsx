@@ -136,34 +136,50 @@ export function PlacementDetail() {
 
       {error && <p className="mb-4 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>}
 
-      {/* Stepper */}
+      {/* Stepper — horizontal on tablet/desktop, a vertical journey on phone
+          width (spec §28: "Mobile: vertical placement journey"). Same
+          done/current/future logic, just laid out differently. */}
       {!isClosed && !isPaused ? (
-        <div className="mb-6 overflow-x-auto rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
-          <div className="flex min-w-max items-center">
+        <div className="mb-6 rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
+          {/* Desktop/tablet: horizontal */}
+          <div className="hidden overflow-x-auto sm:block">
+            <div className="flex min-w-max items-center">
+              {STEPPER_STAGES.map((stage, i) => {
+                const done = i < currentIndex;
+                const current = i === currentIndex;
+                return (
+                  <div key={stage} className="flex items-center">
+                    <div className="flex flex-col items-center gap-1.5">
+                      <StepBadge done={done} current={current} index={i} />
+                      <span className={`w-20 text-center text-[11px] leading-tight ${current ? "font-medium text-stone-900" : "text-stone-500"}`}>
+                        {STAGE_LABELS[stage]}
+                      </span>
+                    </div>
+                    {i < STEPPER_STAGES.length - 1 && (
+                      <div className={`mx-1 h-0.5 w-8 ${i < currentIndex ? "bg-emerald-500" : "bg-stone-200"}`} />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Phone width: vertical */}
+          <div className="flex flex-col sm:hidden">
             {STEPPER_STAGES.map((stage, i) => {
               const done = i < currentIndex;
               const current = i === currentIndex;
               return (
-                <div key={stage} className="flex items-center">
-                  <div className="flex flex-col items-center gap-1.5">
-                    <div
-                      className={`flex h-7 w-7 items-center justify-center rounded-full border-2 text-xs font-medium ${
-                        done
-                          ? "border-emerald-500 bg-emerald-500 text-white"
-                          : current
-                            ? "border-brand-600 bg-brand-600 text-white"
-                            : "border-stone-300 bg-white text-stone-400"
-                      }`}
-                    >
-                      {done ? <Icon name="check" className="h-3.5 w-3.5" /> : i + 1}
-                    </div>
-                    <span className={`w-20 text-center text-[11px] leading-tight ${current ? "font-medium text-stone-900" : "text-stone-500"}`}>
-                      {STAGE_LABELS[stage]}
-                    </span>
+                <div key={stage} className="flex items-start gap-3">
+                  <div className="flex flex-col items-center self-stretch">
+                    <StepBadge done={done} current={current} index={i} small />
+                    {i < STEPPER_STAGES.length - 1 && (
+                      <div className={`mt-1 w-0.5 flex-1 ${i < currentIndex ? "bg-emerald-500" : "bg-stone-200"}`} />
+                    )}
                   </div>
-                  {i < STEPPER_STAGES.length - 1 && (
-                    <div className={`mx-1 h-0.5 w-8 ${i < currentIndex ? "bg-emerald-500" : "bg-stone-200"}`} />
-                  )}
+                  <span className={`pb-4 text-sm ${current ? "font-medium text-stone-900" : "text-stone-500"}`}>
+                    {STAGE_LABELS[stage]}
+                  </span>
                 </div>
               );
             })}
@@ -363,6 +379,29 @@ export function PlacementDetail() {
           }}
         />
       )}
+    </div>
+  );
+}
+
+// Shared between the horizontal and vertical stepper layouts. A step that
+// just became done gets a brief entrance pop (the same panel-in keyframe
+// used for modals elsewhere in this app — automatically respects
+// prefers-reduced-motion via the global override in index.css) so
+// completing a stage reads as an event, not just a state flip.
+function StepBadge({ done, current, index, small }) {
+  const size = small ? "h-6 w-6 text-[10px]" : "h-7 w-7 text-xs";
+  return (
+    <div
+      className={`flex shrink-0 items-center justify-center rounded-full border-2 font-medium ${size} ${
+        done
+          ? "border-emerald-500 bg-emerald-500 text-white"
+          : current
+            ? "border-brand-600 bg-brand-600 text-white"
+            : "border-stone-300 bg-white text-stone-400"
+      }`}
+      style={done ? { animation: "panel-in 220ms cubic-bezier(0.16, 1, 0.3, 1)" } : undefined}
+    >
+      {done ? <Icon name="check" className={small ? "h-3 w-3" : "h-3.5 w-3.5"} /> : index + 1}
     </div>
   );
 }

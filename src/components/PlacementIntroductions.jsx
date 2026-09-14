@@ -175,7 +175,7 @@ export function PlacementIntroductions({ placementId, shortlistEntries, onChange
             </div>
 
             {intro.familyDecision === "accept" && intro.providerDecision === "accept" && (
-              <div className="mt-3">
+              <div className="mt-3" style={{ animation: "panel-in 220ms cubic-bezier(0.16, 1, 0.3, 1)" }}>
                 <StatusPill tone="success">Both accepted — placement confirmed</StatusPill>
               </div>
             )}
