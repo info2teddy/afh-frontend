@@ -70,9 +70,8 @@ export function PlacementDetail() {
     setStageBusy(true);
     setError(null);
     try {
-      const updated = await api.placements.inquiries.update(id, { stage });
-      setPlacement(updated);
-      api.placements.inquiries.events(id).then(setEvents);
+      await api.placements.inquiries.update(id, { stage });
+      refreshAfterWorkflowChange();
     } catch (err) {
       setError(err.message);
     } finally {
@@ -84,8 +83,8 @@ export function PlacementDetail() {
     setAssignBusy(true);
     setError(null);
     try {
-      const updated = await api.placements.inquiries.update(id, { assignedToId: assignedToId || null });
-      setPlacement(updated);
+      await api.placements.inquiries.update(id, { assignedToId: assignedToId || null });
+      refreshAfterWorkflowChange();
     } catch (err) {
       setError(err.message);
     } finally {
@@ -335,10 +334,9 @@ export function PlacementDetail() {
           inquiry={placement}
           facilities={placeableFacilities}
           onClose={() => setShowPlace(false)}
-          onPlaced={(updated) => {
+          onPlaced={() => {
             setShowPlace(false);
-            setPlacement(updated);
-            api.placements.inquiries.events(id).then(setEvents);
+            refreshAfterWorkflowChange();
           }}
         />
       )}
@@ -347,10 +345,9 @@ export function PlacementDetail() {
         <ClosePlacementModal
           placement={placement}
           onClose={() => setShowClose(false)}
-          onClosed={(updated) => {
+          onClosed={() => {
             setShowClose(false);
-            setPlacement(updated);
-            api.placements.inquiries.events(id).then(setEvents);
+            refreshAfterWorkflowChange();
           }}
         />
       )}
@@ -359,10 +356,9 @@ export function PlacementDetail() {
         <EscalatePlacementModal
           placement={placement}
           onClose={() => setShowEscalate(false)}
-          onEscalated={(updated) => {
+          onEscalated={() => {
             setShowEscalate(false);
-            setPlacement(updated);
-            api.placements.inquiries.events(id).then(setEvents);
+            refreshAfterWorkflowChange();
           }}
         />
       )}
@@ -372,10 +368,9 @@ export function PlacementDetail() {
           placement={placement}
           facilities={placeableFacilities}
           onClose={() => setShowChangeProvider(false)}
-          onChanged={(updated) => {
+          onChanged={() => {
             setShowChangeProvider(false);
-            setPlacement(updated);
-            api.placements.inquiries.events(id).then(setEvents);
+            refreshAfterWorkflowChange();
           }}
         />
       )}
