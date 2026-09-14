@@ -22,6 +22,8 @@ import { PlacementIntroductions } from "../components/PlacementIntroductions";
 import { PlacementTasks } from "../components/PlacementTasks";
 import { PlacementDocuments } from "../components/PlacementDocuments";
 import { PlacementCommunications } from "../components/PlacementCommunications";
+import { EscalatePlacementModal } from "../components/EscalatePlacementModal";
+import { ChangeProviderModal } from "../components/ChangeProviderModal";
 
 const PAYER_LABELS = { private_pay: "Private Pay", medicaid: "Medicaid", split: "Split" };
 
@@ -36,6 +38,8 @@ export function PlacementDetail() {
   const [assignBusy, setAssignBusy] = useState(false);
   const [showPlace, setShowPlace] = useState(false);
   const [showClose, setShowClose] = useState(false);
+  const [showEscalate, setShowEscalate] = useState(false);
+  const [showChangeProvider, setShowChangeProvider] = useState(false);
   const [shortlistEntries, setShortlistEntries] = useState(null);
 
   function load() {
@@ -97,6 +101,7 @@ export function PlacementDetail() {
   const placeableFacilities = facilities?.filter((f) => !f.pendingReview) || [];
   const currentIndex = STEPPER_STAGES.indexOf(placement.stage);
   const isClosed = placement.stage === "CLOSED";
+  const isPaused = placement.stage === "PAUSED";
 
   return (
     <div>
@@ -113,6 +118,14 @@ export function PlacementDetail() {
         </div>
         <div className="flex items-center gap-2">
           <StatusPill tone={STAGE_TONE[placement.stage]}>{STAGE_LABELS[placement.stage] || titleCase(placement.stage)}</StatusPill>
+          {!placement.placedAt && placement.placedFacilityId && (
+            <Button size="sm" variant="secondary" onClick={() => setShowChangeProvider(true)}>
+              Change Provider
+            </Button>
+          )}
+          <Button size="sm" variant="secondary" onClick={() => setShowEscalate(true)}>
+            Escalate
+          </Button>
           {!placement.placedAt && (
             <Button size="sm" onClick={() => setShowPlace(true)}>
               Place
@@ -124,7 +137,7 @@ export function PlacementDetail() {
       {error && <p className="mb-4 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>}
 
       {/* Stepper */}
-      {!isClosed ? (
+      {!isClosed && !isPaused ? (
         <div className="mb-6 overflow-x-auto rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
           <div className="flex min-w-max items-center">
             {STEPPER_STAGES.map((stage, i) => {
@@ -159,8 +172,9 @@ export function PlacementDetail() {
       ) : (
         <div className="mb-6 rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
           <p className="text-sm text-stone-600">
-            Closed{placement.closureReason ? ` — ${CLOSURE_REASON_LABELS[placement.closureReason] || titleCase(placement.closureReason)}` : ""}.
-            Pick a different stage below to reopen it.
+            {isPaused
+              ? "Paused. Pick a stage below to resume it."
+              : `Closed${placement.closureReason ? ` — ${CLOSURE_REASON_LABELS[placement.closureReason] || titleCase(placement.closureReason)}` : ""}. Pick a different stage below to reopen it.`}
           </p>
         </div>
       )}
@@ -319,6 +333,31 @@ export function PlacementDetail() {
           onClose={() => setShowClose(false)}
           onClosed={(updated) => {
             setShowClose(false);
+            setPlacement(updated);
+            api.placements.inquiries.events(id).then(setEvents);
+          }}
+        />
+      )}
+
+      {showEscalate && (
+        <EscalatePlacementModal
+          placement={placement}
+          onClose={() => setShowEscalate(false)}
+          onEscalated={(updated) => {
+            setShowEscalate(false);
+            setPlacement(updated);
+            api.placements.inquiries.events(id).then(setEvents);
+          }}
+        />
+      )}
+
+      {showChangeProvider && facilities && (
+        <ChangeProviderModal
+          placement={placement}
+          facilities={placeableFacilities}
+          onClose={() => setShowChangeProvider(false)}
+          onChanged={(updated) => {
+            setShowChangeProvider(false);
             setPlacement(updated);
             api.placements.inquiries.events(id).then(setEvents);
           }}

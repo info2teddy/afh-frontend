@@ -193,6 +193,8 @@ export const api = {
       create: (body) => request("/placements/inquiries", { method: "POST", body: JSON.stringify(body) }),
       update: (id, body) => request(`/placements/inquiries/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
       place: (id, body) => request(`/placements/inquiries/${id}/place`, { method: "POST", body: JSON.stringify(body) }),
+      changeProvider: (id, facilityId) => request(`/placements/inquiries/${id}/change-provider`, { method: "POST", body: JSON.stringify({ facilityId }) }),
+      escalate: (id, note) => request(`/placements/inquiries/${id}/escalate`, { method: "POST", body: JSON.stringify({ note }) }),
       delete: (id) => request(`/placements/inquiries/${id}`, { method: "DELETE" }),
       shortlist: {
         list: (id) => request(`/placements/inquiries/${id}/shortlist`),

@@ -10,8 +10,6 @@ import { formatDateTime } from "../lib/format";
 import { StatusPill } from "./StatusPill";
 import { CardSkeleton } from "./CardSkeleton";
 
-const GENERAL_TYPES = new Set(["qualification", "review_matches", "share_with_family", "schedule_introduction"]);
-
 function TaskRow({ task, onToggle, busy }) {
   const tone = task.status === "overdue" ? "danger" : task.status === "done" ? "success" : "neutral";
   return (
@@ -64,9 +62,11 @@ export function PlacementTasks({ placementId, onChanged }) {
   if (!tasks) return <CardSkeleton lines={2} />;
   if (tasks.length === 0) return <p className="text-sm text-stone-500">No tasks yet.</p>;
 
-  const general = tasks.filter((t) => GENERAL_TYPES.has(t.type));
   const checklist = tasks.filter((t) => t.type === "move_in_checklist");
   const followups = tasks.filter((t) => t.type.startsWith("followup_"));
+  // Everything else, not a whitelist — so a new task type (e.g. escalation)
+  // always shows up somewhere instead of silently disappearing.
+  const general = tasks.filter((t) => t.type !== "move_in_checklist" && !t.type.startsWith("followup_"));
   const checklistDone = checklist.filter((t) => t.status === "done").length;
 
   return (
