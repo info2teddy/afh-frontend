@@ -17,7 +17,7 @@ const PATHS = {
 
 export function Icon({ name, className }) {
   return (
-    <svg viewBox="0 0 24 24" className={className || "h-[18px] w-[18px] shrink-0"} stroke="currentColor" strokeWidth="1.75" fill="none" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 24 24" className={className || "h-5 w-5 shrink-0"} stroke="currentColor" strokeWidth="1.75" fill="none" strokeLinecap="round" strokeLinejoin="round">
       {PATHS[name]}
     </svg>
   );
