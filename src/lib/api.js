@@ -93,6 +93,9 @@ export const auth = {
   listUsers: () => request("/auth/users"),
   createUser: (body) => request("/auth/users", { method: "POST", body: JSON.stringify(body) }),
   deleteUser: (id) => request(`/auth/users/${id}`, { method: "DELETE" }),
+  // Self-service — any logged-in role can change its own password.
+  changePassword: (currentPassword, newPassword) =>
+    request("/auth/change-password", { method: "PATCH", body: JSON.stringify({ currentPassword, newPassword }) }),
 };
 
 export const api = {

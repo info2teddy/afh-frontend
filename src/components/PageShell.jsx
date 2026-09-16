@@ -12,6 +12,7 @@ import carefitIcon from "../assets/carefit-icon.svg";
 import { TenantSwitcher } from "./TenantSwitcher";
 import { GlobalSearch } from "./GlobalSearch";
 import { Icon } from "./icons";
+import { ChangePasswordModal } from "./ChangePasswordModal";
 
 // Dashboard and Residents are daily-use enough to stay standalone; everything
 // else groups under one icon (shown on the group's first item) plus a small
@@ -63,7 +64,7 @@ function itemClass({ isActive }) {
 
 const SIDEBAR_COLLAPSED_KEY = "carefit_sidebar_collapsed";
 
-function UserMenu({ user, isAdmin, onLogout, collapsed }) {
+function UserMenu({ user, isAdmin, onLogout, onChangePassword, collapsed }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef(null);
 
@@ -113,6 +114,15 @@ function UserMenu({ user, isAdmin, onLogout, collapsed }) {
             </div>
           )}
           <button
+            onClick={() => {
+              setOpen(false);
+              onChangePassword();
+            }}
+            className="block w-full px-3.5 py-2 text-left text-sm text-stone-700 hover:bg-stone-50"
+          >
+            Change password
+          </button>
+          <button
             onClick={onLogout}
             className="block w-full px-3.5 py-2 text-left text-sm text-stone-700 hover:bg-stone-50"
           >
@@ -132,6 +142,7 @@ export function PageShell({ children }) {
   const isAdmin = user?.role === "admin";
 
   const [collapsed, setCollapsed] = useState(() => localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === "1");
+  const [showChangePassword, setShowChangePassword] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const hamburgerRef = useRef(null);
 
@@ -232,8 +243,21 @@ export function PageShell({ children }) {
           )}
         </nav>
 
-        <UserMenu user={user} isAdmin={isAdmin} onLogout={handleLogout} collapsed={collapsed} />
+        <UserMenu
+          user={user}
+          isAdmin={isAdmin}
+          onLogout={handleLogout}
+          onChangePassword={() => setShowChangePassword(true)}
+          collapsed={collapsed}
+        />
       </aside>
+
+      {/* Rendered outside <aside> deliberately: that element always carries a
+          Tailwind transform (translate-x-*) for the collapse/drawer
+          animation, which makes it the containing block for any descendant
+          with position:fixed — a modal mounted inside it would pin to the
+          sidebar's corner instead of centering on the actual viewport. */}
+      {showChangePassword && <ChangePasswordModal onClose={() => setShowChangePassword(false)} />}
 
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="relative flex items-center gap-3 border-b border-stone-200 bg-white px-4 py-2.5 lg:px-6">
