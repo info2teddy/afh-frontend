@@ -111,6 +111,11 @@ export const api = {
     create: (body) => request("/homes", { method: "POST", body: JSON.stringify(body) }),
     update: (id, body) => request(`/homes/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
     delete: (id) => request(`/homes/${id}`, { method: "DELETE" }),
+    rateSchedules: {
+      list: (homeId) => request(`/homes/${homeId}/rate-schedules`),
+      create: (homeId, body) => request(`/homes/${homeId}/rate-schedules`, { method: "POST", body: JSON.stringify(body) }),
+      delete: (homeId, id) => request(`/homes/${homeId}/rate-schedules/${id}`, { method: "DELETE" }),
+    },
   },
   invoices: {
     list: (residentId) => request(`/invoices${residentId ? `?residentId=${residentId}` : ""}`),

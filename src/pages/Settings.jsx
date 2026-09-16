@@ -9,6 +9,7 @@ import { api } from "../lib/api";
 import { Button } from "../components/Button";
 import { CardSkeleton } from "../components/CardSkeleton";
 import { HomeFormModal } from "../components/HomeFormModal";
+import { RateSchedulesModal } from "../components/RateSchedulesModal";
 import { QuickBooksMappings } from "../components/QuickBooksMappings";
 import { StatusPill } from "../components/StatusPill";
 import { TeamLoginsCard } from "../components/TeamLoginsCard";
@@ -19,6 +20,7 @@ export function Settings() {
   const [connecting, setConnecting] = useState(false);
   const [homes, setHomes] = useState(null);
   const [homeModal, setHomeModal] = useState(null); // null | "new" | a home object to edit
+  const [rateModalHome, setRateModalHome] = useState(null); // null | a home object
   const [employees, setEmployees] = useState(null);
   const [pinDrafts, setPinDrafts] = useState({});
   const [savingPinFor, setSavingPinFor] = useState(null);
@@ -127,6 +129,9 @@ export function Settings() {
                     {h.address ? ` · ${h.address}` : ""}
                   </div>
                 </div>
+                <Button size="sm" variant="secondary" onClick={() => setRateModalHome(h)}>
+                  Rates
+                </Button>
                 <Button size="sm" variant="secondary" onClick={() => setHomeModal(h)}>
                   Edit
                 </Button>
@@ -226,6 +231,10 @@ export function Settings() {
             loadHomes();
           }}
         />
+      )}
+
+      {rateModalHome && (
+        <RateSchedulesModal home={rateModalHome} onClose={() => setRateModalHome(null)} />
       )}
     </div>
   );
