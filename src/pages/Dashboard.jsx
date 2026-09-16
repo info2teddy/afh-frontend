@@ -92,7 +92,7 @@ export function Dashboard() {
             {data.summary && (
               <div className="mb-4 flex items-start gap-2 rounded-lg bg-violet-50/60 px-3 py-2.5 text-sm text-stone-700">
                 <span className="mt-0.5 shrink-0 rounded bg-violet-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-violet-700">
-                  AI summary
+                  CareFit Intelligence
                 </span>
                 <span>{data.summary}</span>
               </div>
