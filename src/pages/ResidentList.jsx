@@ -203,9 +203,12 @@ export function ResidentList() {
       {showAddModal && (
         <AddResidentModal
           onClose={() => setShowAddModal(false)}
-          onCreated={() => {
+          onCreated={(resident) => {
             setShowAddModal(false);
-            load();
+            // Straight to their Documents tab — the Face Sheet panel there
+            // is the natural next step after adding someone, and easy to
+            // forget if left to a separate click-in later.
+            navigate(`/residents/${resident.id}?tab=documents`);
           }}
         />
       )}
