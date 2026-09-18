@@ -13,6 +13,7 @@ import { Button } from "../components/Button";
 import { CardSkeleton } from "../components/CardSkeleton";
 import { ScrollFade } from "../components/ScrollFade";
 import { ResidentStatusModal } from "../components/ResidentStatusModal";
+import { FaceSheetPanel } from "../components/FaceSheetPanel";
 
 const STATUS_TONE = { active: "success", discharging: "warning", discharged: "neutral" };
 const AUTH_TONE = { approved: "success", pending: "warning", denied: "danger" };
@@ -470,6 +471,10 @@ function DocumentsTab({ residentId }) {
 
   return (
     <div>
+      <div className="mb-6">
+        <FaceSheetPanel residentId={residentId} />
+      </div>
+
       {error && <p className="mb-4 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>}
       {!plans && <CardSkeleton lines={3} />}
       {plans && docs.length === 0 && (

@@ -15,6 +15,8 @@ export function HomeFormModal({ home, onClose, onSaved }) {
     name: home?.name || "",
     licenseNumber: home?.licenseNumber || "",
     address: home?.address || "",
+    phone: home?.phone || "",
+    fax: home?.fax || "",
     capacity: home?.capacity ?? "",
   });
   const [error, setError] = useState(null);
@@ -62,6 +64,16 @@ export function HomeFormModal({ home, onClose, onSaved }) {
         <div>
           <label className={labelClass} htmlFor="home-address">Address</label>
           <input id="home-address" className={inputClass} value={form.address} onChange={(e) => set("address", e.target.value)} placeholder="123 Willow Creek Rd, Mill Creek, WA" />
+        </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label className={labelClass} htmlFor="home-phone">Phone</label>
+            <input id="home-phone" className={inputClass} value={form.phone} onChange={(e) => set("phone", e.target.value)} placeholder="(555) 555-5555" />
+          </div>
+          <div>
+            <label className={labelClass} htmlFor="home-fax">Fax</label>
+            <input id="home-fax" className={inputClass} value={form.fax} onChange={(e) => set("fax", e.target.value)} placeholder="(555) 555-5555" />
+          </div>
         </div>
 
         {error && <p className="rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>}

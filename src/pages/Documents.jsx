@@ -13,12 +13,15 @@ import { ScrollFade } from "../components/ScrollFade";
 
 export function Documents() {
   const [docs, setDocs] = useState(null);
+  const [residents, setResidents] = useState(null);
   const [error, setError] = useState(null);
+  const [showFaceSheetList, setShowFaceSheetList] = useState(false);
 
   useEffect(() => {
     api.residents
       .list()
       .then(async (residents) => {
+        setResidents(residents);
         const perResident = await Promise.all(
           residents.map((r) =>
             api.carePlans
@@ -51,6 +54,47 @@ export function Documents() {
           Couldn't load documents: {error}
         </p>
       )}
+
+      <div className="mb-6 rounded-2xl border border-stone-200 bg-white shadow-sm">
+        <button
+          type="button"
+          onClick={() => setShowFaceSheetList((s) => !s)}
+          className="flex w-full items-center justify-between px-5 py-4 text-left"
+        >
+          <div>
+            <div className="text-sm font-semibold text-stone-900">Templates</div>
+            <p className="mt-0.5 text-xs text-stone-500">Face Sheet — pre-filled per resident, print or save as PDF</p>
+          </div>
+          <span className="text-sm text-stone-400">{showFaceSheetList ? "Hide" : "Show"}</span>
+        </button>
+
+        {showFaceSheetList && (
+          <div className="border-t border-stone-100">
+            {!residents && <div className="px-5 py-4"><TableSkeleton columns={2} rows={2} /></div>}
+            {residents && residents.length === 0 && (
+              <p className="px-5 py-4 text-sm text-stone-500">No residents yet.</p>
+            )}
+            {residents && residents.length > 0 && (
+              <div className="divide-y divide-stone-100">
+                {residents.map((r) => (
+                  <div key={r.id} className="flex items-center justify-between px-5 py-3">
+                    <Link to={`/residents/${r.id}?tab=documents`} className="text-sm font-medium text-stone-900 hover:text-stone-700">
+                      {r.name}
+                    </Link>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => window.open(`/residents/${r.id}/face-sheet`, "_blank", "noopener,noreferrer")}
+                    >
+                      Print Face Sheet
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
       {!error && !docs && <TableSkeleton columns={3} rows={3} />}
 

@@ -104,6 +104,7 @@ export const api = {
     get: (id) => request(`/residents/${id}`),
     create: (body) => request("/residents", { method: "POST", body: JSON.stringify(body) }),
     setStatus: (id, body) => request(`/residents/${id}/status`, { method: "PATCH", body: JSON.stringify(body) }),
+    saveFaceSheet: (id, body) => request(`/residents/${id}/face-sheet`, { method: "PUT", body: JSON.stringify(body) }),
     notes: {
       list: (id) => request(`/residents/${id}/notes`),
       create: (id, content) => request(`/residents/${id}/notes`, { method: "POST", body: JSON.stringify({ content }) }),

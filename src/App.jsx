@@ -27,6 +27,7 @@ import { PrivacyPolicy } from "./pages/legal/PrivacyPolicy";
 import { Eula } from "./pages/legal/Eula";
 import { AfhIntakeForm } from "./pages/AfhIntakeForm";
 import { PlacementFamilyReview } from "./pages/PlacementFamilyReview";
+import { ResidentFaceSheetPrint } from "./pages/ResidentFaceSheetPrint";
 
 // A kiosk-role login (a shared clock-in tablet, see Settings' "Clock-in
 // tablet" card) only ever sees the Clock page — no nav, no other routes,
@@ -96,6 +97,19 @@ export function App() {
             no CareFit Connect account. Gated by an opaque, unguessable,
             expiring token, not a login — see publicIntake.js on the backend. */}
         <Route path="/family-review/:token" element={<PlacementFamilyReview />} />
+        {/* Authenticated but deliberately rendered without PageShell — a
+            clean single page for the browser's own print/save-as-PDF, no
+            sidebar or header to hide with print CSS. Contains real resident
+            PII (SSN, Medicare/Medicaid numbers), so still behind RequireAuth
+            unlike the public routes above. */}
+        <Route
+          path="/residents/:id/face-sheet"
+          element={
+            <RequireAuth>
+              <ResidentFaceSheetPrint />
+            </RequireAuth>
+          }
+        />
         <Route
           path="/*"
           element={
