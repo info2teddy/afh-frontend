@@ -45,13 +45,17 @@ export function FaceSheetPanel({ residentId }) {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [removeSsn, setRemoveSsn] = useState(false);
 
   function load() {
     api.residents.get(residentId).then((r) => {
       setResident(r);
       setForm({
         middleName: r.middleName || "",
-        socialSecurityNumber: r.socialSecurityNumber || "",
+        // Deliberately never pre-filled: the server no longer sends the number, only
+        // its last four digits. Typing here REPLACES what is stored; leaving it
+        // blank leaves it alone.
+        socialSecurityNumber: "",
         dnrStatus: r.dnrStatus || "",
         advancedDirectivesType: r.advancedDirectivesType || "",
         medicareNumber: r.medicareNumber || "",
@@ -79,8 +83,14 @@ export function FaceSheetPanel({ residentId }) {
     setSaving(true);
     setError(null);
     try {
-      const updated = await api.residents.saveFaceSheet(residentId, { ...form, contacts });
+      const updated = await api.residents.saveFaceSheet(residentId, {
+        ...form,
+        ...(removeSsn && !form.socialSecurityNumber.trim() ? { clearSocialSecurityNumber: true } : {}),
+        contacts,
+      });
       setResident(updated);
+      setForm((f) => ({ ...f, socialSecurityNumber: "" }));
+      setRemoveSsn(false);
       setContacts(toFormContacts(updated.contacts));
       setSaved(true);
     } catch (err) {
@@ -132,8 +142,36 @@ export function FaceSheetPanel({ residentId }) {
                 <input className={inputClass} value={form.middleName} onChange={(e) => set("middleName", e.target.value)} />
               </div>
               <div>
-                <label className={labelClass}>Social Security Number</label>
-                <input className={inputClass} value={form.socialSecurityNumber} onChange={(e) => set("socialSecurityNumber", e.target.value)} placeholder="XXX-XX-XXXX" />
+                <label className={labelClass} htmlFor="face-sheet-ssn">Social Security Number</label>
+                {resident?.socialSecurityLast4 && !removeSsn && (
+                  <p className="mb-1 flex items-center gap-2 text-xs text-stone-500">
+                    <span>On file: ***-**-{resident.socialSecurityLast4}</span>
+                    <button
+                      type="button"
+                      onClick={() => { setRemoveSsn(true); setSaved(false); }}
+                      className="text-brand-600 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40"
+                    >
+                      Remove
+                    </button>
+                  </p>
+                )}
+                {removeSsn && (
+                  <p className="mb-1 text-xs text-stone-500">
+                    Will be removed when you save.{" "}
+                    <button type="button" onClick={() => setRemoveSsn(false)} className="text-brand-600 hover:underline">Undo</button>
+                  </p>
+                )}
+                {/* autoComplete off + a non-"ssn" name: keep the browser from offering to remember it. */}
+                <input
+                  id="face-sheet-ssn"
+                  name="resident-ident-number"
+                  autoComplete="off"
+                  inputMode="numeric"
+                  className={inputClass}
+                  value={form.socialSecurityNumber}
+                  onChange={(e) => set("socialSecurityNumber", e.target.value)}
+                  placeholder={resident?.socialSecurityLast4 && !removeSsn ? "Enter a new number to replace it" : "XXX-XX-XXXX"}
+                />
               </div>
               <div>
                 <label className={labelClass}>DNR Status</label>

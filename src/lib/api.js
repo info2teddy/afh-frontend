@@ -105,6 +105,8 @@ export const api = {
     create: (body) => request("/residents", { method: "POST", body: JSON.stringify(body) }),
     setStatus: (id, body) => request(`/residents/${id}/status`, { method: "PATCH", body: JSON.stringify(body) }),
     saveFaceSheet: (id, body) => request(`/residents/${id}/face-sheet`, { method: "PUT", body: JSON.stringify(body) }),
+    // The only call that returns a full SSN — used solely by the printed face sheet.
+    getSocialSecurityNumber: (id) => request(`/residents/${id}/social-security-number`),
     notes: {
       list: (id) => request(`/residents/${id}/notes`),
       create: (id, content) => request(`/residents/${id}/notes`, { method: "POST", body: JSON.stringify({ content }) }),

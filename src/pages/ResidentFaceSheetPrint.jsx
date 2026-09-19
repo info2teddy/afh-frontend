@@ -46,14 +46,27 @@ const labelClass = "font-medium";
 export function ResidentFaceSheetPrint() {
   const { id } = useParams();
   const [resident, setResident] = useState(null);
+  const [ssn, setSsn] = useState("");
+  const [ssnSettled, setSsnSettled] = useState(false);
   const [error, setError] = useState(null);
+
+  // The resident payload no longer carries the SSN — this is the one place the
+  // full number is fetched. If it can't be read (nothing on file, or it fails
+  // to decrypt) the line simply prints blank, like every other empty field.
+  useEffect(() => {
+    api.residents
+      .getSocialSecurityNumber(id)
+      .then((r) => setSsn(r.socialSecurityNumber || ""))
+      .catch(() => {})
+      .finally(() => setSsnSettled(true)); // don't let anyone print before this settles — a blank SSN line would be silently wrong
+  }, [id]);
 
   useEffect(() => {
     api.residents.get(id).then(setResident).catch((err) => setError(err.message));
   }, [id]);
 
   if (error) return <p className="p-8 text-sm text-rose-700">{error}</p>;
-  if (!resident) return <p className="p-8 text-sm text-stone-500">Loading…</p>;
+  if (!resident || !ssnSettled) return <p className="p-8 text-sm text-stone-500">Loading…</p>;
 
   const { first, last } = splitName(resident.name);
   const ec1 = contactByRole(resident.contacts, "emergency_contact_1");
@@ -92,7 +105,7 @@ export function ResidentFaceSheetPrint() {
           </tr>
           <tr>
             <td className={cellClass}><div className={labelClass}>Birthdate</div><Blank value={resident.dateOfBirth && formatFriendlyDate(resident.dateOfBirth)} /></td>
-            <td className={cellClass}><div className={labelClass}>Social Security Number</div><Blank value={resident.socialSecurityNumber} /></td>
+            <td className={cellClass}><div className={labelClass}>Social Security Number</div><Blank value={ssn} /></td>
             <td className={cellClass}>
               <div className={labelClass}>CODE STATUS</div>
               <div>DNR&nbsp;&nbsp;{resident.dnrStatus === "yes" ? "☒ Yes  ☐ No" : resident.dnrStatus === "no" ? "☐ Yes  ☒ No" : "☐ Yes  ☐ No"}</div>
