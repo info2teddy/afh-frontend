@@ -6,6 +6,7 @@
 // to 3 specialists); CONTACT_FIELDS mirrors the backend's CONTACT_ROLES.
 import { useEffect, useState } from "react";
 import { api } from "../lib/api";
+import { formatRevision } from "../lib/format";
 import { Button } from "./Button";
 import { Select } from "./Select";
 import { CardSkeleton } from "./CardSkeleton";
@@ -105,10 +106,18 @@ export function FaceSheetPanel({ residentId }) {
         <span className="text-sm text-stone-400">{expanded ? "Hide" : "Edit"}</span>
       </button>
 
-      <div className="flex items-center gap-2 border-t border-stone-100 px-5 py-3">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-stone-100 px-5 py-3">
         <Button size="sm" variant="secondary" onClick={() => window.open(`/residents/${residentId}/face-sheet`, "_blank", "noopener,noreferrer")}>
           Print / Download Face Sheet
         </Button>
+        {/* Mirrors the "Last updated" stamp printed on the sheet itself, so
+            staff can tell whether the binder copy is stale without printing
+            a new one to compare. */}
+        <span className="text-xs text-stone-500">
+          {resident?.faceSheetUpdatedAt
+            ? `Last updated ${formatRevision(resident.faceSheetUpdatedAt)}`
+            : "Not yet saved — printed sheet will show a blank date line"}
+        </span>
       </div>
 
       {expanded && (

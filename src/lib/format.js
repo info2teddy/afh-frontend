@@ -4,6 +4,21 @@
 // UTC — treating them as a local Date shifts the displayed day backward in
 // timezones behind UTC, since midnight UTC is still "yesterday" locally.
 
+// Revision stamp for the resident face sheet (printed sheet + the edit panel
+// that mirrors it). Local time, unlike formatFriendlyDate above, which pins to
+// UTC because it formats calendar dates (birthdates, admission dates) rather
+// than instants. Includes the time of day so two revisions on the same day are
+// still tellable apart in a paper binder.
+export function formatRevision(dateStr) {
+  return new Date(dateStr).toLocaleString(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
 export function formatFriendlyDate(dateStr) {
   return new Date(dateStr).toLocaleDateString(undefined, {
     weekday: "long",

@@ -10,7 +10,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../lib/api";
-import { formatFriendlyDate } from "../lib/format";
+import { formatFriendlyDate, formatRevision } from "../lib/format";
 
 function splitName(fullName) {
   const parts = (fullName || "").trim().split(/\s+/);
@@ -164,6 +164,18 @@ export function ResidentFaceSheetPrint() {
           </tr>
         </tbody>
       </table>
+
+      {/* Not part of the original paper form — added so a reprinted sheet can
+          be told apart from the stale copy already in the binder. When the
+          face sheet has never been saved through the app, this prints as a
+          blank underline to be filled in by hand rather than inventing a
+          date, same discipline as every other empty field here. */}
+      <div className="mt-3 flex items-baseline gap-2 text-[11px] text-stone-600">
+        <span className="whitespace-nowrap font-medium">Last updated:</span>
+        <span className="min-w-[14rem] flex-1">
+          <Blank value={resident.faceSheetUpdatedAt && formatRevision(resident.faceSheetUpdatedAt)} />
+        </span>
+      </div>
     </div>
   );
 }
