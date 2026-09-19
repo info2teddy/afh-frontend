@@ -14,6 +14,7 @@ import { CardSkeleton } from "../components/CardSkeleton";
 import { ScrollFade } from "../components/ScrollFade";
 import { ResidentStatusModal } from "../components/ResidentStatusModal";
 import { FaceSheetPanel } from "../components/FaceSheetPanel";
+import { useTenantConfirm } from "../components/TenantConfirm";
 
 const STATUS_TONE = { active: "success", discharging: "warning", discharged: "neutral" };
 const AUTH_TONE = { approved: "success", pending: "warning", denied: "danger" };
@@ -570,6 +571,7 @@ function BillingTab({ residentId }) {
   const [invoices, setInvoices] = useState(null);
   const [error, setError] = useState(null);
   const [pushing, setPushing] = useState(null);
+  const { confirm, dialog } = useTenantConfirm();
   const [month, setMonth] = useState(new Date().toISOString().slice(0, 7));
   const [generating, setGenerating] = useState(false);
 
@@ -589,6 +591,13 @@ function BillingTab({ residentId }) {
   useEffect(load, [residentId]);
 
   async function handleGenerate() {
+    const ok = await confirm({
+      title: "Generate invoice?",
+      body: "This creates a draft invoice for this resident in",
+      facts: [["Billing month", month]],
+      confirmLabel: "Generate invoice",
+    });
+    if (!ok) return;
     setGenerating(true);
     setError(null);
     try {
@@ -603,6 +612,12 @@ function BillingTab({ residentId }) {
   }
 
   async function handlePush(invoiceId) {
+    const ok = await confirm({
+      title: "Send invoice to QuickBooks?",
+      body: "This sends the invoice to the QuickBooks account connected to",
+      confirmLabel: "Send",
+    });
+    if (!ok) return;
     setPushing(invoiceId);
     setError(null);
     try {
@@ -617,6 +632,7 @@ function BillingTab({ residentId }) {
 
   return (
     <div>
+      {dialog}
       <div className="mb-6 flex flex-wrap items-center gap-3">
         <input
           type="month"

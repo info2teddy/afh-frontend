@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { auth } from "../lib/api";
 import carefitIcon from "../assets/carefit-icon.svg";
-import { TenantSwitcher } from "./TenantSwitcher";
+import { TenantBar } from "./TenantBar";
 import { GlobalSearch } from "./GlobalSearch";
 import { Icon } from "./icons";
 import { ChangePasswordModal } from "./ChangePasswordModal";
@@ -173,7 +173,11 @@ export function PageShell({ children }) {
   }
 
   return (
-    <div className="min-h-screen bg-stone-50 lg:flex">
+    <div className="bg-stone-50">
+      {/* Admin-only strip naming the active business — see TenantBar.jsx.
+          It's h-9, so the sticky sidebar below is offset by the same 2.25rem. */}
+      {isAdmin && <TenantBar />}
+    <div className="min-h-screen lg:flex">
       <a
         href="#main-content"
         className="sr-only rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50"
@@ -191,7 +195,9 @@ export function PageShell({ children }) {
       />
 
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col overflow-y-auto bg-brand-700 p-3.5 text-brand-100 transition-transform duration-200 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 lg:transition-none ${
+        className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col overflow-y-auto bg-brand-700 p-3.5 text-brand-100 transition-transform duration-200 lg:sticky lg:translate-x-0 lg:transition-none ${
+          isAdmin ? "lg:top-9 lg:h-[calc(100vh-2.25rem)]" : "lg:top-0 lg:h-screen"
+        } ${
           collapsed ? "lg:w-[70px]" : "lg:w-64"
         } ${drawerOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
@@ -272,13 +278,12 @@ export function PageShell({ children }) {
             </svg>
           </button>
 
-          <div className="min-w-0 max-w-[8rem] sm:max-w-[16rem]">
-            {isAdmin ? (
-              <TenantSwitcher />
-            ) : (
+          {/* Admins get the name + switcher in the TenantBar above instead. */}
+          {!isAdmin && (
+            <div className="min-w-0 max-w-[8rem] sm:max-w-[16rem]">
               <span className="block truncate text-sm font-medium text-stone-700">{tenant?.name}</span>
-            )}
-          </div>
+            </div>
+          )}
 
           <div className="flex flex-1 justify-end">
             <GlobalSearch />
@@ -291,6 +296,7 @@ export function PageShell({ children }) {
           </div>
         </main>
       </div>
+    </div>
     </div>
   );
 }

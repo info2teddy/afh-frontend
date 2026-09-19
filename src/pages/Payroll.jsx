@@ -3,6 +3,7 @@ import { useState } from "react";
 import { api } from "../lib/api";
 import { Button } from "../components/Button";
 import { StatusPill } from "../components/StatusPill";
+import { useTenantConfirm } from "../components/TenantConfirm";
 
 const STATUS_TONE = { calculated: "neutral", submitted: "success" };
 
@@ -12,12 +13,20 @@ export function Payroll() {
   const [run, setRun] = useState(null);
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
+  const { confirm, dialog } = useTenantConfirm();
 
   async function handleCreateRun() {
     if (!periodStart || !periodEnd) {
       setError("Enter both a start and end date first.");
       return;
     }
+    const ok = await confirm({
+      title: "Calculate payroll?",
+      body: "This creates a payroll run from logged shifts for",
+      facts: [["Pay period", `${periodStart} to ${periodEnd}`]],
+      confirmLabel: "Calculate payroll",
+    });
+    if (!ok) return;
     setBusy(true);
     setError(null);
     try {
@@ -31,6 +40,16 @@ export function Payroll() {
   }
 
   async function handleSubmit() {
+    const ok = await confirm({
+      title: "Submit payroll to QuickBooks?",
+      body: "This sends hours to the QuickBooks account connected to",
+      facts: [
+        ["Caregivers", String(run.lineItems.length)],
+        ["Gross pay", `$${Number(run.totalGrossPay).toFixed(2)}`],
+      ],
+      confirmLabel: "Submit",
+    });
+    if (!ok) return;
     setBusy(true);
     setError(null);
     try {
@@ -49,6 +68,7 @@ export function Payroll() {
 
   return (
     <div>
+      {dialog}
       <div className="mb-6">
         <h1 className="text-2xl font-semibold tracking-tight text-stone-900">Payroll</h1>
         <p className="mt-1 text-sm text-stone-500">Calculate and submit a payroll run</p>

@@ -3,8 +3,13 @@
 // oversee, and onboard a new one, without logging out.
 import { useEffect, useRef, useState } from "react";
 import { api, auth } from "../lib/api";
+import { getTenantColor } from "../lib/tenantColor";
 
-export function TenantSwitcher() {
+// variant="strip": the trigger is a "Switch business" button sitting on the
+// coloured TenantBar, and the menu opens right-aligned (the button is at the
+// bar's right edge). Default: the original name-as-trigger, left-aligned.
+export function TenantSwitcher({ variant = "default" }) {
+  const inStrip = variant === "strip";
   const [open, setOpen] = useState(false);
   const [tenants, setTenants] = useState(null);
   const [error, setError] = useState(null);
@@ -80,12 +85,20 @@ export function TenantSwitcher() {
         onClick={openMenu}
         aria-haspopup="true"
         aria-expanded={open}
-        className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm text-stone-600 transition-colors hover:bg-stone-100"
+        className={
+          inStrip
+            ? "flex items-center gap-1.5 rounded-md border border-white/40 bg-white/15 px-2.5 py-1 text-xs font-medium text-white transition-colors hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+            : "flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm text-stone-600 transition-colors hover:bg-stone-100"
+        }
       >
-        <span className="max-w-[7rem] truncate font-medium text-stone-900 sm:max-w-[14rem]">
-          {currentTenant?.name || "Select a business"}
-        </span>
-        <svg className="h-3.5 w-3.5 text-stone-400" viewBox="0 0 20 20" fill="currentColor">
+        {inStrip ? (
+          "Switch business"
+        ) : (
+          <span className="max-w-[7rem] truncate font-medium text-stone-900 sm:max-w-[14rem]">
+            {currentTenant?.name || "Select a business"}
+          </span>
+        )}
+        <svg className={`h-3.5 w-3.5 ${inStrip ? "text-white/80" : "text-stone-400"}`} viewBox="0 0 20 20" fill="currentColor">
           <path
             fillRule="evenodd"
             d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
@@ -96,8 +109,8 @@ export function TenantSwitcher() {
 
       {open && (
         <div
-          className="absolute left-0 top-full z-20 mt-2 w-72 overflow-hidden rounded-xl border border-stone-200 bg-white shadow-lg"
-          style={{ transformOrigin: "top left", animation: "dropdown-in 140ms cubic-bezier(0.16, 1, 0.3, 1)" }}
+          className={`absolute top-full z-20 mt-2 w-72 overflow-hidden rounded-xl border border-stone-200 bg-white text-stone-900 shadow-lg ${inStrip ? "right-0" : "left-0"}`}
+          style={{ transformOrigin: inStrip ? "top right" : "top left", animation: "dropdown-in 140ms cubic-bezier(0.16, 1, 0.3, 1)" }}
         >
           <div className="border-b border-stone-100 px-3 py-2 text-xs font-medium uppercase tracking-wide text-stone-400">
             Your businesses
@@ -113,7 +126,8 @@ export function TenantSwitcher() {
                 key={t.id}
                 onClick={() => handleSwitch(t.id)}
                 disabled={switching === t.id}
-                className={`flex w-full items-center justify-between px-3 py-2 text-left text-sm transition-colors hover:bg-stone-50 ${
+                style={{ borderLeftColor: getTenantColor(t.id) }}
+                className={`flex w-full items-center justify-between border-l-4 px-3 py-2 text-left text-sm transition-colors hover:bg-stone-50 ${
                   t.id === currentTenant?.id ? "bg-brand-50/60" : ""
                 }`}
               >

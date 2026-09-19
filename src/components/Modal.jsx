@@ -7,7 +7,9 @@ import { useEffect, useId, useRef } from "react";
 
 const FOCUSABLE = 'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-export function Modal({ title, onClose, children }) {
+// `banner` is optional: a node rendered flush across the top edge of the panel,
+// above the title (used by TenantConfirm to carry the active business's colour).
+export function Modal({ title, onClose, banner, children }) {
   const panelRef = useRef(null);
   const titleId = useId();
 
@@ -57,6 +59,7 @@ export function Modal({ title, onClose, children }) {
         className="relative w-full max-w-lg rounded-2xl border border-stone-200 bg-white p-6 shadow-xl focus:outline-none"
         style={{ animation: "panel-in 180ms cubic-bezier(0.16, 1, 0.3, 1)" }}
       >
+        {banner && <div className="-mx-6 -mt-6 mb-5 overflow-hidden rounded-t-2xl">{banner}</div>}
         <div className="mb-5 flex items-center justify-between">
           <h2 id={titleId} className="text-lg font-semibold text-stone-900">{title}</h2>
           <button
