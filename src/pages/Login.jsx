@@ -59,6 +59,9 @@ export function Login() {
               placeholder="name@company.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               autoFocus
               className="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
             />
@@ -68,6 +71,8 @@ export function Login() {
             <input
               id="login-password"
               type="password"
+              autoCapitalize="none"
+              autoCorrect="off"
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
