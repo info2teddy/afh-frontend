@@ -11,6 +11,7 @@ import { ResidentProfile } from "./pages/ResidentProfile";
 import { CareTeam } from "./pages/CareTeam";
 import { Documents } from "./pages/Documents";
 import { Credentials } from "./pages/Credentials";
+import { FireDrills } from "./pages/FireDrills";
 import { Onboarding } from "./pages/Onboarding";
 import { Timekeeping } from "./pages/Timekeeping";
 import { Clock } from "./pages/Clock";
@@ -57,6 +58,7 @@ function AuthedApp() {
         <Route path="/care-team" element={<CareTeam />} />
         <Route path="/documents" element={<Documents />} />
         <Route path="/credentials" element={<Credentials />} />
+        <Route path="/fire-drills" element={<FireDrills />} />
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/timekeeping" element={<Timekeeping />} />
         <Route path="/clock" element={<Clock />} />

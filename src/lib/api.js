@@ -123,6 +123,12 @@ export const api = {
       delete: (homeId, id) => request(`/homes/${homeId}/rate-schedules/${id}`, { method: "DELETE" }),
     },
   },
+  fireDrills: {
+    status: () => request("/homes/fire-drill-status"),
+    list: (homeId) => request(`/homes/${homeId}/fire-drills`),
+    create: (homeId, body) => request(`/homes/${homeId}/fire-drills`, { method: "POST", body: JSON.stringify(body) }),
+    delete: (homeId, id) => request(`/homes/${homeId}/fire-drills/${id}`, { method: "DELETE" }),
+  },
   invoices: {
     list: (residentId) => request(`/invoices${residentId ? `?residentId=${residentId}` : ""}`),
     generate: (body) => request("/invoices/generate", { method: "POST", body: JSON.stringify(body) }),

@@ -36,7 +36,7 @@ function getNavItems(isAdmin) {
     { type: "link", to: "/residents", label: "Residents", icon: "resident" },
     { type: "group", label: "Care Team", icon: "team", items: [{ to: "/care-team", label: "Roster" }, { to: "/onboarding", label: "Onboarding" }] },
     { type: "group", label: "Operations", icon: "clock", items: [{ to: "/timekeeping", label: "Timekeeping" }, { to: "/clock", label: "Clock" }] },
-    { type: "group", label: "Compliance", icon: "shield", items: [{ to: "/credentials", label: "Credentials" }, { to: "/documents", label: "Documents" }, { to: "/care-plan", label: "Care Plans" }] },
+    { type: "group", label: "Compliance", icon: "shield", items: [{ to: "/credentials", label: "Credentials" }, { to: "/documents", label: "Documents" }, { to: "/care-plan", label: "Care Plans" }, { to: "/fire-drills", label: "Fire Drills" }] },
     { type: "group", label: "Finance", icon: "finance", items: financeItems },
   ];
   if (isAdmin) {
