@@ -7,8 +7,9 @@
 // self-serve feature, but the backend (routes/auth.js) now requires admin
 // for all three routes this card calls, so this is the UI for that.
 import { useEffect, useState } from "react";
-import { auth } from "../lib/api";
+import { auth, api } from "../lib/api";
 import { Button } from "./Button";
+import { Select } from "./Select";
 import { CardSkeleton } from "./CardSkeleton";
 
 function randomPassword() {
@@ -25,14 +26,28 @@ export function TeamLoginsCard() {
   const [creatingKiosk, setCreatingKiosk] = useState(false);
   const [newKioskLogin, setNewKioskLogin] = useState(null); // { email, password } shown once
   const [removingId, setRemovingId] = useState(null);
+  const [employees, setEmployees] = useState(null);
+  const [caregiverOpen, setCaregiverOpen] = useState(false);
+  const [caregiverEmployeeId, setCaregiverEmployeeId] = useState("");
+  const [caregiverEmail, setCaregiverEmail] = useState("");
+  const [caregiverPassword, setCaregiverPassword] = useState("");
+  const [creatingCaregiver, setCreatingCaregiver] = useState(false);
 
   function load() {
     auth.listUsers().then(setUsers).catch((err) => setError(err.message));
+    api.employees.list().then(setEmployees).catch(() => {}); // just for name lookup + the picker below; a load failure here shouldn't block the rest of the card
   }
   useEffect(load, []);
 
   const teammates = (users || []).filter((u) => u.role === "manager");
   const kioskLogins = (users || []).filter((u) => u.role === "kiosk");
+  const caregiverLogins = (users || []).filter((u) => u.role === "employee");
+  const employeeName = (id) => employees?.find((e) => e.id === id)?.name || "(former staff member)";
+  // Only active employees with no login yet can be given one — an employee
+  // record is @unique on User.employeeId, so this list is also what keeps
+  // the picker from ever offering someone who's already linked.
+  const linkedEmployeeIds = new Set(caregiverLogins.map((u) => u.employeeId));
+  const employeesWithoutLogin = (employees || []).filter((e) => e.status === "active" && !linkedEmployeeIds.has(e.id));
 
   async function handleInvite(e) {
     e.preventDefault();
@@ -70,6 +85,35 @@ export function TeamLoginsCard() {
       setError(err.message);
     } finally {
       setCreatingKiosk(false);
+    }
+  }
+
+  async function handleCreateCaregiver(e) {
+    e.preventDefault();
+    if (!caregiverEmployeeId || !caregiverEmail.trim() || !caregiverPassword) {
+      setError("Pick a staff member and enter an email and password.");
+      return;
+    }
+    setCreatingCaregiver(true);
+    setError(null);
+    try {
+      const tenant = auth.getTenant();
+      await auth.createUser({
+        tenantId: tenant.id,
+        email: caregiverEmail.trim(),
+        password: caregiverPassword,
+        role: "employee",
+        employeeId: caregiverEmployeeId,
+      });
+      setCaregiverEmployeeId("");
+      setCaregiverEmail("");
+      setCaregiverPassword("");
+      setCaregiverOpen(false);
+      load();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setCreatingCaregiver(false);
     }
   }
 
@@ -183,6 +227,82 @@ export function TeamLoginsCard() {
                 {kioskLogins.map((u) => (
                   <div key={u.id} className="flex items-center justify-between gap-3 px-4 py-3 transition-colors hover:bg-stone-50">
                     <span className="font-mono text-sm text-stone-700">{u.email}</span>
+                    <Button size="sm" variant="secondary" onClick={() => handleRemove(u.id)} disabled={removingId === u.id}>
+                      {removingId === u.id ? "Removing…" : "Remove"}
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="mt-6">
+            <div className="mb-2 flex items-center justify-between">
+              <div className="text-xs font-medium uppercase tracking-wide text-stone-500">Caregiver logins</div>
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => setCaregiverOpen((o) => !o)}
+                disabled={employeesWithoutLogin.length === 0 && !caregiverOpen}
+              >
+                {caregiverOpen ? "Cancel" : "+ Give a caregiver a login"}
+              </Button>
+            </div>
+            <p className="mb-2 text-xs text-stone-500">
+              A caregiver's own login — on their own phone, not the shared tablet. They see only their assigned residents: log ADL tasks, add notes, view the care plan, clock in/out.
+            </p>
+
+            {employeesWithoutLogin.length === 0 && !caregiverOpen && caregiverLogins.length === 0 && (
+              <p className="text-sm text-stone-500">No active staff without a login yet — add staff under Care Team → Roster first.</p>
+            )}
+
+            {caregiverOpen && (
+              <form onSubmit={handleCreateCaregiver} className="mb-3 flex flex-wrap items-end gap-2 rounded-xl border border-stone-200 p-3">
+                <div className="min-w-[11rem]">
+                  <label className="mb-1 block text-xs font-medium text-stone-600" htmlFor="caregiver-employee">Staff member</label>
+                  <Select id="caregiver-employee" className="w-full" value={caregiverEmployeeId} onChange={(e) => setCaregiverEmployeeId(e.target.value)}>
+                    <option value="">Select…</option>
+                    {employeesWithoutLogin.map((emp) => (
+                      <option key={emp.id} value={emp.id}>{emp.name}</option>
+                    ))}
+                  </Select>
+                </div>
+                <div className="flex-1 min-w-[10rem]">
+                  <label className="mb-1 block text-xs font-medium text-stone-600" htmlFor="caregiver-email">Email</label>
+                  <input
+                    id="caregiver-email"
+                    type="email"
+                    value={caregiverEmail}
+                    onChange={(e) => setCaregiverEmail(e.target.value)}
+                    placeholder="name@example.com"
+                    className="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                  />
+                </div>
+                <div className="flex-1 min-w-[10rem]">
+                  <label className="mb-1 block text-xs font-medium text-stone-600" htmlFor="caregiver-password">Temporary password</label>
+                  <input
+                    id="caregiver-password"
+                    type="text"
+                    value={caregiverPassword}
+                    onChange={(e) => setCaregiverPassword(e.target.value)}
+                    placeholder="Choose a password to share with them"
+                    className="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                  />
+                </div>
+                <Button type="submit" variant="primary" size="sm" disabled={creatingCaregiver}>
+                  {creatingCaregiver ? "Creating…" : "Create login"}
+                </Button>
+              </form>
+            )}
+
+            {caregiverLogins.length > 0 && (
+              <div className="divide-y divide-stone-100 rounded-xl border border-stone-200">
+                {caregiverLogins.map((u) => (
+                  <div key={u.id} className="flex items-center justify-between gap-3 px-4 py-3 transition-colors hover:bg-stone-50">
+                    <span className="text-sm text-stone-700">
+                      <span className="font-medium text-stone-900">{employeeName(u.employeeId)}</span>
+                      <span className="text-stone-400"> — {u.email}</span>
+                    </span>
                     <Button size="sm" variant="secondary" onClick={() => handleRemove(u.id)} disabled={removingId === u.id}>
                       {removingId === u.id ? "Removing…" : "Remove"}
                     </Button>

@@ -2,12 +2,15 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { PageShell } from "./components/PageShell";
 import { KioskShell } from "./components/KioskShell";
+import { EmployeeShell } from "./components/EmployeeShell";
 import { RequireAuth } from "./components/RequireAuth";
 import { auth } from "./lib/api";
 import { Login } from "./pages/Login";
 import { Dashboard } from "./pages/Dashboard";
 import { ResidentList } from "./pages/ResidentList";
 import { ResidentProfile } from "./pages/ResidentProfile";
+import { EmployeeResidents } from "./pages/EmployeeResidents";
+import { EmployeeResidentDetail } from "./pages/EmployeeResidentDetail";
 import { CareTeam } from "./pages/CareTeam";
 import { Documents } from "./pages/Documents";
 import { Credentials } from "./pages/Credentials";
@@ -46,6 +49,21 @@ function AuthedApp() {
       <KioskShell>
         <Clock />
       </KioskShell>
+    );
+  }
+
+  // A caregiver's own login (their own phone) — a completely separate, much
+  // smaller route set from the admin/manager app below. Backend enforcement
+  // is the real boundary (employeeRestrict.js); this is just the matching UX.
+  if (user?.role === "employee") {
+    return (
+      <EmployeeShell>
+        <Routes>
+          <Route path="/" element={<EmployeeResidents />} />
+          <Route path="/residents/:id" element={<EmployeeResidentDetail />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </EmployeeShell>
     );
   }
 

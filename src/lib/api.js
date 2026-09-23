@@ -59,12 +59,18 @@ export const auth = {
     localStorage.setItem("afh_token", body.token);
     localStorage.setItem("afh_user", JSON.stringify(body.user));
     localStorage.setItem("afh_tenant", JSON.stringify(body.tenant));
+    // Only present for role "employee" (a caregiver's own login, see
+    // AdlChecklist/EmployeeShell) — their own roster id/name/home, so the
+    // employee-facing UI doesn't need a second round trip to know who it is.
+    if (body.employee) localStorage.setItem("afh_employee", JSON.stringify(body.employee));
+    else localStorage.removeItem("afh_employee");
     return body.user;
   },
   logout() {
     localStorage.removeItem("afh_token");
     localStorage.removeItem("afh_user");
     localStorage.removeItem("afh_tenant");
+    localStorage.removeItem("afh_employee");
   },
   isLoggedIn() {
     return !!getToken();
@@ -74,6 +80,9 @@ export const auth = {
   },
   getTenant() {
     return getStoredJSON("afh_tenant");
+  },
+  getEmployee() {
+    return getStoredJSON("afh_employee");
   },
   // Admin-only: re-issues the JWT scoped to a different AFH business, so
   // every subsequent request (already going through `request()` above)
@@ -110,6 +119,10 @@ export const api = {
     notes: {
       list: (id) => request(`/residents/${id}/notes`),
       create: (id, content) => request(`/residents/${id}/notes`, { method: "POST", body: JSON.stringify({ content }) }),
+    },
+    adl: {
+      list: (id) => request(`/residents/${id}/adl`),
+      create: (id, domain, note) => request(`/residents/${id}/adl`, { method: "POST", body: JSON.stringify({ domain, note }) }),
     },
   },
   homes: {
