@@ -22,34 +22,87 @@ export const PERSONAL_CARE_TASKS = [
   "Linen Change",
 ];
 
-// One-tap rating buttons for the 3 categories the real paper form itself
-// charts with a fixed shorthand code, rather than free text — Diet's G/F/P/R/S
-// scale, Bath's care-method codes, Bowel Movement's L/M/S size. Every other
-// task has no fixed vocabulary on the real form, so it stays a plain
-// Log-with-an-optional-note like before. Frontend-only: the backend still
-// just stores whatever string ends up in `note`, so this list can grow
-// without a schema change — it only decides which categories get pills
-// instead of a textarea.
+// One-tap rating buttons, one entry per task that has a fixed vocabulary on
+// the real paper form — every one of the 14 categories has one, some sharing
+// the same scale (the 5 hygiene tasks all use the form's own Independent/
+// Assisted/Total Help column). `options` are the pills; `allowNote: true`
+// keeps the free-text box available too (below the pills), for the two
+// interval-based safety checks where "no issues" covers most shifts but an
+// unusual finding still needs real words, not a code. Frontend-only: the
+// backend just stores whatever string ends up in `note`, so this can change
+// without touching the schema or API.
+const ASSISTANCE_LEVELS = [
+  { code: "I", label: "Independent" },
+  { code: "A", label: "Assisted" },
+  { code: "TH", label: "Total Help" },
+];
+
 export const QUICK_OPTIONS = {
-  Diet: [
-    { code: "G", label: "Good (75%)" },
-    { code: "F", label: "Fair (50%)" },
-    { code: "P", label: "Poor (25%)" },
-    { code: "R", label: "Refused" },
-    { code: "S", label: "Snack" },
-  ],
-  Bath: [
-    { code: "SH", label: "Shower" },
-    { code: "TB", label: "Tub Bath" },
-    { code: "BB", label: "Bed Bath" },
-    { code: "SB", label: "Sponge Bath" },
-    { code: "WP", label: "Whirlpool" },
-  ],
-  "Bowel Movement": [
-    { code: "L", label: "Large" },
-    { code: "M", label: "Medium" },
-    { code: "S", label: "Small" },
-  ],
+  Diet: {
+    options: [
+      { code: "G", label: "Good (75%)" },
+      { code: "F", label: "Fair (50%)" },
+      { code: "P", label: "Poor (25%)" },
+      { code: "R", label: "Refused" },
+      { code: "S", label: "Snack" },
+    ],
+  },
+  Bath: {
+    options: [
+      { code: "SH", label: "Shower" },
+      { code: "TB", label: "Tub Bath" },
+      { code: "BB", label: "Bed Bath" },
+      { code: "SB", label: "Sponge Bath" },
+      { code: "WP", label: "Whirlpool" },
+    ],
+  },
+  "Oral Care": { options: ASSISTANCE_LEVELS },
+  "Fingernail Care": { options: ASSISTANCE_LEVELS },
+  "Toenail Care": { options: ASSISTANCE_LEVELS },
+  Shave: { options: ASSISTANCE_LEVELS },
+  Shampoo: { options: ASSISTANCE_LEVELS },
+  "Bowel Movement": {
+    options: [
+      { code: "L", label: "Large" },
+      { code: "M", label: "Medium" },
+      { code: "S", label: "Small" },
+    ],
+  },
+  "Incontinence Care": {
+    options: [
+      { code: "U", label: "Urine" },
+      { code: "F", label: "Feces" },
+      { code: "D", label: "Dry" },
+    ],
+  },
+  "Skin Care/Reposition": {
+    options: [
+      { code: "TR", label: "Turn & Reposition" },
+      { code: "PC", label: "Pericare" },
+      { code: "BR", label: "Backrub" },
+    ],
+  },
+  Ambulation: {
+    options: [
+      { code: "AMB", label: "Ambulatory" },
+      { code: "W", label: "Walker" },
+      { code: "CA", label: "Cane" },
+      { code: "WC", label: "Wheelchair" },
+      { code: "CH", label: "Chair" },
+      { code: "BF", label: "Partial Bedfast" },
+    ],
+  },
+  "Linen Change": {
+    options: [
+      { code: "T", label: "Total" },
+      { code: "P", label: "Partial" },
+    ],
+  },
+  // Interval-based safety checks (paper form: "checked Q1hr", "Q__ hrs") —
+  // one pill covers the common case, but typing is still there for anything
+  // that isn't just "checked, no issues".
+  "Restraints Check": { options: [{ code: "OK", label: "No issues" }], allowNote: true },
+  "Routine Resident Check": { options: [{ code: "OK", label: "No issues" }], allowNote: true },
 };
 
 export const SHIFTS = [

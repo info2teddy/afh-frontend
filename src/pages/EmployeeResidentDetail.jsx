@@ -102,7 +102,7 @@ function TaskCard({ domain, shift, entries, onLog }) {
       </div>
       {open && quickOptions && (
         <div className="mt-3 flex flex-wrap gap-1.5 border-t border-stone-100 pt-3">
-          {quickOptions.map((option) => (
+          {quickOptions.options.map((option) => (
             <button
               key={option.code}
               type="button"
@@ -115,8 +115,9 @@ function TaskCard({ domain, shift, entries, onLog }) {
           ))}
         </div>
       )}
-      {open && !quickOptions && (
-        <div className="mt-3 flex flex-col gap-2 border-t border-stone-100 pt-3">
+      {open && (!quickOptions || quickOptions.allowNote) && (
+        <div className={`flex flex-col gap-2 pt-3 ${quickOptions ? "mt-2" : "mt-3 border-t border-stone-100"}`}>
+          {quickOptions && <p className="text-xs text-stone-400">Or describe what happened:</p>}
           <textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}
