@@ -22,6 +22,36 @@ export const PERSONAL_CARE_TASKS = [
   "Linen Change",
 ];
 
+// One-tap rating buttons for the 3 categories the real paper form itself
+// charts with a fixed shorthand code, rather than free text — Diet's G/F/P/R/S
+// scale, Bath's care-method codes, Bowel Movement's L/M/S size. Every other
+// task has no fixed vocabulary on the real form, so it stays a plain
+// Log-with-an-optional-note like before. Frontend-only: the backend still
+// just stores whatever string ends up in `note`, so this list can grow
+// without a schema change — it only decides which categories get pills
+// instead of a textarea.
+export const QUICK_OPTIONS = {
+  Diet: [
+    { code: "G", label: "Good (75%)" },
+    { code: "F", label: "Fair (50%)" },
+    { code: "P", label: "Poor (25%)" },
+    { code: "R", label: "Refused" },
+    { code: "S", label: "Snack" },
+  ],
+  Bath: [
+    { code: "SH", label: "Shower" },
+    { code: "TB", label: "Tub Bath" },
+    { code: "BB", label: "Bed Bath" },
+    { code: "SB", label: "Sponge Bath" },
+    { code: "WP", label: "Whirlpool" },
+  ],
+  "Bowel Movement": [
+    { code: "L", label: "Large" },
+    { code: "M", label: "Medium" },
+    { code: "S", label: "Small" },
+  ],
+};
+
 export const SHIFTS = [
   { value: "day", label: "Day" },
   { value: "evening", label: "Evening" },

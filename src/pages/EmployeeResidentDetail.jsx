@@ -9,7 +9,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { api } from "../lib/api";
-import { PERSONAL_CARE_TASKS, SHIFTS, currentShift } from "../lib/personalCareTasks";
+import { PERSONAL_CARE_TASKS, QUICK_OPTIONS, SHIFTS, currentShift } from "../lib/personalCareTasks";
 import { formatDateTime, formatFriendlyDate } from "../lib/format";
 import { Button } from "../components/Button";
 import { CardSkeleton } from "../components/CardSkeleton";
@@ -46,6 +46,8 @@ function TaskCard({ domain, shift, entries, onLog }) {
   const [open, setOpen] = useState(false);
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
+  const [pickingCode, setPickingCode] = useState(null); // which pill is mid-save, for its own spinner state
+  const quickOptions = QUICK_OPTIONS[domain];
 
   // "Done this shift" tracks the paper form's own grain: a checkbox per task,
   // per shift, per day — not just "done today" — so Bath done on Day shift
@@ -64,6 +66,20 @@ function TaskCard({ domain, shift, entries, onLog }) {
     }
   }
 
+  // A pill tap logs immediately — no separate Save step. That's the whole
+  // point of quick options: Diet's G/F/P/R/S, Bath's care method, Bowel
+  // Movement's L/M/S are exactly what the paper form charts as a single mark,
+  // so typing a note for them would be slower than the paper it's replacing.
+  async function handlePick(option) {
+    setPickingCode(option.code);
+    try {
+      await onLog(domain, `${option.code} — ${option.label}`);
+      setOpen(false);
+    } finally {
+      setPickingCode(null);
+    }
+  }
+
   return (
     <div className={`rounded-xl border px-3.5 py-3 transition-colors ${latest ? "border-emerald-200 bg-emerald-50/40" : "border-stone-200 bg-white"}`}>
       <div className="flex items-center justify-between gap-3">
@@ -71,7 +87,10 @@ function TaskCard({ domain, shift, entries, onLog }) {
           <div className="text-sm font-medium text-stone-900">{domain}</div>
           <div className="text-xs text-stone-500">
             {latest ? (
-              <span className="text-emerald-700">✓ {formatDateTime(latest.loggedAt)}{thisShift.length > 1 ? ` (+${thisShift.length - 1} more)` : ""}</span>
+              <span className="text-emerald-700">
+                ✓ {latest.note || formatDateTime(latest.loggedAt)}
+                {thisShift.length > 1 ? ` (+${thisShift.length - 1} more)` : ""}
+              </span>
             ) : (
               "Not yet this shift"
             )}
@@ -81,7 +100,22 @@ function TaskCard({ domain, shift, entries, onLog }) {
           {open ? "Cancel" : "Log"}
         </Button>
       </div>
-      {open && (
+      {open && quickOptions && (
+        <div className="mt-3 flex flex-wrap gap-1.5 border-t border-stone-100 pt-3">
+          {quickOptions.map((option) => (
+            <button
+              key={option.code}
+              type="button"
+              onClick={() => handlePick(option)}
+              disabled={pickingCode !== null}
+              className={`rounded-lg border-[1.5px] border-stone-200 px-2.5 py-1.5 text-xs font-medium text-stone-700 transition-colors hover:border-brand-300 hover:bg-brand-50 disabled:opacity-50 ${FOCUS_RING.replace("ring-offset-2", "")}`}
+            >
+              {pickingCode === option.code ? "…" : option.label}
+            </button>
+          ))}
+        </div>
+      )}
+      {open && !quickOptions && (
         <div className="mt-3 flex flex-col gap-2 border-t border-stone-100 pt-3">
           <textarea
             value={note}
