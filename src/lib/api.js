@@ -123,6 +123,7 @@ export const api = {
     adl: {
       list: (id) => request(`/residents/${id}/adl`),
       create: (id, body) => request(`/residents/${id}/adl`, { method: "POST", body: JSON.stringify(body) }),
+      delete: (id, entryId) => request(`/residents/${id}/adl/${entryId}`, { method: "DELETE" }),
     },
     vitals: {
       list: (id) => request(`/residents/${id}/vitals`),

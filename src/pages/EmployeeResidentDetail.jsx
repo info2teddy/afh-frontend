@@ -42,11 +42,12 @@ function ShiftPicker({ value, onChange }) {
   );
 }
 
-function TaskCard({ domain, shift, entries, onLog }) {
+function TaskCard({ domain, shift, entries, onLog, onDelete }) {
   const [open, setOpen] = useState(false);
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
   const [pickingCode, setPickingCode] = useState(null); // which pill is mid-save, for its own spinner state
+  const [removingId, setRemovingId] = useState(null);
   const quickOptions = QUICK_OPTIONS[domain];
 
   // "Done this shift" tracks the paper form's own grain: a checkbox per task,
@@ -80,26 +81,51 @@ function TaskCard({ domain, shift, entries, onLog }) {
     }
   }
 
+  async function handleRemove(entryId) {
+    setRemovingId(entryId);
+    try {
+      await onDelete(entryId);
+    } finally {
+      setRemovingId(null);
+    }
+  }
+
   return (
     <div className={`rounded-xl border px-3.5 py-3 transition-colors ${latest ? "border-emerald-200 bg-emerald-50/40" : "border-stone-200 bg-white"}`}>
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <div className="text-sm font-medium text-stone-900">{domain}</div>
-          <div className="text-xs text-stone-500">
-            {latest ? (
-              <span className="text-emerald-700">
-                ✓ {latest.note || formatDateTime(latest.loggedAt)}
-                {thisShift.length > 1 ? ` (+${thisShift.length - 1} more)` : ""}
-              </span>
-            ) : (
-              "Not yet this shift"
-            )}
-          </div>
+          {!latest && <div className="text-xs text-stone-500">Not yet this shift</div>}
         </div>
         <Button size="sm" variant={latest ? "secondary" : "primary"} onClick={() => setOpen((o) => !o)}>
-          {open ? "Cancel" : "Log"}
+          {open ? "Cancel" : latest ? "Log again" : "Log"}
         </Button>
       </div>
+      {/* Every entry for this shift, each removable on its own — this is
+          what actually undoes a mis-tap (a fat-fingered double log), not
+          just a summary count. An employee login can only remove its own
+          entry from today (enforced server-side too); older or someone
+          else's entries just don't get a remove button. */}
+      {thisShift.length > 0 && (
+        <div className="mt-1.5 flex flex-col gap-1">
+          {thisShift.map((e) => (
+            <div key={e.id} className="flex items-center justify-between gap-2 text-xs text-emerald-700">
+              <span className="min-w-0 truncate">✓ {e.note || formatDateTime(e.loggedAt)}</span>
+              {onDelete && (
+                <button
+                  type="button"
+                  onClick={() => handleRemove(e.id)}
+                  disabled={removingId !== null}
+                  aria-label={`Remove this ${domain} entry`}
+                  className={`shrink-0 rounded px-1.5 py-0.5 text-stone-400 hover:bg-rose-50 hover:text-rose-600 disabled:opacity-50 ${FOCUS_RING.replace("ring-offset-2", "")}`}
+                >
+                  {removingId === e.id ? "…" : "Remove"}
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
       {open && quickOptions && (
         <div className="mt-3 flex flex-wrap gap-1.5 border-t border-stone-100 pt-3">
           {quickOptions.options.map((option) => (
@@ -313,6 +339,15 @@ export function EmployeeResidentDetail() {
     loadAdl();
   }
 
+  async function handleDeleteAdl(entryId) {
+    try {
+      await api.residents.adl.delete(id, entryId);
+      loadAdl();
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
   async function handleAddNote() {
     if (!noteDraft.trim()) return;
     setSavingNote(true);
@@ -365,6 +400,7 @@ export function EmployeeResidentDetail() {
                 shift={shift}
                 entries={adlEntries.filter((e) => e.domain === domain)}
                 onLog={handleLogAdl}
+                onDelete={handleDeleteAdl}
               />
             ))}
           </div>
