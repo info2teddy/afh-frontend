@@ -122,7 +122,11 @@ export const api = {
     },
     adl: {
       list: (id) => request(`/residents/${id}/adl`),
-      create: (id, domain, note) => request(`/residents/${id}/adl`, { method: "POST", body: JSON.stringify({ domain, note }) }),
+      create: (id, body) => request(`/residents/${id}/adl`, { method: "POST", body: JSON.stringify(body) }),
+    },
+    vitals: {
+      list: (id) => request(`/residents/${id}/vitals`),
+      create: (id, body) => request(`/residents/${id}/vitals`, { method: "POST", body: JSON.stringify(body) }),
     },
   },
   homes: {
