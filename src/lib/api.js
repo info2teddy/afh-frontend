@@ -285,6 +285,11 @@ export const api = {
   },
   carePlans: {
     list: (residentId) => request(`/care-plans?residentId=${residentId}`),
+    // Per-business switch — off until a BAA covers sending resident data to Anthropic.
+    drafting: {
+      get: () => request("/care-plans/drafting"),
+      set: (enabled) => request("/care-plans/drafting", { method: "PUT", body: JSON.stringify({ enabled }) }),
+    },
     // `document` is an optional File (PDF/PNG/JPEG/WEBP) — e.g. a physician's
     // order or assessment form the AI should ground the plan in.
     generate: (residentId, planDate, { notes, document } = {}) => {

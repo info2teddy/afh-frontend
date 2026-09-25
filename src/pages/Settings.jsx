@@ -13,6 +13,7 @@ import { RateSchedulesModal } from "../components/RateSchedulesModal";
 import { QuickBooksMappings } from "../components/QuickBooksMappings";
 import { StatusPill } from "../components/StatusPill";
 import { TeamLoginsCard } from "../components/TeamLoginsCard";
+import { CarePlanDraftingCard } from "../components/CarePlanDraftingCard";
 
 export function Settings() {
   const [status, setStatus] = useState(null);
@@ -181,6 +182,8 @@ export function Settings() {
       )}
 
       {status?.connected && <QuickBooksMappings />}
+
+      <CarePlanDraftingCard />
 
       {employees && employees.length > 0 && (
         <div className="mt-8">

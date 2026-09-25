@@ -356,11 +356,15 @@ function CarePlanTab({ residentId }) {
   const [documentFile, setDocumentFile] = useState(null);
   const [generating, setGenerating] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [draftingEnabled, setDraftingEnabled] = useState(null);
 
   function load() {
     api.carePlans.list(residentId).then(setPlans).catch((err) => setError(err.message));
   }
   useEffect(load, [residentId]);
+  useEffect(() => {
+    api.carePlans.drafting.get().then((r) => setDraftingEnabled(r.enabled)).catch(() => setDraftingEnabled(false));
+  }, []);
 
   async function handleGenerate() {
     setGenerating(true);
@@ -385,37 +389,49 @@ function CarePlanTab({ residentId }) {
 
   return (
     <div>
-      <div className="mb-6 rounded-2xl border border-stone-200 bg-white p-5">
-        <p className="mb-1 text-sm font-medium text-stone-700">
-          {current ? "Update the Negotiated Care Plan" : "Draft the Negotiated Care Plan"}
-        </p>
-        <p className="mb-3 text-xs text-stone-500">
-          Describe what's changed — a new diagnosis, behavior, ADL need, medication, or discharge instructions — or
-          attach a physician's order or assessment form.
-          {current ? " The existing plan carries forward and is only updated where the new information applies." : ""}
-        </p>
-        <textarea
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          placeholder="What's changed for this resident?"
-          rows={3}
-          className={`${inputClass} mb-3 w-full resize-none`}
-        />
-        <div className="flex flex-wrap items-center gap-3">
-          <label className="flex cursor-pointer items-center justify-center rounded-lg border border-dashed border-stone-300 px-3 py-2.5 text-sm text-stone-500 hover:border-stone-400 hover:text-stone-700">
-            {documentFile ? documentFile.name : "Upload a document"}
-            <input
-              type="file"
-              accept="application/pdf,image/png,image/jpeg,image/webp"
-              onChange={(e) => setDocumentFile(e.target.files?.[0] || null)}
-              className="hidden"
-            />
-          </label>
-          <Button variant="primary" onClick={handleGenerate} disabled={generating}>
-            {generating ? "Drafting…" : current ? "Update care plan" : "Draft care plan"}
-          </Button>
+      {draftingEnabled === false && (
+        <div className="mb-6 rounded-2xl border border-stone-200 bg-white p-5">
+          <p className="mb-1 text-sm font-medium text-stone-700">Care plan drafting isn't turned on for this business</p>
+          <p className="text-xs text-stone-500">
+            Drafting sends resident details to an outside AI service, so it stays off until a HIPAA agreement covers
+            this business. Existing plans below are unaffected. Ask CareFit support to turn it on.
+          </p>
         </div>
-      </div>
+      )}
+
+      {draftingEnabled && (
+        <div className="mb-6 rounded-2xl border border-stone-200 bg-white p-5">
+          <p className="mb-1 text-sm font-medium text-stone-700">
+            {current ? "Update the Negotiated Care Plan" : "Draft the Negotiated Care Plan"}
+          </p>
+          <p className="mb-3 text-xs text-stone-500">
+            Describe what's changed — a new diagnosis, behavior, ADL need, medication, or discharge instructions — or
+            attach a physician's order or assessment form.
+            {current ? " The existing plan carries forward and is only updated where the new information applies." : ""}
+          </p>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="What's changed for this resident?"
+            rows={3}
+            className={`${inputClass} mb-3 w-full resize-none`}
+          />
+          <div className="flex flex-wrap items-center gap-3">
+            <label className="flex cursor-pointer items-center justify-center rounded-lg border border-dashed border-stone-300 px-3 py-2.5 text-sm text-stone-500 hover:border-stone-400 hover:text-stone-700">
+              {documentFile ? documentFile.name : "Upload a document"}
+              <input
+                type="file"
+                accept="application/pdf,image/png,image/jpeg,image/webp"
+                onChange={(e) => setDocumentFile(e.target.files?.[0] || null)}
+                className="hidden"
+              />
+            </label>
+            <Button variant="primary" onClick={handleGenerate} disabled={generating}>
+              {generating ? "Drafting…" : current ? "Update care plan" : "Draft care plan"}
+            </Button>
+          </div>
+        </div>
+      )}
 
       {error && <p className="mb-4 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>}
 
