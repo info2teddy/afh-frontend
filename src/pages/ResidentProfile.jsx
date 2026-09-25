@@ -1,7 +1,7 @@
 // src/pages/ResidentProfile.jsx
 // The resident "360" — replaces the old invoice-only page. Tabs cover what
 // the app actually has real data for (Overview, Care Plan, Documents, Notes,
-// Billing). Medication and Appointments were deliberately left out — this is
+// Billing, Access history). Medication and Appointments were deliberately left out — this is
 // a real, licensed AFH's data, and there's no medication-administration or
 // scheduling system behind either yet.
 import { useEffect, useState } from "react";
@@ -26,6 +26,7 @@ const TABS = [
   { key: "documents", label: "Documents" },
   { key: "notes", label: "Notes" },
   { key: "billing", label: "Billing" },
+  { key: "access", label: "Access history" },
 ];
 
 export function ResidentProfile() {
@@ -91,6 +92,7 @@ export function ResidentProfile() {
       {resident && tab === "documents" && <DocumentsTab residentId={id} />}
       {resident && tab === "notes" && <NotesTab residentId={id} />}
       {resident && tab === "billing" && <BillingTab residentId={id} />}
+      {resident && tab === "access" && <AccessTab residentId={id} />}
 
       {showStatusModal && (
         <ResidentStatusModal
@@ -561,6 +563,69 @@ function NotesTab({ residentId }) {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+// Plain-language names for the actions the backend records (lib/accessLog.js).
+const ACCESS_ACTION_LABELS = {
+  view: "Opened the record",
+  ssn_reveal: "Viewed full SSN (printed face sheet)",
+  face_sheet_update: "Updated the face sheet",
+  status_change: "Changed status",
+  care_plan_generate: "Created a care plan",
+  care_plan_document_view: "Opened a care plan document",
+};
+const ACCESS_ROLE_LABELS = { admin: "CareFit admin", manager: "Manager", employee: "Caregiver" };
+
+function formatAccessTime(dateStr) {
+  return new Date(dateStr).toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
+// Who opened or changed this resident's record — the HIPAA access trail.
+// Read-only; the backend never edits or removes entries.
+function AccessTab({ residentId }) {
+  const [entries, setEntries] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    api.residents.accessLog(residentId).then(setEntries).catch((err) => setError(err.message));
+  }, [residentId]);
+
+  return (
+    <div>
+      <p className="mb-4 text-sm text-stone-500">
+        Everyone who opened or changed this resident's record, newest first. Repeat views by the same person within
+        10 minutes count once.
+      </p>
+
+      {error && <p className="mb-4 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>}
+      {!entries && !error && <CardSkeleton lines={3} />}
+      {entries && entries.length === 0 && <PlaceholderTab text="No access recorded yet." />}
+
+      {entries && entries.length > 0 && (
+        <div className="divide-y divide-stone-100 overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm">
+          {entries.map((e) => (
+            <div key={e.id} className="flex flex-col gap-0.5 px-4 py-3 sm:flex-row sm:items-baseline sm:gap-4">
+              <span className="shrink-0 text-xs tabular-nums text-stone-500 sm:w-44">{formatAccessTime(e.createdAt)}</span>
+              <span className="text-sm text-stone-900">{ACCESS_ACTION_LABELS[e.action] || e.action}</span>
+              <span className="text-sm text-stone-500 sm:ml-auto sm:text-right">
+                {e.userEmail || "Unknown login"}
+                {e.userRole && <span className="text-stone-400"> · {ACCESS_ROLE_LABELS[e.userRole] || e.userRole}</span>}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+      {entries && entries.length === 200 && (
+        <p className="mt-3 text-xs text-stone-400">Showing the most recent 200 entries.</p>
+      )}
     </div>
   );
 }
