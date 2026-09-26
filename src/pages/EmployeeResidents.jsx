@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { api } from "../lib/api";
 import { careLevelShortLabel } from "../lib/format";
 import { CardSkeleton } from "../components/CardSkeleton";
+import { ResidentPhoto } from "../components/ResidentPhoto";
 
 export function EmployeeResidents() {
   const [residents, setResidents] = useState(null);
@@ -39,12 +40,17 @@ export function EmployeeResidents() {
               to={`/residents/${r.id}`}
               className="flex items-center justify-between gap-3 rounded-2xl border border-stone-200 bg-white px-4 py-3.5 shadow-sm transition-colors hover:bg-stone-50"
             >
-              <div>
-                <div className="text-sm font-medium text-stone-900">{r.name}</div>
-                <div className="text-xs text-stone-500">
-                  {r.room ? `Room ${r.room} · ` : ""}{careLevelShortLabel(r.careLevel)}
+              <span className="flex min-w-0 items-center gap-3">
+                <span className="h-11 w-11 shrink-0 overflow-hidden rounded-xl">
+                  <ResidentPhoto resident={r} size="thumb" />
+                </span>
+                <div>
+                  <div className="text-sm font-medium text-stone-900">{r.name}</div>
+                  <div className="text-xs text-stone-500">
+                    {r.room ? `Room ${r.room} · ` : ""}{careLevelShortLabel(r.careLevel)}
+                  </div>
                 </div>
-              </div>
+              </span>
               <span className="text-stone-300">›</span>
             </Link>
           ))}

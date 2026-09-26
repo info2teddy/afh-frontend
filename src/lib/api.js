@@ -117,6 +117,20 @@ export const api = {
     // The only call that returns a full SSN — used solely by the printed face sheet.
     getSocialSecurityNumber: (id) => request(`/residents/${id}/social-security-number`),
     accessLog: (id) => request(`/residents/${id}/access-log`),
+    // Photos are private: fetched with the login's token and handed back as
+    // a blob URL (see components/ResidentPhoto.jsx), never a public link.
+    async photoUrl(id) {
+      const token = getToken();
+      const res = await fetch(`${API_BASE}/residents/${id}/photo`, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+      if (!res.ok) throw new Error("No photo");
+      return URL.createObjectURL(await res.blob());
+    },
+    uploadPhoto: (id, blob) => {
+      const form = new FormData();
+      form.append("photo", blob, "photo.jpg");
+      return request(`/residents/${id}/photo`, { method: "PUT", body: form });
+    },
+    removePhoto: (id) => request(`/residents/${id}/photo`, { method: "DELETE" }),
     notes: {
       list: (id) => request(`/residents/${id}/notes`),
       create: (id, content) => request(`/residents/${id}/notes`, { method: "POST", body: JSON.stringify({ content }) }),

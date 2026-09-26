@@ -30,10 +30,14 @@ const CONTACT_FIELDS = [
 
 const EMPTY_CONTACT = { name: "", phone: "", fax: "", email: "", address: "", specialty: "" };
 
+// Blank contact fields come back from the server as null; inputs need "".
 function toFormContacts(contacts) {
   const byRole = Object.fromEntries((contacts || []).map((c) => [c.role, c]));
   return Object.fromEntries(
-    CONTACT_FIELDS.map(({ role }) => [role, { ...EMPTY_CONTACT, ...byRole[role] }])
+    CONTACT_FIELDS.map(({ role }) => [
+      role,
+      Object.fromEntries(Object.keys(EMPTY_CONTACT).map((k) => [k, byRole[role]?.[k] ?? ""])),
+    ])
   );
 }
 
@@ -63,6 +67,10 @@ export function FaceSheetPanel({ residentId }) {
         supplementaryInsurance: r.supplementaryInsurance || "",
         diagnosis: r.diagnosis || "",
         allergies: r.allergies || "",
+        diet: r.diet || "",
+        mobility: r.mobility || "",
+        fallRisk: r.fallRisk || "",
+        cognition: r.cognition || "",
       });
       setContacts(toFormContacts(r.contacts));
     }).catch((err) => setError(err.message));
@@ -210,6 +218,34 @@ export function FaceSheetPanel({ residentId }) {
               <div>
                 <label className={labelClass}>Allergies</label>
                 <textarea rows={2} className={inputClass} value={form.allergies} onChange={(e) => set("allergies", e.target.value)} />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="mb-2 text-xs font-medium uppercase tracking-wide text-stone-500">Daily Care</h3>
+            <p className="mb-3 text-xs text-stone-500">Shown on the resident's card and quick view, so staff see it at a glance.</p>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <div>
+                <label htmlFor="face-sheet-diet" className={labelClass}>Diet</label>
+                <input id="face-sheet-diet" className={inputClass} value={form.diet} onChange={(e) => set("diet", e.target.value)} placeholder="e.g. Mechanical soft, diabetic" />
+              </div>
+              <div>
+                <label htmlFor="face-sheet-mobility" className={labelClass}>Mobility</label>
+                <input id="face-sheet-mobility" className={inputClass} value={form.mobility} onChange={(e) => set("mobility", e.target.value)} placeholder="e.g. Walker, 1-person assist" />
+              </div>
+              <div>
+                <label htmlFor="face-sheet-fall-risk" className={labelClass}>Fall Risk</label>
+                <Select id="face-sheet-fall-risk" className="w-full" value={form.fallRisk} onChange={(e) => set("fallRisk", e.target.value)}>
+                  <option value="">Not set</option>
+                  <option value="low">Low</option>
+                  <option value="moderate">Moderate</option>
+                  <option value="high">High</option>
+                </Select>
+              </div>
+              <div className="sm:col-span-3">
+                <label htmlFor="face-sheet-cognition" className={labelClass}>Cognition &amp; Communication</label>
+                <textarea id="face-sheet-cognition" rows={2} className={inputClass} value={form.cognition} onChange={(e) => set("cognition", e.target.value)} placeholder="e.g. Needs cues; speaks Amharic; hard of hearing on the left" />
               </div>
             </div>
           </div>

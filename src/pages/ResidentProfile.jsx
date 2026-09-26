@@ -14,6 +14,7 @@ import { CardSkeleton } from "../components/CardSkeleton";
 import { ScrollFade } from "../components/ScrollFade";
 import { ResidentStatusModal } from "../components/ResidentStatusModal";
 import { FaceSheetPanel } from "../components/FaceSheetPanel";
+import { ResidentPhotoEditor } from "../components/ResidentPhotoEditor";
 import { useTenantConfirm } from "../components/TenantConfirm";
 
 const STATUS_TONE = { active: "success", discharging: "warning", discharged: "neutral" };
@@ -48,16 +49,22 @@ export function ResidentProfile() {
       </Link>
 
       <div className="mb-6 mt-2 flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-stone-900">
-            {resident ? resident.name : "Resident"}
-          </h1>
-          <p className="mt-1 text-sm text-stone-500">
-            {resident
-              ? `${careLevelShortLabel(resident.careLevel)} · ${payerLabel(resident)} · ${resident.status}`
-              : "Loading…"}
-          </p>
-        </div>
+        {resident ? (
+          <ResidentPhotoEditor
+            resident={resident}
+            onChange={(photoUpdatedAt) => setResident((prev) => ({ ...prev, photoUpdatedAt }))}
+          >
+            <h1 className="text-2xl font-semibold tracking-tight text-stone-900">{resident.name}</h1>
+            <p className="mt-1 text-sm text-stone-500">
+              {`${careLevelShortLabel(resident.careLevel)} · ${payerLabel(resident)} · ${resident.status}`}
+            </p>
+          </ResidentPhotoEditor>
+        ) : (
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight text-stone-900">Resident</h1>
+            <p className="mt-1 text-sm text-stone-500">Loading…</p>
+          </div>
+        )}
         {resident && (
           <Button variant="secondary" size="sm" onClick={() => setShowStatusModal(true)}>
             Update status
@@ -591,6 +598,7 @@ const ACCESS_ACTION_LABELS = {
   status_change: "Changed status",
   care_plan_generate: "Created a care plan",
   care_plan_document_view: "Opened a care plan document",
+  photo_update: "Changed the photo",
 };
 const ACCESS_ROLE_LABELS = { admin: "CareFit admin", manager: "Manager", employee: "Caregiver" };
 

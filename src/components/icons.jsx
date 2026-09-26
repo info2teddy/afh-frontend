@@ -13,6 +13,9 @@ const PATHS = {
   gear: <><circle cx="12" cy="12" r="3" /><path d="M12 3v2.4M12 18.6V21M4.9 6.5l1.9 1.4M17.2 16.1l1.9 1.4M4.9 17.5l1.9-1.4M17.2 7.9l1.9-1.4M3 12h2.4M18.6 12H21" /></>,
   warning: <><path d="M12 3.5l9 15.6H3L12 3.5Z" /><path d="M12 9.5v4.2" /><path d="M12 17h.01" /></>,
   check: <path d="M5 12.5l4.5 4.5L19 7.5" />,
+  dnr: <><path d="M12 19.5S4.5 15 4.5 9.4A4 4 0 0 1 12 7.6a4 4 0 0 1 7.5 1.8C19.5 15 12 19.5 12 19.5Z" /><path d="M4.5 4.5l15 15" /></>,
+  fall: <><circle cx="14" cy="5" r="2" /><path d="M13.5 8.5l-3 5.5 4 2 1.5 4.5" /><path d="M10.5 14l-4 5" /><path d="M13.5 8.5l4 2.5" /></>,
+  camera: <><path d="M4 8h3l1.6-2.2h6.8L17 8h3v11H4Z" /><circle cx="12" cy="13.2" r="3.4" /></>,
 };
 
 export function Icon({ name, className }) {

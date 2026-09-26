@@ -9,6 +9,7 @@ import { Login } from "./pages/Login";
 import { Dashboard } from "./pages/Dashboard";
 import { ResidentList } from "./pages/ResidentList";
 import { ResidentProfile } from "./pages/ResidentProfile";
+import { ResidentCompare } from "./pages/ResidentCompare";
 import { EmployeeResidents } from "./pages/EmployeeResidents";
 import { EmployeeResidentDetail } from "./pages/EmployeeResidentDetail";
 import { CareTeam } from "./pages/CareTeam";
@@ -72,6 +73,7 @@ function AuthedApp() {
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/residents" element={<ResidentList />} />
+        <Route path="/residents/compare" element={<ResidentCompare />} />
         <Route path="/residents/:id" element={<ResidentProfile />} />
         <Route path="/care-team" element={<CareTeam />} />
         <Route path="/documents" element={<Documents />} />
