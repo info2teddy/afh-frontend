@@ -17,20 +17,21 @@ export const PERSONAL_CARE_TASKS = [
   "Incontinence Care",
   "Skin Care/Reposition",
   "Ambulation",
-  "Restraints Check",
   "Routine Resident Check",
   "Linen Change",
 ];
 
 // One-tap rating buttons, one entry per task that has a fixed vocabulary on
-// the real paper form — every one of the 14 categories has one, some sharing
+// the real paper form — every one of the 13 categories has one, some sharing
 // the same scale (the 5 hygiene tasks all use the form's own Independent/
 // Assisted/Total Help column). `options` are the pills; `allowNote: true`
-// keeps the free-text box available too (below the pills), for the two
-// interval-based safety checks where "no issues" covers most shifts but an
+// keeps the free-text box available too (below the pills), for the
+// interval-based safety check where "no issues" covers most shifts but an
 // unusual finding still needs real words, not a code. Frontend-only: the
 // backend just stores whatever string ends up in `note`, so this can change
-// without touching the schema or API.
+// without touching the schema or API. "Restraints Check" was removed from
+// the list at the user's request (2026-09-28); old entries still show in the
+// history.
 const ASSISTANCE_LEVELS = [
   { code: "I", label: "Independent" },
   { code: "A", label: "Assisted" },
@@ -98,10 +99,9 @@ export const QUICK_OPTIONS = {
       { code: "P", label: "Partial" },
     ],
   },
-  // Interval-based safety checks (paper form: "checked Q1hr", "Q__ hrs") —
+  // Interval-based safety check (paper form: "checked Q1hr", "Q__ hrs") —
   // one pill covers the common case, but typing is still there for anything
   // that isn't just "checked, no issues".
-  "Restraints Check": { options: [{ code: "OK", label: "No issues" }], allowNote: true },
   "Routine Resident Check": { options: [{ code: "OK", label: "No issues" }], allowNote: true },
 };
 
