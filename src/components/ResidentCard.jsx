@@ -2,6 +2,11 @@
 // One resident on the Residents page: photo, name, three quick facts, the
 // safety alerts staff need at a glance, and diet / assessment status. The
 // compare checkbox shows on hover (always on touch screens).
+//
+// variant="caregiver" is the caregiver's own home screen: no compare
+// checkbox, no care-plan status, and Mobility in place of Payer (a caregiver
+// login never receives payer fields — HIDDEN_FROM_EMPLOYEE in the backend's
+// routes/residents.js).
 import { Icon } from "./icons";
 import { ResidentPhoto } from "./ResidentPhoto";
 import { careLevelShortLabel } from "../lib/format";
@@ -35,8 +40,9 @@ function Alerts({ resident: r }) {
 }
 
 // carePlanStatus: "on_file" | "needs_plan" | undefined (still loading)
-export function ResidentCard({ resident: r, carePlanStatus, picked, onOpen, onTogglePick }) {
-  const due = planDue(r);
+export function ResidentCard({ resident: r, carePlanStatus, picked, onOpen, onTogglePick, variant }) {
+  const caregiver = variant === "caregiver";
+  const due = caregiver ? null : planDue(r);
   const age = residentAge(r.dateOfBirth);
   const away = r.status !== "active";
   return (
@@ -70,20 +76,22 @@ export function ResidentCard({ resident: r, carePlanStatus, picked, onOpen, onTo
             Room {r.room}
           </span>
         )}
-        <button
-          type="button"
-          aria-pressed={picked}
-          aria-label={`${picked ? "Remove" : "Add"} ${r.name} ${picked ? "from" : "to"} compare`}
-          onClick={(e) => {
-            e.stopPropagation();
-            onTogglePick(r);
-          }}
-          className={`absolute top-2.5 right-2.5 grid h-7 w-7 place-items-center rounded-[9px] border-[1.5px] backdrop-blur-sm transition-opacity focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white [@media(hover:none)]:opacity-100 ${
-            picked ? "border-brand-600 bg-brand-600 opacity-100" : "border-white/95 bg-stone-900/30 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100"
-          }`}
-        >
-          <Icon name="check" className={`h-3.5 w-3.5 text-white ${picked ? "" : "opacity-0"}`} />
-        </button>
+        {!caregiver && (
+          <button
+            type="button"
+            aria-pressed={picked}
+            aria-label={`${picked ? "Remove" : "Add"} ${r.name} ${picked ? "from" : "to"} compare`}
+            onClick={(e) => {
+              e.stopPropagation();
+              onTogglePick(r);
+            }}
+            className={`absolute top-2.5 right-2.5 grid h-7 w-7 place-items-center rounded-[9px] border-[1.5px] backdrop-blur-sm transition-opacity focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white [@media(hover:none)]:opacity-100 ${
+              picked ? "border-brand-600 bg-brand-600 opacity-100" : "border-white/95 bg-stone-900/30 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100"
+            }`}
+          >
+            <Icon name="check" className={`h-3.5 w-3.5 text-white ${picked ? "" : "opacity-0"}`} />
+          </button>
+        )}
       </div>
 
       <div className="grid gap-2.5 px-1.5 pb-1.5">
@@ -92,7 +100,7 @@ export function ResidentCard({ resident: r, carePlanStatus, picked, onOpen, onTo
           {[
             ["Age", age ?? "—"],
             ["Level", careLevelShortLabel(r.careLevel).replace(/^Level\s*/, "")],
-            ["Payer", shortPayer(r)],
+            caregiver ? ["Mobility", r.mobility || "—"] : ["Payer", shortPayer(r)],
           ].map(([label, value], i) => (
             <div key={label} className={`grid min-w-0 gap-px ${i > 0 ? "border-l border-stone-100 pl-2.5" : ""}`}>
               <dt className="text-[10.5px] font-semibold tracking-[0.07em] text-stone-400 uppercase">{label}</dt>
@@ -107,7 +115,7 @@ export function ResidentCard({ resident: r, carePlanStatus, picked, onOpen, onTo
           <span className="truncate">{r.diet || <span className="text-stone-400">Diet not set</span>}</span>
           {due ? (
             <span className="shrink-0 font-medium text-accent-700">{due.label}</span>
-          ) : carePlanStatus === "needs_plan" ? (
+          ) : !caregiver && carePlanStatus === "needs_plan" ? (
             <span className="shrink-0 font-medium text-accent-700">No care plan</span>
           ) : null}
         </div>
