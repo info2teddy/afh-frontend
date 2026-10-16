@@ -10,13 +10,14 @@ import { StatStrip } from "../components/StatStrip";
 import { Button } from "../components/Button";
 import { TableSkeleton } from "../components/TableSkeleton";
 import { AddFacilityModal } from "../components/AddFacilityModal";
+import { InviteAfhModal } from "../components/InviteAfhModal";
 
 export function PlacementFacilities() {
   const [facilities, setFacilities] = useState(null);
   const [error, setError] = useState(null);
   const [showAddFacility, setShowAddFacility] = useState(false);
   const [reviewingFacility, setReviewingFacility] = useState(null);
-  const [linkCopied, setLinkCopied] = useState(false);
+  const [showInvite, setShowInvite] = useState(false);
   const [removingId, setRemovingId] = useState(null);
   const intakeUrl = `${window.location.origin}/afh-intake`;
 
@@ -33,12 +34,6 @@ export function PlacementFacilities() {
     }
   }
 
-  function handleCopyLink() {
-    navigator.clipboard.writeText(intakeUrl).then(() => {
-      setLinkCopied(true);
-      setTimeout(() => setLinkCopied(false), 2000);
-    });
-  }
 
   function loadFacilities() {
     api.placements.facilities.list().then(setFacilities).catch((err) => setError(err.message));
@@ -84,11 +79,11 @@ export function PlacementFacilities() {
         <div className="flex-1">
           <div className="text-sm font-medium text-stone-900">Let an outside AFH add itself</div>
           <p className="mt-0.5 text-xs text-stone-500">
-            Share this link — no CareFit Connect account needed. Submissions land here as "Pending review" until you approve them.
+            Send them the signup link, a ready-made message or a QR code. No CareFit Connect account needed. Submissions land here as "Pending review" until you approve them.
           </p>
         </div>
-        <Button variant="secondary" size="sm" onClick={handleCopyLink}>
-          {linkCopied ? "Copied!" : "Copy intake link"}
+        <Button variant="secondary" size="sm" onClick={() => setShowInvite(true)}>
+          Invite an AFH
         </Button>
       </div>
 
@@ -160,6 +155,8 @@ export function PlacementFacilities() {
           </div>
         </div>
       )}
+
+      {showInvite && <InviteAfhModal intakeUrl={intakeUrl} onClose={() => setShowInvite(false)} />}
 
       {showAddFacility && (
         <AddFacilityModal
